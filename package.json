@@ -1,0 +1,23 @@
+{
+  "name": "mythoskolis-starter",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "astro": "^4.15.4",
+    "@astrojs/mdx": "^3.1.4",
+    "@astrojs/sitemap": "^3.2.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.17",
+    "@tailwindcss/vite": "^4.1.17",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}

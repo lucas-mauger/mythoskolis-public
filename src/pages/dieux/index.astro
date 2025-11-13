@@ -1,0 +1,18 @@
+---
+import '../../styles/global.css';
+import { getCollection } from 'astro:content';
+const items = await getCollection('dieux');
+---
+<html lang="fr">
+  <body class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Les dieux de la mythologie grecque</h1>
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {items.map((it) => (
+        <li class="p-4 rounded-lg border">
+          <a href={`/dieux/${it.slug}/`} class="text-xl font-semibold">{it.data.title}</a>
+          {it.data.description && <p class="text-sm mt-2">{it.data.description}</p>}
+        </li>
+      ))}
+    </ul>
+  </body>
+</html>

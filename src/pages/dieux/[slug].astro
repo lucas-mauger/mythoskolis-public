@@ -1,0 +1,25 @@
+---
+import '../../styles/global.css';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('dieux');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+const { title, image, description } = entry.data;
+const { Content } = await entry.render();
+---
+<html lang="fr">
+  <body class="max-w-3xl mx-auto p-6">
+    <a href="/dieux/" class="text-sm underline">← Retour</a>
+    <h1 class="text-4xl font-bold mt-2">{title}</h1>
+    {image && <img src={image} alt={title} class="mt-4 rounded-xl" />}
+    <article class="prose mt-6">
+      <Content />
+    </article>
+  </body>
+</html>
