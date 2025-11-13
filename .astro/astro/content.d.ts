@@ -141,9 +141,100 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"dieux": {
+"aphrodite.md": {
+	id: "aphrodite.md";
+  slug: "aphrodite";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"apollon.md": {
+	id: "apollon.md";
+  slug: "apollon";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"ares.md": {
+	id: "ares.md";
+  slug: "ares";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
 "artemis.md": {
 	id: "artemis.md";
   slug: "artemis";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"athena.md": {
+	id: "athena.md";
+  slug: "athena";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"demeter.md": {
+	id: "demeter.md";
+  slug: "demeter";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"dionysos.md": {
+	id: "dionysos.md";
+  slug: "dionysos";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"hades.md": {
+	id: "hades.md";
+  slug: "hades";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"hephaistos.md": {
+	id: "hephaistos.md";
+  slug: "hephaistos";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"hera.md": {
+	id: "hera.md";
+  slug: "hera";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"hermes.md": {
+	id: "hermes.md";
+  slug: "hermes";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"persephone.md": {
+	id: "persephone.md";
+  slug: "persephone";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"poseidon.md": {
+	id: "poseidon.md";
+  slug: "poseidon";
+  body: string;
+  collection: "dieux";
+  data: any
+} & { render(): Render[".md"] };
+"zeus.md": {
+	id: "zeus.md";
+  slug: "zeus";
   body: string;
   collection: "dieux";
   data: any
