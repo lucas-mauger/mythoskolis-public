@@ -77,9 +77,13 @@ mythoskolis/
 ├── public/                 # Fichiers statiques (images, vidéos, assets)
 │   └── admin/              # Interface Decap CMS
 │
+├── data/
+│   └── genealogie.yaml     # Source unique des relations familiales
+│
 ├── src/
-│   ├── components/         # Composants Astro réutilisables
+│   ├── components/         # Composants Astro réutilisables (EgoGraph, Header, …)
 │   ├── content/            # Fiches (dieux, ressources...) en Markdown
+│   ├── lib/                # Utilitaires (lecture du YAML généalogique)
 │   ├── pages/              # Pages Astro => routes du site
 │   └── styles/             # Styles globaux (Tailwind)
 │
@@ -92,7 +96,15 @@ mythoskolis/
 
 ---
 
-## 🪢 6. Branching model
+## 🖼️ 6. Médias & données
+
+- **Vidéos** : placées dans `public/videos/` et référencées via `video: "/videos/xxx.mp4"` dans les frontmatter des fiches.
+- **Images** : `public/images/` pour les visuels génériques, `public/faces/slug.webp` pour les portraits utilisés dans l’ego-graph.
+- **Généalogie** : éditer uniquement `data/genealogie.yaml`. Le JSON consommé par le composant interactif est régénéré automatiquement via `node scripts/generate-genealogie-json.mjs` (hooké sur `predev` / `prebuild`).
+
+---
+
+## 🪢 7. Branching model
 
 Le projet suit une organisation simple :
 
@@ -103,15 +115,16 @@ Le projet suit une organisation simple :
 
 ---
 
-## 📌 7. État actuel du projet
+## 📌 8. État actuel du projet
 
-- Mise en place de l’environnement Astro sur Zorin Linux  
-- Installation Prettier + ESLint (formatage + lint)  
-- Normalisation du workflow Git  
-- Début de la roadmap technique (CMS, données généalogiques, SEO…)
+- Base Astro + Tailwind opérationnelle (pages d’accueil, dieux, ressources, à propos).  
+- Decap CMS configuré (`public/admin/config.yml`) pour éditer les fiches dieux/ressources.  
+- Données généalogiques centralisées dans `data/genealogie.yaml`, lues via `src/lib/genealogie.ts` puis exportées en JSON statique pour l’ego-graph.  
+- Nouvelle expérience `/genealogie/[slug]` : un composant interactif affiche les colonnes Parents / Fratrie / Consorts / Enfants (versions desktop + mobile), avec portraits tirés de `public/faces/` et transitions fluides entre personnages.  
+- README, docs et workflow Git alignés (travail sur branches `feature/*` + PR vers `main`).
 
 ---
 
-## ✨ 8. Licence
+## ✨ 9. Licence
 
 Projet personnel — licence à définir selon les besoins futurs.
