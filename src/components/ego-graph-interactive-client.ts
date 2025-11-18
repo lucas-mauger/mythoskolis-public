@@ -53,7 +53,7 @@ export async function initEgoGraphInteractive(containerId: string, initialSlug: 
     const data = (await response.json()) as GenealogieData;
     const store = createGenealogieStore(data);
     const controller = new EgoGraphController(root, store);
-    controller.setCurrentSlug(initialSlug);
+    controller.setCurrentSlug(initialSlug).catch((err) => console.error(err));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur inconnue";
     renderMessage(root, message);
@@ -112,7 +112,7 @@ class EgoGraphController {
 
   }
 
-  setCurrentSlug(slug: string) {
+  async setCurrentSlug(slug: string) {
     const graph = this.store.getEgoGraph(slug);
     if (!graph) {
       this.showMessage("Pas encore de données pour ce dieu.");
@@ -128,10 +128,10 @@ class EgoGraphController {
     this.activeNodeKey = null;
     this.sectionScrollTops.clear();
     this.clearMessage();
-    this.renderGraph(graph);
+    await this.renderGraph(graph);
   }
 
-  private renderGraph(graph: EgoGraph) {
+  private async renderGraph(graph: EgoGraph) {
     this.captureScrollTops();
     this.clearNodes();
 
@@ -141,6 +141,7 @@ class EgoGraphController {
       name: graph.central.name,
       role: "central",
       relationLabel: RELATION_LABELS.central,
+      isRelatedConsort: this.focusedChildSlug !== null,
     });
     this.root.appendChild(centralNode);
     requestAnimationFrame(() => centralNode.classList.add("is-visible"));
@@ -151,8 +152,22 @@ class EgoGraphController {
         return;
       }
       const prevScroll = this.sectionScrollTops.get(section) ?? container.scrollTop;
+      const shouldResetScroll =
+        section === "consorts" &&
+        this.focusedChildSlug !== null &&
+        (graph.consorts ?? []).some((c) => this.store.hasParent(this.focusedChildSlug!, c.entity.slug));
+      const restoreScroll = shouldResetScroll ? 0 : prevScroll;
       container.innerHTML = "";
+      const isMobile = window.matchMedia("(max-width: 640px)").matches;
+      const baseColumns = isMobile ? 2 : 3;
+      let columns = baseColumns;
+      let index = 0;
       let nodes = sortSection(graph[section] as RelatedNode[]);
+      const isCompactParents = section === "parents" && nodes.length > 0 && nodes.length <= 2;
+      container.classList.toggle("is-compact-parents", isCompactParents);
+      if (isCompactParents) {
+        columns = isMobile ? 1 : Math.min(2, nodes.length);
+      }
       if (section === "children" && this.childrenOrder && this.childrenOrder.length) {
         nodes = sortByOrder(nodes, this.childrenOrder);
       }
@@ -211,6 +226,11 @@ class EgoGraphController {
           isRelatedConsort,
           isSibling,
         });
+        const row = Math.floor(index / columns) + 1;
+        const col = (index % columns) + 1;
+        node.style.gridRowStart = String(row);
+        node.style.gridColumnStart = String(col);
+        index += 1;
         container.appendChild(node);
         requestAnimationFrame(() => node.classList.add("is-visible"));
       });
@@ -218,7 +238,7 @@ class EgoGraphController {
       container.classList.toggle("has-content", nodes.length > 0);
       // Restore scroll position to avoid jump-to-top
       requestAnimationFrame(() => {
-        container.scrollTop = prevScroll;
+        container.scrollTop = restoreScroll;
       });
     });
 
@@ -283,11 +303,11 @@ class EgoGraphController {
             this.animateToCenter(wrapper),
             targets ? this.animateOtherNodes(targets, node.slug) : Promise.resolve(),
           ]);
-          this.setCurrentSlug(node.slug);
+          await this.setCurrentSlug(node.slug);
           return;
         }
         if (this.currentGraph && this.currentSlug) {
-          this.renderGraph(this.currentGraph);
+          await this.renderGraph(this.currentGraph);
         }
       } else if (node.role !== "central") {
         if (node.role === "child") {
@@ -309,11 +329,11 @@ class EgoGraphController {
               this.animateToCenter(wrapper),
               targets ? this.animateOtherNodes(targets, node.slug) : Promise.resolve(),
             ]);
-            this.setCurrentSlug(node.slug);
+            await this.setCurrentSlug(node.slug);
             return;
           }
           if (this.currentGraph) {
-            this.renderGraph(this.currentGraph);
+            await this.renderGraph(this.currentGraph);
           }
         } else if (isSecondClick && node.slug !== this.currentSlug) {
           this.resetFocusState();
@@ -322,7 +342,26 @@ class EgoGraphController {
             this.animateToCenter(wrapper),
             targets ? this.animateOtherNodes(targets, node.slug) : Promise.resolve(),
           ]);
-          this.setCurrentSlug(node.slug);
+          await this.setCurrentSlug(node.slug);
+        } else {
+          // Parent or sibling first click: clear previous child-related focus/halos.
+          this.focusedChildSlug = null;
+          this.focusedConsortSlug = null;
+          this.selectedConsortSlug = null;
+          if (this.currentGraph) {
+            await this.renderGraph(this.currentGraph);
+          }
+        }
+      } else {
+        // Clicking the central node clears related halos/focus states but keeps central active/displayed
+        this.focusedChildSlug = null;
+        this.focusedConsortSlug = null;
+        this.selectedConsortSlug = null;
+        this.childrenOrder = null;
+        this.consortOrder = null;
+        if (this.currentGraph) {
+          await this.renderGraph(this.currentGraph);
+          this.setActiveNode(node.key);
         }
       }
     });
@@ -413,6 +452,10 @@ class EgoGraphController {
     nodeEl.classList.remove("is-active");
     nodeEl.classList.remove("is-related");
     nodeEl.classList.remove("is-sibling");
+    const originalLabel = nodeEl.querySelector<HTMLElement>(".ego-node-label");
+    if (originalLabel) {
+      originalLabel.style.visibility = "hidden";
+    }
     const sourceRect = nodeEl.getBoundingClientRect();
     const rootRect = this.root.getBoundingClientRect();
     const targetNode = this.root.querySelector<HTMLElement>('.ego-node[data-role="central"]');
@@ -426,6 +469,7 @@ class EgoGraphController {
     const clone = nodeEl.cloneNode(true) as HTMLElement;
     clone.classList.add("ego-node-fly");
     clone.classList.remove("is-active", "is-related", "is-sibling");
+    clone.querySelector(".ego-node-label")?.remove();
     clone.style.position = "fixed";
     clone.style.left = `${sourceRect.left}px`;
     clone.style.top = `${sourceRect.top}px`;
@@ -447,7 +491,7 @@ class EgoGraphController {
 
     // Force reflow then animate
     void clone.getBoundingClientRect();
-    clone.style.transition = "transform 320ms ease, opacity 320ms ease";
+    clone.style.transition = "transform 450ms ease, opacity 450ms ease";
     clone.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
 
     await new Promise<void>((resolve) => {
@@ -455,9 +499,12 @@ class EgoGraphController {
         clone.remove();
         nodeEl.classList.remove("is-animating");
         nodeEl.style.opacity = "";
+        if (originalLabel) {
+          originalLabel.style.visibility = "";
+        }
         resolve();
       };
-      const timeout = window.setTimeout(done, 400);
+      const timeout = window.setTimeout(done, 600);
       clone.addEventListener(
         "transitionend",
         () => {
@@ -496,20 +543,24 @@ class EgoGraphController {
     nodeEl.classList.remove("is-active");
     nodeEl.classList.remove("is-related");
     nodeEl.classList.remove("is-sibling");
+    const originalLabel = nodeEl.querySelector<HTMLElement>(".ego-node-label");
+    if (originalLabel) {
+      originalLabel.style.visibility = "hidden";
+    }
     const sourceRect = nodeEl.getBoundingClientRect();
+    const frame = this.createClipFrame(nodeEl);
     const clone = nodeEl.cloneNode(true) as HTMLElement;
     clone.classList.add("ego-node-fly");
     clone.classList.remove("is-active", "is-related", "is-sibling");
-    clone.style.position = "fixed";
-    clone.style.left = `${sourceRect.left}px`;
-    clone.style.top = `${sourceRect.top}px`;
+    clone.querySelector(".ego-node-label")?.remove();
+    clone.style.position = "absolute";
+    clone.style.left = `${sourceRect.left - frame.rect.left}px`;
+    clone.style.top = `${sourceRect.top - frame.rect.top}px`;
     clone.style.width = `${sourceRect.width}px`;
     clone.style.height = `${sourceRect.height}px`;
     clone.style.transformOrigin = "center center";
-    clone.style.zIndex = "9998";
     clone.style.pointerEvents = "none";
-
-    document.body.appendChild(clone);
+    frame.container.appendChild(clone);
     nodeEl.classList.add("is-animating");
     nodeEl.style.opacity = "0";
 
@@ -518,17 +569,21 @@ class EgoGraphController {
     const scale = targetRect.width / sourceRect.width;
 
     void clone.getBoundingClientRect();
-    clone.style.transition = "transform 320ms ease, opacity 320ms ease";
+    clone.style.transition = "transform 450ms ease, opacity 450ms ease";
     clone.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
 
     await new Promise<void>((resolve) => {
       const done = () => {
         clone.remove();
+        frame.container.remove();
         nodeEl.classList.remove("is-animating");
         nodeEl.style.opacity = "";
+        if (originalLabel) {
+          originalLabel.style.visibility = "";
+        }
         resolve();
       };
-      const timeout = window.setTimeout(done, 400);
+      const timeout = window.setTimeout(done, 600);
       clone.addEventListener(
         "transitionend",
         () => {
@@ -546,6 +601,8 @@ class EgoGraphController {
 
     const ghostRoot = document.createElement("div");
     const rootRect = this.root.getBoundingClientRect();
+    const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    const baseColumns = isMobile ? 2 : 3;
     ghostRoot.className = "ego-graph-sky ego-graph-ghost";
     ghostRoot.style.position = "fixed";
     ghostRoot.style.left = "-99999px";
@@ -576,9 +633,21 @@ class EgoGraphController {
     RELATION_SECTIONS.forEach((section) => {
       const container = sectionContents.get(section);
       if (!container) return;
+      let columns = baseColumns;
+      let index = 0;
       let nodes = sortSection(graph[section] as RelatedNode[]);
+      const isCompactParents = section === "parents" && nodes.length > 0 && nodes.length <= 2;
+      if (isCompactParents) {
+        columns = isMobile ? 1 : Math.min(2, nodes.length);
+        container.classList.add("is-compact-parents");
+      }
       nodes.forEach((item) => {
         const node = this.createGhostNode(item.entity.slug, item.entity.name, SECTION_ROLE[section]);
+        const row = Math.floor(index / columns) + 1;
+        const col = (index % columns) + 1;
+        node.style.gridRowStart = String(row);
+        node.style.gridColumnStart = String(col);
+        index += 1;
         container.appendChild(node);
       });
     });
@@ -612,6 +681,22 @@ class EgoGraphController {
     wrapper.dataset.slug = slug;
     wrapper.title = name;
     return wrapper;
+  }
+
+  private createClipFrame(nodeEl: HTMLElement): { container: HTMLElement; rect: DOMRect } {
+    const container = document.createElement("div");
+    const grid = this.root.querySelector(".ego-graph-grid");
+    const rect = grid?.getBoundingClientRect() ?? this.root.getBoundingClientRect();
+    container.style.position = "fixed";
+    container.style.left = `${rect.left}px`;
+    container.style.top = `${rect.top}px`;
+    container.style.width = `${rect.width}px`;
+    container.style.height = `${rect.height}px`;
+    container.style.overflow = "hidden";
+    container.style.pointerEvents = "none";
+    container.style.zIndex = "9997";
+    document.body.appendChild(container);
+    return { container, rect };
   }
 }
 
