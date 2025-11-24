@@ -1,0 +1,161 @@
+entities:
+  - name: Zeus
+    slug: zeus
+    culture: grecque
+    id: grecque-zeus
+    relations:
+      parents:
+        - id: grecque-cronos
+          consensus: true
+          sources: []
+        - id: grecque-rhea
+          consensus: true
+          sources: []
+      children:
+        - id: grecque-apollon
+          consensus: true
+          sources: []
+        - id: grecque-artemis
+          consensus: true
+          sources: []
+      siblings: []
+      consorts:
+        - id: grecque-leto
+          consensus: true
+          sources: []
+  - name: Léto
+    slug: leto
+    culture: grecque
+    id: grecque-leto
+    relations:
+      parents: []
+      children:
+        - id: grecque-apollon
+          consensus: true
+          sources: []
+        - id: grecque-artemis
+          consensus: true
+          sources: []
+      siblings: []
+      consorts:
+        - id: grecque-zeus
+          consensus: true
+          sources: []
+  - name: Artémis
+    slug: artemis
+    culture: grecque
+    id: grecque-artemis
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources: []
+        - id: grecque-leto
+          consensus: true
+          sources: []
+      children: []
+      siblings:
+        - id: grecque-apollon
+          consensus: true
+          sources: []
+      consorts: []
+  - name: Apollon
+    slug: apollon
+    culture: grecque
+    id: grecque-apollon
+    relations:
+      parents:
+        - id: grecque-leto
+          consensus: true
+          sources: []
+        - id: grecque-zeus
+          consensus: true
+          sources: []
+      children: []
+      siblings:
+        - id: grecque-artemis
+          consensus: true
+          sources: []
+      consorts: []
+  - name: Cronos
+    slug: cronos
+    culture: grecque
+    id: grecque-cronos
+    relations:
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources: []
+        - id: grecque-ouranos
+          consensus: true
+          sources: []
+      children:
+        - id: grecque-zeus
+          consensus: true
+          sources: []
+      siblings: []
+      consorts:
+        - id: grecque-rhea
+          consensus: true
+          sources: []
+  - name: Rhéa
+    slug: rhea
+    culture: grecque
+    id: grecque-rhea
+    relations:
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources: []
+        - id: grecque-ouranos
+          consensus: true
+          sources: []
+      children:
+        - id: grecque-zeus
+          consensus: true
+          sources: []
+      siblings: []
+      consorts:
+        - id: grecque-cronos
+          consensus: true
+          sources: []
+      childs:
+        - id: grecque-cronos
+          consensus: true
+          sources: []
+  - name: Gaïa
+    slug: gaia
+    culture: grecque
+    id: grecque-gaia
+    relations:
+      parents: []
+      children:
+        - id: grecque-rhea
+          consensus: true
+          sources: []
+        - id: grecque-cronos
+          consensus: true
+          sources: []
+      siblings: []
+      consorts:
+        - id: grecque-ouranos
+          consensus: true
+          sources: []
+  - name: Ouranos
+    slug: ouranos
+    culture: grecque
+    id: grecque-ouranos
+    relations:
+      parents: []
+      children:
+        - id: grecque-cronos
+          consensus: true
+          sources: []
+        - id: grecque-rhea
+          consensus: true
+          sources: []
+      siblings: []
+      consorts:
+        - id: grecque-gaia
+          consensus: true
+          sources: []

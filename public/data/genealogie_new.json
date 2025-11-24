@@ -1,0 +1,105 @@
+{
+  "entities": [
+    {
+      "id": "grecque-zeus",
+      "slug": "zeus",
+      "culture": "grecque",
+      "name": "Zeus"
+    },
+    {
+      "id": "grecque-leto",
+      "slug": "leto",
+      "culture": "grecque",
+      "name": "Léto"
+    },
+    {
+      "id": "grecque-artemis",
+      "slug": "artemis",
+      "culture": "grecque",
+      "name": "Artémis"
+    },
+    {
+      "id": "grecque-apollon",
+      "slug": "apollon",
+      "culture": "grecque",
+      "name": "Apollon"
+    },
+    {
+      "id": "grecque-cronos",
+      "slug": "cronos",
+      "culture": "grecque",
+      "name": "Cronos"
+    },
+    {
+      "id": "grecque-rhea",
+      "slug": "rhea",
+      "culture": "grecque",
+      "name": "Rhéa"
+    }
+  ],
+  "relations": [
+    {
+      "source_id": "grecque-cronos",
+      "target_id": "grecque-zeus",
+      "type": "parent",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-rhea",
+      "target_id": "grecque-zeus",
+      "type": "parent",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-zeus",
+      "target_id": "grecque-apollon",
+      "type": "parent",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-zeus",
+      "target_id": "grecque-artemis",
+      "type": "parent",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-leto",
+      "target_id": "grecque-zeus",
+      "type": "consort",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-leto",
+      "target_id": "grecque-apollon",
+      "type": "parent",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-leto",
+      "target_id": "grecque-artemis",
+      "type": "parent",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-apollon",
+      "target_id": "grecque-artemis",
+      "type": "sibling",
+      "consensus": true,
+      "sources": []
+    },
+    {
+      "source_id": "grecque-cronos",
+      "target_id": "grecque-rhea",
+      "type": "consort",
+      "consensus": true,
+      "sources": []
+    }
+  ]
+}

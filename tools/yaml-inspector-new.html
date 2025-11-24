@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inspecteur YAML (nouveau format)</title>
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+      }
+      header {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+      input,
+      select {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        font-size: 0.95rem;
+      }
+      .layout {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        height: fit-content;
+      }
+      .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.05rem;
+      }
+      .item {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 10px;
+        background: #f8fafc;
+      }
+      .item.consensus {
+        background: #e0f2fe;
+        border-color: #bfdbfe;
+      }
+      .item.non-consensus {
+        background: #fef9c3;
+        border-color: #fde68a;
+      }
+      .muted {
+        color: #64748b;
+        font-size: 0.9rem;
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #0ea5e9;
+        font-size: 0.8rem;
+        margin-right: 6px;
+      }
+      .pill.parent {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+      .pill.child {
+        background: #fef9c3;
+        color: #ca8a04;
+      }
+      .pill.sibling {
+        background: #e0e7ff;
+        color: #4f46e5;
+      }
+      .pill.consort {
+        background: #dcfce7;
+        color: #16a34a;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .btn.save {
+        background: #6366f1;
+        color: #fff;
+        border-color: #4f46e5;
+      }
+      .btn.secondary {
+        background: #f8fafc;
+        color: #334155;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .form-grid label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.9rem;
+        color: #475569;
+      }
+      .form-grid input,
+      .form-grid select {
+        width: 100%;
+      }
+      .editor {
+        margin-top: 12px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+      }
+      .status {
+        margin-top: 8px;
+        font-size: 0.9rem;
+      }
+      .status.ok {
+        color: #16a34a;
+      }
+      .status.err {
+        color: #dc2626;
+      }
+      .toast {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: #0ea5e9;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+        opacity: 0;
+        transition: opacity 200ms ease;
+        pointer-events: none;
+        font-size: 0.95rem;
+      }
+      .toast.err {
+        background: #dc2626;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 12px 0 6px 0;
+        font-weight: 600;
+      }
+      .count {
+        color: #475569;
+        font-size: 0.9rem;
+      }
+      .suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+        z-index: 20;
+        max-height: 180px;
+        overflow-y: auto;
+        display: none;
+      }
+      .suggestions .item {
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        padding: 8px 10px;
+        background: transparent;
+        cursor: pointer;
+      }
+      .suggestions .item:hover {
+        background: #f1f5f9;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Inspecteur YAML (nouveau format)</h1>
+      <label>
+        Rechercher par slug
+        <input type="text" id="search" placeholder="ex: zeus" />
+      </label>
+      <button class="btn save" id="open-create">Créer une entité</button>
+    </header>
+
+    <div class="card" id="create-card" style="display:none; margin-bottom:12px;">
+      <div class="section-title">
+        <span>Nouvelle entité</span>
+        <button class="btn secondary" id="cancel-create">Fermer</button>
+      </div>
+      <div class="form-grid">
+        <label>Nom
+          <input type="text" id="c-name" />
+        </label>
+        <label>Slug (auto)
+          <input type="text" id="c-slug" readonly />
+        </label>
+        <label>Culture
+          <input list="culture-list" type="text" id="c-culture" />
+          <datalist id="culture-list"></datalist>
+        </label>
+        <label>ID (auto)
+          <input type="text" id="c-id" readonly />
+        </label>
+      </div>
+      <div class="section-title" style="margin-top:12px;">
+        <span>Relation initiale (optionnel)</span>
+      </div>
+      <div class="form-grid">
+        <label>Type
+          <select id="c-rel-type">
+            <option value="">(aucun)</option>
+            <option value="parent">parent</option>
+            <option value="child">child</option>
+            <option value="sibling">sibling</option>
+            <option value="consort">consort</option>
+          </select>
+        </label>
+        <label>Cible (slug ou id)
+          <input list="entity-list" type="text" id="c-rel-target" placeholder="grecque-xxx" />
+          <datalist id="entity-list"></datalist>
+        </label>
+        <label>Consensus ?
+          <input type="checkbox" id="c-rel-consensus" checked />
+        </label>
+        <label>Créer aussi l'inverse
+          <input type="checkbox" id="c-rel-inverse" checked />
+        </label>
+        <label>Sources (CSV auteur, œuvre, passage)
+          <input type="text" id="c-rel-combo" placeholder="Auteur, Œuvre, Passage" />
+        </label>
+        <label>Source auteur
+          <input type="text" id="c-rel-author" />
+        </label>
+        <label>Source œuvre
+          <input type="text" id="c-rel-work" />
+        </label>
+        <label>Passage
+          <input type="text" id="c-rel-passage" />
+        </label>
+      </div>
+      <div class="status" id="create-status"></div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn secondary" id="reset-create">Réinitialiser</button>
+        <button class="btn save" id="save-create">Créer</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h2>Entités</h2>
+        <div id="entities"></div>
+        <div class="editor" id="editor" style="display:none;">
+          <div class="section-title">
+            <span>Éditer l’entité</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button class="btn secondary" id="cancel-entity">Annuler</button>
+              <button class="btn save" id="save-entity">Enregistrer</button>
+            </div>
+          </div>
+          <div class="form-grid">
+            <label>Nom
+              <input type="text" id="e-name" />
+            </label>
+            <label>Slug
+              <input type="text" id="e-slug" />
+            </label>
+            <label>Culture
+              <input type="text" id="e-culture" />
+            </label>
+            <label>ID
+              <input type="text" id="e-id" />
+            </label>
+          </div>
+          <div class="status" id="editor-status"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Relations</h2>
+        <div id="relations-summary" class="muted" style="margin-bottom:8px;"></div>
+        <div id="relations"></div>
+      </div>
+    </div>
+
+    <script>
+      const byId = new Map();
+      let entities = [];
+      let currentEntity = null;
+      let toastTimer = null;
+      let cultures = new Set();
+
+      function showToast(message, isError = false) {
+        let toast = document.getElementById("toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "toast";
+          toast.className = "toast";
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.className = isError ? "toast err show" : "toast show";
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2000);
+      }
+
+      async function loadData() {
+        const res = await fetch("/data");
+        if (!res.ok) throw new Error("Impossible de charger le YAML");
+        const data = await res.json();
+        entities = Array.isArray(data.entities) ? data.entities : [];
+        byId.clear();
+        entities.forEach((e) => byId.set(e.id, e));
+        cultures = new Set(entities.map((e) => e.culture).filter(Boolean));
+      }
+
+      function buildRelationList() {
+        const rels = [];
+        const typeMap = {
+          parents: "parent",
+          children: "parent",
+          siblings: "sibling",
+          consorts: "consort",
+        };
+        entities.forEach((e) => {
+          const rel = e.relations || {};
+          ["parents", "children", "siblings", "consorts"].forEach((key) => {
+            const list = getRelList(rel, key);
+            list.forEach((item) => {
+              rels.push({
+                source: e.id,
+                target: item.id,
+                type: typeMap[key] || key.slice(0, -1),
+                origin: key, // pour savoir si on inverse l’affichage
+                consensus: item.consensus,
+                sources: item.sources || [],
+              });
+            });
+          });
+        });
+        // dédoublonner en ignorant le sens pour parent/sibling/consort
+        const seen = new Set();
+        return rels.filter((r) => {
+          const key = normalizeEdgeKey(r.type, r.source, r.target, r.consensus, r.sources);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+
+      function buildRelationLabel(r) {
+        const src = byId.get(r.source);
+        const tgt = byId.get(r.target);
+        const srcName = src?.name ?? r.source;
+        const tgtName = tgt?.name ?? r.target;
+        // parent/child affichage selon l’origine
+        if (r.origin === "parents") {
+          return `${tgtName} est parent de ${srcName}`;
+        }
+        if (r.origin === "children") {
+          return `${srcName} est parent de ${tgtName}`;
+        }
+        if (r.type === "sibling") {
+          return `${srcName} ↔ ${tgtName} (fratrie)`;
+        }
+        if (r.type === "consort") {
+          return `${srcName} ↔ ${tgtName} (consorts)`;
+        }
+        return `${srcName} → ${tgtName}`;
+      }
+
+  function renderRelations(searchValue) {
+    const wrap = document.getElementById("relations");
+    wrap.innerHTML = "";
+    const summaryEl = document.getElementById("relations-summary");
+    const q = (searchValue || "").toLowerCase();
+        const all = buildRelationList();
+        const filtered = all.filter((r) => {
+          if (!q) return true;
+          const srcSlug = byId.get(r.source)?.slug ?? r.source;
+          const tgtSlug = byId.get(r.target)?.slug ?? r.target;
+          return srcSlug.toLowerCase().startsWith(q) || tgtSlug.toLowerCase().startsWith(q);
+        });
+        summaryEl.textContent = `${filtered.length} relation(s)`;
+        if (!filtered.length) {
+          wrap.innerHTML = '<p class="muted">Aucune relation</p>';
+          return;
+        }
+        const byType = filtered.reduce((acc, r) => {
+          acc[r.type] = acc[r.type] || [];
+          acc[r.type].push(r);
+          return acc;
+        }, {});
+        ["parent", "child", "sibling", "consort"].forEach((type) => {
+          const list = byType[type] || [];
+          if (!list.length) return;
+          const section = document.createElement("div");
+          const title = document.createElement("div");
+          title.className = "section-title";
+          title.innerHTML = `<span>${type}</span><span class="count">${list.length}</span>`;
+          section.appendChild(title);
+          list.forEach((r) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `
+              <div><span class="pill ${r.type}">${r.type}</span> ${buildRelationLabel(r)}</div>
+              ${r.consensus === false ? '<div class="muted">Non consensuel</div>' : ""}
+            `;
+            section.appendChild(div);
+          });
+          wrap.appendChild(section);
+        });
+      }
+
+  function setupEditor() {
+        const editor = document.getElementById("editor");
+        const saveBtn = document.getElementById("save-entity");
+        const cancelBtn = document.getElementById("cancel-entity");
+        const status = document.getElementById("editor-status");
+        if (!editor || !saveBtn) return;
+        saveBtn.addEventListener("click", async () => {
+          if (!currentEntity) return;
+          const payload = {
+            originalId: currentEntity.id,
+            entity: {
+              name: document.getElementById("e-name").value,
+              slug: document.getElementById("e-slug").value,
+              culture: document.getElementById("e-culture").value,
+              id: document.getElementById("e-id").value,
+            },
+          };
+          status.textContent = "Enregistrement...";
+          status.className = "status";
+          try {
+            const res = await fetch("/entities", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const out = await res.json();
+            if (!res.ok) throw new Error(out.error || "Erreur de sauvegarde");
+            status.textContent = "Sauvegardé.";
+            status.className = "status ok";
+            showToast("Modifications enregistrées");
+            await loadData();
+            renderEntities(document.getElementById("search").value);
+            renderRelations(document.getElementById("search").value);
+          } catch (err) {
+            status.textContent = `Erreur : ${err.message}`;
+            status.className = "status err";
+            showToast(err.message, true);
+          }
+        });
+        if (cancelBtn) {
+          cancelBtn.addEventListener("click", () => {
+            if (!currentEntity) return;
+            fillEditor(currentEntity);
+            editor.style.display = "none";
+            document.body.appendChild(editor);
+            currentEntity = null;
+            renderEntities(document.getElementById("search").value);
+            showToast("Modifications annulées");
+          });
+        }
+      }
+
+      function selectEntity(ent) {
+        currentEntity = ent;
+        const editor = document.getElementById("editor");
+        if (!editor) return;
+        const target = document.querySelector(`[data-entity-id="${ent.id}"]`);
+        if (target) target.appendChild(editor);
+        editor.style.display = "block";
+        fillEditor(ent);
+        const status = document.getElementById("editor-status");
+        status.textContent = "";
+        status.className = "status";
+      }
+
+  function fillEditor(ent) {
+        document.getElementById("e-name").value = ent.name ?? "";
+        document.getElementById("e-slug").value = ent.slug ?? "";
+        document.getElementById("e-culture").value = ent.culture ?? "";
+        document.getElementById("e-id").value = ent.id ?? "";
+        document.getElementById("e-display").value = ent.display_class ?? "";
+      }
+
+      function renderRelationsForEntity(ent) {
+        const rel = ent.relations || {};
+        const wrap = document.createElement("div");
+        ["parents", "children", "siblings", "consorts"].forEach((type) => {
+          const list = dedupeList(getRelList(rel, type), type);
+          if (!list.length) return;
+          const section = document.createElement("div");
+          const title = document.createElement("div");
+          title.className = "section-title";
+          title.innerHTML = `<span>${type}</span><span class="count">${list.length}</span>`;
+          section.appendChild(title);
+          list.forEach((item) => {
+            const tgt = byId.get(item.id);
+            const name = tgt?.name ?? item.id;
+            const srcLine = (item.sources || [])
+              .map((s) => [s.author, s.work, s.passage].filter(Boolean).join(", "))
+              .filter(Boolean)
+              .join(" ; ");
+            const div = document.createElement("div");
+            div.className = `item ${item.consensus === false ? "non-consensus" : "consensus"}`;
+            div.innerHTML = `
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <span class="pill ${type.slice(0, -1)}">${type.slice(0, -1)}</span>
+                <span>${name}</span>
+                <button class="btn secondary" data-edit-rel data-source="${ent.id}" data-type="${type}" data-target="${item.id}" data-consensus="${item.consensus !== false}" data-sources='${JSON.stringify(item.sources || [])}'>Modifier</button>
+                <button class="btn secondary" data-del-rel data-source="${ent.id}" data-type="${type}" data-target="${item.id}" data-consensus="${item.consensus !== false}" data-sources='${JSON.stringify(item.sources || [])}'>Supprimer</button>
+                ${item.consensus === false ? '<span class="muted">Non consensuel</span>' : ""}
+              </div>
+              ${srcLine ? `<div class="muted" style="font-style:italic; margin-top:4px;">${srcLine}</div>` : ""}
+            `;
+            section.appendChild(div);
+          });
+          wrap.appendChild(section);
+        });
+        return wrap.innerHTML;
+      }
+
+      async function addRelation(ent, form) {
+        const status = form.querySelector(".status");
+        const type = form.querySelector('[name="type"]').value;
+        const targetId = form.querySelector('[name="target"]').value.trim();
+        const consensus = form.querySelector('[name="consensus"]').checked;
+        const addInverse = form.querySelector('[name="inverse"]').checked;
+        const author = form.querySelector('[name="author"]').value.trim();
+        const work = form.querySelector('[name="work"]').value.trim();
+        const passage = form.querySelector('[name="passage"]').value.trim();
+        if (!targetId) {
+          status.textContent = "Cible requise";
+          status.className = "status err";
+          return;
+        }
+        status.textContent = "Ajout...";
+        status.className = "status";
+        try {
+          const res = await fetch("/relations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              sourceId: ent.id,
+              targetId,
+              type,
+              consensus,
+              addInverse,
+              sourceInfo: { author, work, passage },
+            }),
+          });
+          const out = await res.json();
+          if (!res.ok) throw new Error(out.error || "Erreur ajout relation");
+          status.textContent = "Ajouté";
+          status.className = "status ok";
+          showToast("Relation ajoutée");
+          await loadData();
+          renderEntities(document.getElementById("search").value);
+          renderRelations(document.getElementById("search").value);
+        } catch (err) {
+          status.textContent = `Erreur : ${err.message}`;
+          status.className = "status err";
+          showToast(err.message, true);
+        }
+      }
+
+      function renderEntities(filterValue) {
+        const wrap = document.getElementById("entities");
+        const editor = document.getElementById("editor");
+        if (editor && editor.closest("#entities")) {
+          document.body.appendChild(editor);
+          editor.style.display = "none";
+          currentEntity = null;
+        }
+        wrap.innerHTML = "";
+        const q = (filterValue || "").toLowerCase();
+        const list = !q ? entities : entities.filter((e) => e.slug?.toLowerCase().startsWith(q));
+        if (!list.length) {
+          wrap.innerHTML = '<p class="muted">Aucune entité</p>';
+          return;
+        }
+        list
+          .slice()
+          .sort((a, b) => a.slug.localeCompare(b.slug))
+          .forEach((e) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.dataset.entityId = e.id;
+            div.innerHTML = `
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <div>
+                  <strong>${e.name ?? e.id}</strong>
+                  <div class="muted">${e.id}</div>
+                </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn" data-edit="${e.id}">Éditer</button>
+                <button class="btn" data-add-rel="${e.id}">Ajouter relation</button>
+                <button class="btn secondary" data-delete="${e.id}">Supprimer</button>
+              </div>
+            </div>
+              <div class="relations-block">${renderRelationsForEntity(e)}</div>
+              <div class="editor small-editor" id="rel-editor-${e.id}" style="display:none;">
+        <div class="form-grid">
+          <label>Type
+            <select name="type">
+              <option value="parent">parent</option>
+              <option value="child">child</option>
+              <option value="sibling">sibling</option>
+              <option value="consort">consort</option>
+            </select>
+          </label>
+          <label>Cible (slug/nom)
+            <input type="text" name="target" placeholder="slug ou nom" autocomplete="off" />
+          </label>
+          <label>Consensus ?
+            <input type="checkbox" name="consensus" checked />
+          </label>
+          <label>Créer aussi l'inverse
+            <input type="checkbox" name="inverse" checked />
+          </label>
+          <label>Sources (CSV auteur, œuvre, passage)
+            <input type="text" name="combo" placeholder="Auteur, Œuvre, Passage" />
+          </label>
+          <label>Source auteur
+            <input type="text" name="author" />
+          </label>
+          <label>Source œuvre
+            <input type="text" name="work" />
+                  </label>
+                  <label>Passage
+                    <input type="text" name="passage" />
+                  </label>
+                </div>
+                <div class="status"></div>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                  <button class="btn secondary" data-cancel-rel>Annuler</button>
+                  <button class="btn save" data-save-rel>Ajouter</button>
+                </div>
+              </div>
+            `;
+            wrap.appendChild(div);
+          });
+
+        wrap.querySelectorAll("[data-edit]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-edit");
+            const ent = byId.get(id);
+            if (ent) selectEntity(ent);
+          });
+        });
+        wrap.querySelectorAll("[data-add-rel]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-add-rel");
+            const form = document.getElementById(`rel-editor-${id}`);
+            if (form) form.style.display = "block";
+          });
+        });
+        wrap.querySelectorAll("[data-delete]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const id = btn.getAttribute("data-delete");
+            const ent = byId.get(id);
+            if (!ent) return;
+            const ok = confirm(`Supprimer l'entité ${ent.name ?? ent.id} ? Cette action enlèvera aussi les relations vers elle.`);
+            if (!ok) return;
+            try {
+              const res = await fetch("/entity-delete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id }),
+              });
+              const out = await res.json();
+              if (!res.ok) throw new Error(out.error || "Échec suppression");
+              showToast("Entité supprimée");
+              await loadData();
+              renderEntities(document.getElementById("search").value);
+              renderRelations(document.getElementById("search").value);
+            } catch (err) {
+              showToast(err.message, true);
+            }
+          });
+        });
+        wrap.querySelectorAll("[data-cancel-rel]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const form = e.target.closest(".small-editor");
+            if (form) form.style.display = "none";
+          });
+        });
+        wrap.querySelectorAll("[data-save-rel]").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const form = e.target.closest(".small-editor");
+            const id = form?.id?.replace("rel-editor-", "");
+            const ent = byId.get(id);
+            if (ent && form) {
+              await addRelation(ent, form);
+            }
+          });
+        });
+        // autocomplete sur cibles
+        wrap.querySelectorAll('input[name="target"]').forEach((input) => attachAutocomplete(input, "id"));
+        // sync CSV sources dans les formulaires d'ajout de relation
+        wrap.querySelectorAll(".small-editor").forEach((form) => {
+          attachSourceCombo(
+            form.querySelector('input[name="combo"]'),
+            form.querySelector('input[name="author"]'),
+            form.querySelector('input[name="work"]'),
+            form.querySelector('input[name="passage"]'),
+          );
+        });
+        wrap.querySelectorAll("[data-edit-rel]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const srcId = btn.getAttribute("data-source");
+            const targetId = btn.getAttribute("data-target");
+            const type = btn.getAttribute("data-type");
+            const consensus = btn.getAttribute("data-consensus") === "true";
+            const sources = JSON.parse(btn.getAttribute("data-sources") || "[]");
+            openRelEditor(srcId, targetId, type, consensus, sources);
+          });
+        });
+        wrap.querySelectorAll("[data-del-rel]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const srcId = btn.getAttribute("data-source");
+            const targetId = btn.getAttribute("data-target");
+            const type = btn.getAttribute("data-type");
+            const consensus = btn.getAttribute("data-consensus") === "true";
+            const sources = JSON.parse(btn.getAttribute("data-sources") || "[]");
+            const relType = type.replace(/s$/, "");
+            const srcName = byId.get(srcId)?.name ?? srcId;
+            const tgtName = byId.get(targetId)?.name ?? targetId;
+            const ok = confirm(`Supprimer la relation ${relType} entre ${srcName} et ${tgtName} ? (inverse aussi)`);
+            if (!ok) return;
+            try {
+              const res = await fetch("/relation-update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sourceId: srcId,
+                  originType: type,
+                  targetId,
+                  originalConsensus: consensus,
+                  originalSources: sources,
+                  newType: "", // suppression
+                  consensus: true,
+                  sourceInfo: {},
+                  addInverse: true,
+                }),
+              });
+              const out = await res.json();
+              if (!res.ok) throw new Error(out.error || "Erreur suppression");
+              await loadData();
+              renderEntities(document.getElementById("search").value);
+              renderRelations(document.getElementById("search").value);
+              showToast("Relation supprimée");
+            } catch (err) {
+              showToast(err.message, true);
+            }
+          });
+        });
+      }
+
+      function getRelList(rel, pluralType) {
+        const map = {
+          parents: ["parents", "parent"],
+          children: ["children", "child"],
+          siblings: ["siblings", "sibling"],
+          consorts: ["consorts", "consort"],
+        };
+        const keys = map[pluralType] || [pluralType];
+        const combined = [];
+        keys.forEach((k) => {
+          const list = Array.isArray(rel[k]) ? rel[k] : [];
+          combined.push(...list);
+        });
+        return combined;
+      }
+
+      function dedupeList(list, pluralType) {
+        const type = (pluralType || "").replace(/s$/, "") || pluralType;
+        const seen = new Set();
+        return list.filter((item) => {
+          const k = `${type}|${item.id}|${item.consensus !== false ? "1" : "0"}|${JSON.stringify(item.sources || [])}`;
+          if (seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+      }
+
+      function normalizeEdgeKey(type, a, b, consensus, sources) {
+        if (type === "parent" || type === "sibling" || type === "consort") {
+          const ordered = [a, b].sort();
+          return `${type}|${ordered[0]}|${ordered[1]}|${consensus !== false ? "1" : "0"}|${JSON.stringify(sources || [])}`;
+        }
+        return `${type}|${a}|${b}|${consensus !== false ? "1" : "0"}|${JSON.stringify(sources || [])}`;
+      }
+
+      function attachAutocomplete(input, mode = "id") {
+        if (!input) return;
+        const wrap = input.parentElement;
+        if (wrap) wrap.style.position = "relative";
+        const sugg = document.createElement("div");
+        sugg.className = "suggestions";
+        if (wrap) wrap.appendChild(sugg);
+        function render(q) {
+          const query = (q || "").toLowerCase().trim();
+          if (!query) {
+            sugg.style.display = "none";
+            sugg.innerHTML = "";
+            return;
+          }
+          const matches = entities.filter((e) => {
+            const slug = (e.slug || "").toLowerCase();
+            const name = (e.name || "").toLowerCase();
+            return slug.startsWith(query) || name.startsWith(query);
+          });
+          if (!matches.length) {
+            sugg.style.display = "none";
+            sugg.innerHTML = "";
+            return;
+          }
+          sugg.innerHTML = matches
+            .map(
+              (m) =>
+                `<div class="item" data-id="${m.id}"><strong>${m.name ?? m.id}</strong> <span class="muted">(${m.slug})</span></div>`,
+            )
+            .join("");
+          sugg.style.display = "block";
+          sugg.querySelectorAll("[data-id]").forEach((node) => {
+            node.addEventListener("click", () => {
+              const ent = entities.find((e) => e.id === node.getAttribute("data-id"));
+              input.value = mode === "slug" ? ent?.slug || ent?.id || "" : ent?.id || "";
+              sugg.innerHTML = "";
+              sugg.style.display = "none";
+            });
+          });
+        }
+        input.addEventListener("input", () => render(input.value));
+        input.addEventListener("blur", () => setTimeout(() => (sugg.style.display = "none"), 150));
+      }
+
+      function setupSourceCombo(comboInput, authorInput, workInput, passageInput) {
+        if (!comboInput || !authorInput || !workInput || !passageInput) return;
+        comboInput.addEventListener("input", () => {
+          const parts = comboInput.value.split(",").map((p) => p.trim()).filter(Boolean);
+          authorInput.value = parts[0] || "";
+          workInput.value = parts[1] || "";
+          passageInput.value = parts[2] || "";
+        });
+        const syncCombo = () => {
+          const vals = [authorInput.value.trim(), workInput.value.trim(), passageInput.value.trim()].filter(Boolean);
+          comboInput.value = vals.join(", ");
+        };
+        authorInput.addEventListener("input", syncCombo);
+        workInput.addEventListener("input", syncCombo);
+        passageInput.addEventListener("input", syncCombo);
+      }
+
+      function attachSourceCombo(comboInput, authorInput, workInput, passageInput) {
+        setupSourceCombo(comboInput, authorInput, workInput, passageInput);
+      }
+
+      function openRelEditor(srcId, targetId, type, originalConsensus, originalSources) {
+        const modal = document.createElement("div");
+        Object.assign(modal.style, {
+          position: "fixed",
+          inset: "0",
+          background: "rgba(0,0,0,0.35)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: "100",
+        });
+        const content = document.createElement("div");
+        Object.assign(content.style, {
+          background: "#fff",
+          padding: "16px",
+          borderRadius: "12px",
+          minWidth: "320px",
+          maxWidth: "420px",
+        });
+        const ent = byId.get(srcId);
+        const rel =
+          (ent && getRelList(ent.relations || {}, type).find((r) => r.id === targetId && (r.consensus !== false) === (originalConsensus !== false))) ||
+          {
+            consensus: originalConsensus !== false,
+            sources: originalSources || [],
+          };
+        const firstSource = (rel.sources || [])[0] || {};
+        content.innerHTML = `
+          <h3 style="margin-top:0;">Modifier la relation</h3>
+          <div class="form-grid">
+            <label>Type
+              <select id="u-type">
+                <option value="parent" ${type === "parents" ? "selected" : ""}>parent</option>
+                <option value="child" ${type === "children" ? "selected" : ""}>child</option>
+                <option value="sibling" ${type === "siblings" ? "selected" : ""}>sibling</option>
+                <option value="consort" ${type === "consorts" ? "selected" : ""}>consort</option>
+              </select>
+            </label>
+            <label>Cible (id)
+              <input type="text" id="u-target" value="${targetId}" readonly />
+            </label>
+            <label>Consensus ?
+              <input type="checkbox" id="u-consensus" ${rel.consensus !== false ? "checked" : ""} />
+            </label>
+            <label>Sources (CSV auteur, œuvre, passage)
+              <input type="text" id="u-rel-combo" value="${[firstSource.author, firstSource.work, firstSource.passage].filter(Boolean).join(", ")}" />
+            </label>
+            <label>Source auteur
+              <input type="text" id="u-author" value="${firstSource.author || ""}" />
+            </label>
+            <label>Source œuvre
+              <input type="text" id="u-work" value="${firstSource.work || ""}" />
+          </label>
+          <label>Passage
+            <input type="text" id="u-passage" value="${firstSource.passage || ""}" />
+          </label>
+          </div>
+          <div class="status" id="u-status"></div>
+          <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+            <button class="btn secondary" id="u-cancel">Annuler</button>
+            <button class="btn save" id="u-save">Enregistrer</button>
+          </div>
+        `;
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+        const close = () => modal.remove();
+        content.querySelector("#u-cancel").addEventListener("click", close);
+        setupSourceCombo(
+          content.querySelector("#u-rel-combo"),
+          content.querySelector("#u-author"),
+          content.querySelector("#u-work"),
+          content.querySelector("#u-passage"),
+        );
+        content.querySelector("#u-save").addEventListener("click", async () => {
+          const status = content.querySelector("#u-status");
+          status.textContent = "Mise à jour...";
+          status.className = "status";
+          try {
+            const res = await fetch("/relation-update", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                sourceId: srcId,
+                originType: type,
+                targetId,
+                originalConsensus,
+                originalSources,
+                newType: content.querySelector("#u-type").value,
+                consensus: content.querySelector("#u-consensus").checked,
+                sourceInfo: {
+                  author: content.querySelector("#u-author").value,
+                  work: content.querySelector("#u-work").value,
+                  passage: content.querySelector("#u-passage").value,
+                },
+                addInverse: true,
+              }),
+            });
+            const out = await res.json();
+            if (!res.ok) throw new Error(out.error || "Erreur mise à jour");
+            await loadData();
+            renderEntities(document.getElementById("search").value);
+            renderRelations(document.getElementById("search").value);
+            showToast("Relation mise à jour");
+            close();
+          } catch (err) {
+            status.textContent = `Erreur : ${err.message}`;
+            status.className = "status err";
+          }
+        });
+      }
+
+      function setupCreate() {
+        const card = document.getElementById("create-card");
+        const openBtn = document.getElementById("open-create");
+        const closeBtn = document.getElementById("cancel-create");
+        const resetBtn = document.getElementById("reset-create");
+        const saveBtn = document.getElementById("save-create");
+        const status = document.getElementById("create-status");
+        const nameInput = document.getElementById("c-name");
+        const slugInput = document.getElementById("c-slug");
+        const cultureInput = document.getElementById("c-culture");
+        const idInput = document.getElementById("c-id");
+        const cultureList = document.getElementById("culture-list");
+        const entityList = document.getElementById("entity-list");
+
+        function slugify(str) {
+          return str
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+        }
+
+        function refreshLists() {
+          cultureList.innerHTML = "";
+          cultures.forEach((c) => {
+            const option = document.createElement("option");
+            option.value = c;
+            cultureList.appendChild(option);
+          });
+          entityList.innerHTML = "";
+          entities.forEach((e) => {
+            const option = document.createElement("option");
+            option.value = e.id;
+            option.label = e.name ?? e.id;
+            entityList.appendChild(option);
+          });
+        }
+
+        function recompute() {
+          const slug = slugify(nameInput.value || slugInput.value);
+          if (nameInput.value) slugInput.value = slug;
+          const culture = cultureInput.value.trim();
+          if (slug && culture) {
+            idInput.value = `${culture}-${slug}`;
+          } else {
+            idInput.value = "";
+          }
+        }
+
+        function resetForm() {
+          nameInput.value = "";
+          slugInput.value = "";
+          cultureInput.value = "";
+          idInput.value = "";
+          document.getElementById("c-rel-type").value = "";
+          document.getElementById("c-rel-target").value = "";
+          document.getElementById("c-rel-consensus").checked = true;
+          document.getElementById("c-rel-inverse").checked = true;
+          document.getElementById("c-rel-author").value = "";
+          document.getElementById("c-rel-work").value = "";
+          document.getElementById("c-rel-passage").value = "";
+          document.getElementById("c-rel-combo").value = "";
+        status.textContent = "";
+        status.className = "status";
+      }
+
+        openBtn?.addEventListener("click", () => {
+          refreshLists();
+          resetForm();
+          card.style.display = "block";
+        });
+        closeBtn?.addEventListener("click", () => {
+          card.style.display = "none";
+        });
+        resetBtn?.addEventListener("click", resetForm);
+        nameInput?.addEventListener("input", recompute);
+        slugInput?.addEventListener("input", recompute);
+        cultureInput?.addEventListener("input", recompute);
+        attachAutocomplete(document.getElementById("c-rel-target"), "id");
+        setupSourceCombo(
+          document.getElementById("c-rel-combo"),
+          document.getElementById("c-rel-author"),
+          document.getElementById("c-rel-work"),
+          document.getElementById("c-rel-passage"),
+        );
+
+        saveBtn?.addEventListener("click", async () => {
+          status.textContent = "";
+          status.className = "status";
+          const name = nameInput.value.trim();
+          const slug = slugInput.value.trim();
+          const culture = cultureInput.value.trim();
+          const id = idInput.value.trim();
+          if (!name || !slug || !culture || !id) {
+            status.textContent = "Nom, slug, culture et id requis";
+            status.className = "status err";
+            return;
+          }
+          const relType = document.getElementById("c-rel-type").value;
+          const relTarget = document.getElementById("c-rel-target").value.trim();
+        const relConsensus = document.getElementById("c-rel-consensus").checked;
+        const relInverse = document.getElementById("c-rel-inverse").checked;
+        const relAuthor = document.getElementById("c-rel-author").value.trim();
+        const relWork = document.getElementById("c-rel-work").value.trim();
+        const relPassage = document.getElementById("c-rel-passage").value.trim();
+
+          const payload = { name, slug, culture };
+          if (relType && relTarget) {
+            payload.relation = {
+              type: relType,
+              targetId: relTarget,
+              consensus: relConsensus,
+              addInverse: relInverse,
+              sourceInfo: { author: relAuthor, work: relWork, passage: relPassage },
+            };
+          }
+
+          status.textContent = "Création...";
+          try {
+            const res = await fetch("/entity-new", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const out = await res.json();
+            if (!res.ok) throw new Error(out.error || "Erreur création");
+            showToast("Entité créée");
+            status.textContent = "Créé";
+            status.className = "status ok";
+            await loadData();
+            renderEntities(document.getElementById("search").value);
+            renderRelations(document.getElementById("search").value);
+            card.style.display = "none";
+          } catch (err) {
+            status.textContent = `Erreur : ${err.message}`;
+            status.className = "status err";
+            showToast(err.message, true);
+          }
+        });
+      }
+
+      async function init() {
+        await loadData();
+        setupEditor();
+        setupCreate();
+        const search = document.getElementById("search");
+        renderEntities(search.value);
+        renderRelations(search.value);
+        search.addEventListener("input", () => renderEntities(search.value));
+        search.addEventListener("input", () => renderRelations(search.value));
+        attachAutocomplete(search, "slug");
+      }
+
+      init().catch((err) => {
+        document.body.innerHTML = `<p style="color:red">Erreur : ${err.message}</p>`;
+        console.error(err);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inspector YAML (local)</title>
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+      }
+      header {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+      input,
+      select {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        font-size: 0.95rem;
+      }
+      .layout {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        height: fit-content;
+      }
+      .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.05rem;
+      }
+      .item {
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 8px;
+        background: #f8fafc;
+      }
+      .muted {
+        color: #64748b;
+        font-size: 0.9rem;
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #0ea5e9;
+        font-size: 0.8rem;
+        margin-right: 6px;
+      }
+      .pill.parent {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+      .pill.child {
+        background: #fef9c3;
+        color: #ca8a04;
+      }
+      .pill.sibling {
+        background: #e0e7ff;
+        color: #4f46e5;
+      }
+      .pill.consort {
+        background: #dcfce7;
+        color: #16a34a;
+      }
+      .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 12px 0 6px 0;
+        font-weight: 600;
+      }
+      .count {
+        color: #475569;
+        font-size: 0.9rem;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .btn.save {
+        background: #6366f1;
+        color: #fff;
+        border-color: #4f46e5;
+      }
+      .btn.secondary {
+        background: #f8fafc;
+        color: #334155;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .form-grid label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.9rem;
+        color: #475569;
+      }
+      .form-grid input {
+        width: 100%;
+      }
+      .editor {
+        margin-top: 12px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+      }
+      .status {
+        margin-top: 8px;
+        font-size: 0.9rem;
+      }
+      .status.ok {
+        color: #16a34a;
+      }
+      .status.err {
+        color: #dc2626;
+      }
+      .toast {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: #0ea5e9;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+        opacity: 0;
+        transition: opacity 200ms ease;
+        pointer-events: none;
+        font-size: 0.95rem;
+      }
+      .toast.err {
+        background: #dc2626;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Inspecteur YAML (local)</h1>
+      <label>
+        Rechercher par slug
+        <input type="text" id="search" placeholder="ex: zeus" />
+      </label>
+      <label>
+        Type de relation
+        <select id="type-filter">
+          <option value="">Tous</option>
+          <option value="parent">parent</option>
+          <option value="child">child</option>
+          <option value="sibling">sibling</option>
+          <option value="consort">consort</option>
+        </select>
+      </label>
+      <label style="display:flex; align-items:center; gap:6px;">
+        <input type="checkbox" id="bilat-only" />
+        Regrouper consorts/fratrie
+      </label>
+    </header>
+
+    <div class="layout">
+      <div class="card">
+        <h2>Entités</h2>
+        <div id="entities"></div>
+        <div class="editor" id="editor" style="display:none;">
+          <div class="section-title">
+            <span>Éditer l’entité</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button class="btn secondary" id="cancel-entity">Annuler</button>
+              <button class="btn save" id="save-entity">Enregistrer</button>
+            </div>
+          </div>
+          <div class="form-grid">
+            <label>Nom
+              <input type="text" id="e-name" />
+            </label>
+            <label>Slug
+              <input type="text" id="e-slug" />
+            </label>
+            <label>Culture
+              <input type="text" id="e-culture" />
+            </label>
+            <label>ID
+              <input type="text" id="e-id" />
+            </label>
+            <label>Display class
+              <input type="text" id="e-display" />
+            </label>
+          </div>
+          <div class="status" id="editor-status"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Relations</h2>
+        <div id="relations-summary" class="muted" style="margin-bottom:8px;"></div>
+        <div id="relations"></div>
+      </div>
+    </div>
+
+    <script>
+    const byId = new Map();
+    let entities = [];
+    let relations = [];
+    let currentEntity = null;
+    let toastTimer = null;
+
+    function showToast(message, isError = false) {
+      let toast = document.getElementById("toast");
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        toast.className = "toast";
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.className = isError ? "toast err show" : "toast show";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2000);
+    }
+
+    async function loadData() {
+      const res = await fetch("/data");
+        if (!res.ok) throw new Error("Impossible de charger le YAML");
+        const data = await res.json();
+        entities = Array.isArray(data.entities) ? data.entities : [];
+        relations = Array.isArray(data.relations) ? data.relations : [];
+        byId.clear();
+      entities.forEach((e) => byId.set(e.id, e));
+    }
+
+    function setupEditor() {
+      const editor = document.getElementById("editor");
+      const saveBtn = document.getElementById("save-entity");
+      const cancelBtn = document.getElementById("cancel-entity");
+      const status = document.getElementById("editor-status");
+      if (!editor || !saveBtn) return;
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          if (!currentEntity) return;
+          fillEditor(currentEntity);
+          editor.style.display = "none";
+          showToast("Modifications annulées");
+        });
+      }
+      saveBtn.addEventListener("click", async () => {
+        if (!currentEntity) return;
+        const payload = {
+          originalId: currentEntity.id,
+          entity: {
+            name: document.getElementById("e-name").value,
+            slug: document.getElementById("e-slug").value,
+            culture: document.getElementById("e-culture").value,
+            id: document.getElementById("e-id").value,
+            display_class: document.getElementById("e-display").value,
+          },
+        };
+        status.textContent = "Enregistrement...";
+        status.className = "status";
+        try {
+          const res = await fetch("/entities", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const out = await res.json();
+          if (!res.ok) throw new Error(out.error || "Erreur de sauvegarde");
+          status.textContent = "Sauvegardé.";
+          status.className = "status ok";
+          showToast("Modifications enregistrées");
+          await loadData();
+          renderEntities(document.getElementById("search").value);
+          renderRelations(
+            document.getElementById("type-filter").value,
+            document.getElementById("bilat-only").checked,
+            document.getElementById("search").value,
+          );
+        } catch (err) {
+          status.textContent = `Erreur : ${err.message}`;
+          status.className = "status err";
+        }
+      });
+    }
+
+    function selectEntity(ent) {
+      currentEntity = ent;
+      const editor = document.getElementById("editor");
+      if (!editor) return;
+      const target = document.querySelector(`[data-entity-id="${ent.id}"]`);
+      if (target) {
+        target.appendChild(editor);
+      }
+      editor.style.display = "block";
+      fillEditor(ent);
+      const status = document.getElementById("editor-status");
+      status.textContent = "";
+      status.className = "status";
+    }
+
+    function fillEditor(ent) {
+      document.getElementById("e-name").value = ent.name ?? "";
+      document.getElementById("e-slug").value = ent.slug ?? "";
+      document.getElementById("e-culture").value = ent.culture ?? "";
+      document.getElementById("e-id").value = ent.id ?? "";
+      document.getElementById("e-display").value = ent.display_class ?? "";
+    }
+
+      function renderEntities(filterValue) {
+        const wrap = document.getElementById("entities");
+        const editor = document.getElementById("editor");
+        if (editor && editor.closest("#entities")) {
+          document.body.appendChild(editor);
+          editor.style.display = "none";
+          currentEntity = null;
+        }
+        wrap.innerHTML = "";
+        const q = (filterValue || "").toLowerCase();
+        const list = !q ? entities : entities.filter((e) => e.slug?.toLowerCase().startsWith(q));
+        if (!list.length) {
+          wrap.innerHTML = '<p class="muted">Aucune entité</p>';
+          return;
+        }
+        list
+          .slice()
+          .sort((a, b) => a.slug.localeCompare(b.slug))
+          .forEach((e) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.dataset.entityId = e.id;
+            div.innerHTML = `
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                <div>
+                  <strong>${e.name ?? e.id}</strong>
+                  <div class="muted">${e.id}</div>
+                </div>
+                <button class="btn" data-edit="${e.id}">Éditer</button>
+              </div>
+            `;
+            wrap.appendChild(div);
+          });
+        wrap.querySelectorAll("[data-edit]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-edit");
+            const ent = byId.get(id);
+            if (ent) selectEntity(ent);
+          });
+        });
+      }
+
+  function buildRelationLabel(r) {
+    const src = byId.get(r.source_id);
+    const tgt = byId.get(r.target_id);
+    const srcName = src?.name ?? r.source_id;
+    const tgtName = tgt?.name ?? r.target_id;
+
+    switch (r.type) {
+      case "parent":
+        return `${srcName} est parent de ${tgtName}`;
+      case "child":
+        return `${srcName} est enfant de ${tgtName}`;
+      case "sibling":
+        return `${srcName} ↔ ${tgtName} (fratrie)`;
+      case "consort":
+        return `${srcName} ↔ ${tgtName} (consorts)`;
+      default:
+        return `${srcName} → ${tgtName}`;
+    }
+  }
+
+  function dedupeBilateral(list, combineBilateral) {
+    if (!combineBilateral) return list;
+    const result = [];
+    const seen = new Set();
+    for (const r of list) {
+      if (r.type === "sibling" || r.type === "consort") {
+        const key = [r.source_id, r.target_id].sort().join("|") + "|" + r.type;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        result.push(r);
+      } else {
+        result.push(r);
+      }
+    }
+    return result;
+  }
+
+  function matchesSearch(entityId, q) {
+    if (!q) return true;
+    const slug = byId.get(entityId)?.slug ?? entityId;
+    return slug.toLowerCase().startsWith(q);
+  }
+
+  function renderRelations(typeFilter, combineBilateral, searchValue) {
+    const wrap = document.getElementById("relations");
+    wrap.innerHTML = "";
+    const summaryEl = document.getElementById("relations-summary");
+    const q = (searchValue || "").toLowerCase();
+    const filtered = relations.filter((r) => {
+      if (typeFilter && r.type !== typeFilter) return false;
+      const srcOk = matchesSearch(r.source_id, q);
+      const tgtOk = matchesSearch(r.target_id, q);
+      return !q ? true : srcOk || tgtOk;
+    });
+    const list = dedupeBilateral(filtered, combineBilateral);
+    summaryEl.textContent = `${list.length} relation(s) affichée(s)`;
+    if (!list.length) {
+      wrap.innerHTML = '<p class="muted">Aucune relation</p>';
+      return;
+    }
+
+    const byType = list.reduce((acc, r) => {
+      acc[r.type] = acc[r.type] || [];
+      acc[r.type].push(r);
+      return acc;
+    }, {});
+
+    ["parent", "child", "sibling", "consort"].forEach((type) => {
+      const entries = byType[type] || [];
+      if (!entries.length) return;
+      const section = document.createElement("div");
+      const title = document.createElement("div");
+      title.className = "section-title";
+      title.innerHTML = `<span>${type}</span><span class="count">${entries.length}</span>`;
+      section.appendChild(title);
+      entries.forEach((r) => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+              <div><span class="pill ${r.type}">${r.type}</span> ${buildRelationLabel(r)}</div>
+              ${r.variant ? `<div class="muted">Variante : ${r.variant}</div>` : ""}
+            `;
+        section.appendChild(div);
+      });
+      wrap.appendChild(section);
+    });
+  }
+
+  async function init() {
+    await loadData();
+    setupEditor();
+    const search = document.getElementById("search");
+    const typeFilter = document.getElementById("type-filter");
+    const bilatOnly = document.getElementById("bilat-only");
+    renderEntities(search.value);
+    renderRelations(typeFilter.value, bilatOnly.checked, search.value);
+    search.addEventListener("input", () => renderEntities(search.value));
+    search.addEventListener("input", () => renderRelations(typeFilter.value, bilatOnly.checked, search.value));
+    typeFilter.addEventListener("change", () => renderRelations(typeFilter.value, bilatOnly.checked, search.value));
+    bilatOnly.addEventListener("change", () => renderRelations(typeFilter.value, bilatOnly.checked, search.value));
+  }
+
+      init().catch((err) => {
+        document.body.innerHTML = `<p style="color:red">Erreur : ${err.message}</p>`;
+        console.error(err);
+      });
+    </script>
+  </body>
+</html>

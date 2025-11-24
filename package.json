@@ -4,13 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/generate-genealogie-json.mjs",
+    "predev": "node scripts/generate-genealogie-json-new.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/generate-genealogie-json.mjs",
+    "prebuild": "node scripts/generate-genealogie-json-new.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "format": "prettier --write .",
-    "sync:entities": "node scripts/sync-frontmatter.mjs"
+    "sync:entities": "node scripts/sync-frontmatter.mjs",
+    "yaml:tool": "node tools/yaml-server.mjs",
+    "yaml:tool:new": "node tools/yaml-server-new.mjs",
+    "generate:genealogie:new": "node scripts/generate-genealogie-json-new.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^3.1.4",
