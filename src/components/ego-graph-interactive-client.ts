@@ -115,13 +115,13 @@ class EgoGraphController {
   }
 
   async setCurrentSlug(slug: string) {
-    const graph = this.store.getEgoGraphBySlug(slug);
+    const graph = this.store.getEgoGraphBySlug(slug) ?? this.store.getEgoGraphById?.(slug);
     if (!graph) {
       this.showMessage("Pas encore de données pour ce dieu.");
       return;
     }
 
-    this.currentSlug = slug;
+    this.currentSlug = graph.central.slug;
     this.currentGraph = graph;
     this.selectedConsortSlug = null;
     this.focusedConsortSlug = null;
@@ -400,7 +400,7 @@ class EgoGraphController {
       action.textContent = "Aller à la fiche";
       action.addEventListener("click", (event) => {
         event.stopPropagation();
-        window.location.href = `/entites/${node.slug}/`;
+          window.location.href = `/entites/${node.id}/`;
       });
       wrapper.appendChild(action);
     }

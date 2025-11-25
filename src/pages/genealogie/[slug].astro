@@ -5,7 +5,7 @@ import EgoGraphInteractive from '../../components/EgoGraphInteractive.astro';
 import '../../styles/global.css';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
-import { getEgoGraph, getEntityBySlug } from '../../lib/genealogie';
+import { getEgoGraphById, getEntityById, getEntityBySlug } from '../../lib/genealogie';
 
 interface Props {
   entry: CollectionEntry<'entites'>;
@@ -15,14 +15,15 @@ export async function getStaticPaths() {
   const entites = await getCollection('entites');
 
   return entites.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.data.id ?? entry.slug },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props as Props;
-const yamlEntity = getEntityBySlug(entry.slug);
-const egoGraph = getEgoGraph(entry.slug);
+const centralId = (entry.data.id ?? entry.slug).toString();
+const yamlEntity = getEntityById(centralId) ?? getEntityBySlug(centralId) ?? getEntityBySlug(entry.slug);
+const egoGraph = getEgoGraphById(centralId) ?? getEgoGraphById(entry.slug) ?? getEgoGraphById(yamlEntity?.id ?? '');
 const hasData = Boolean(egoGraph);
 const entityName = yamlEntity?.name ?? entry.data.title;
 ---
@@ -40,7 +41,7 @@ const entityName = yamlEntity?.name ?? entry.data.title;
     <main class="flex-1 w-full max-w-4xl lg:max-w-6xl mx-auto px-4 lg:px-6 py-12 space-y-6">
       <div class="flex flex-wrap gap-3 text-sm">
         <a href="/" class="badge-link badge-link--neutral badge-link--back">Accueil</a>
-        <a href={`/entites/${entry.slug}/`} class="badge-link badge-link--primary">Voir la fiche entité</a>
+        <a href={`/entites/${centralId}/`} class="badge-link badge-link--primary">Voir la fiche entité</a>
       </div>
 
       <div>
@@ -49,7 +50,7 @@ const entityName = yamlEntity?.name ?? entry.data.title;
       </div>
 
       {hasData ? (
-        <EgoGraphInteractive initialSlug={entry.slug} />
+        <EgoGraphInteractive initialSlug={centralId} />
       ) : (
         <div class="rounded-2xl border border-dashed border-indigo-300 bg-indigo-50/60 p-6 text-indigo-900">
           <h2 class="text-2xl font-semibold mb-2">Cartographie en cours</h2>

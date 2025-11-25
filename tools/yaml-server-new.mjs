@@ -1,11 +1,14 @@
 import http from "node:http";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { load as loadYaml, dump as dumpYaml } from "js-yaml";
+import matter from "gray-matter";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
 const yamlPath = resolve(root, "data/genealogie_new_structure.yaml");
 const htmlPath = resolve(root, "tools", "yaml-inspector-new.html");
+const mdInspectorPath = resolve(root, "tools", "md-inspector.html");
+const mdDir = resolve(root, "src/content/entites");
 const port = process.env.PORT || 4323;
 
 async function readYaml() {
@@ -34,6 +37,16 @@ async function serveHtml(res) {
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("Page non trouvée. Vérifie tools/yaml-inspector-new.html");
+  }
+}
+async function serveMdInspector(res) {
+  try {
+    const html = await readFile(mdInspectorPath, "utf8");
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(html);
+  } catch (err) {
+    res.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Page non trouvée. Vérifie tools/md-inspector.html");
   }
 }
 
@@ -128,6 +141,75 @@ function sameRel(rel, targetId, consensusFlag, sources) {
   const srcA = JSON.stringify(rel.sources || []);
   const srcB = JSON.stringify(sources || []);
   return sameId && sameConsensus && srcA === srcB;
+}
+
+// MD helpers
+const FM_ORDER = ["title", "culture", "id", "nature", "gender", "role", "description", "domains", "symbols"];
+
+function formatFrontmatter(data) {
+  const ordered = {};
+  FM_ORDER.forEach((key) => {
+    if (data[key] !== undefined) ordered[key] = data[key];
+  });
+  Object.keys(data).forEach((key) => {
+    if (!ordered.hasOwnProperty(key)) ordered[key] = data[key];
+  });
+  return ordered;
+}
+
+async function listMdEntities() {
+  const files = await readdir(mdDir);
+  const mdFiles = files.filter((f) => f.endsWith(".md"));
+  const result = [];
+  for (const file of mdFiles) {
+    const raw = await readFile(resolve(mdDir, file), "utf8");
+    const parsed = matter(raw);
+    result.push({
+      file,
+      slug: file.replace(/\\.md$/, ""),
+      frontmatter: parsed.data || {},
+      content: parsed.content || "",
+    });
+  }
+  return result;
+}
+
+function ensureMdFilename(name) {
+  const base = (name || "").replace(/\.md$/i, "");
+  return `${base}.md`;
+}
+
+async function updateMdEntity({ file, frontmatter, content }) {
+  const path = resolve(mdDir, ensureMdFilename(file));
+  const cleanFm = { ...(frontmatter || {}) };
+  // on ne persiste plus le slug pour éviter les champs vides
+  delete cleanFm.slug;
+  const formatted = formatFrontmatter(cleanFm);
+  const next = matter.stringify(content || "", formatted, { lineWidth: 0 });
+  await writeFile(path, next, "utf8");
+}
+
+async function createMdEntity(payload) {
+  const { title, culture, slug, id, role, description, domains, symbols, gender, nature } = payload;
+  if (!title || !slug || !culture || !id) {
+    throw new Error("title, slug, culture, id requis");
+  }
+  const file = ensureMdFilename(slug);
+  const path = resolve(mdDir, file);
+  const fm = formatFrontmatter({
+    title,
+    culture,
+    id,
+    nature,
+    gender,
+    role,
+    description,
+    domains,
+    symbols,
+  });
+  const next = matter.stringify("\n", fm, { lineWidth: 0 });
+  await writeFile(path, next, "utf8");
+  return file;
 }
 
 async function addRelation(req, res) {
@@ -411,6 +493,54 @@ const server = http.createServer((req, res) => {
   if (req.url.startsWith("/favicon")) {
     res.writeHead(204);
     return res.end();
+  }
+  if (req.method === "GET" && req.url.startsWith("/md/list")) {
+    listMdEntities()
+      .then((list) => {
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ files: list }));
+      })
+      .catch((err) => {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ error: err.message }));
+      });
+    return;
+  }
+  if (req.method === "POST" && req.url.startsWith("/md/update")) {
+    (async () => {
+      try {
+        let body = "";
+        for await (const chunk of req) body += chunk.toString();
+        const payload = JSON.parse(body || "{}");
+        if (!payload.file || !payload.frontmatter) throw new Error("file et frontmatter requis");
+        await updateMdEntity(payload);
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    })();
+    return;
+  }
+  if (req.method === "POST" && req.url.startsWith("/md/create")) {
+    (async () => {
+      try {
+        let body = "";
+        for await (const chunk of req) body += chunk.toString();
+        const payload = JSON.parse(body || "{}");
+        const file = await createMdEntity(payload);
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ ok: true, file }));
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    })();
+    return;
+  }
+  if (req.url.startsWith("/md-inspector")) {
+    return serveMdInspector(res);
   }
   return serveHtml(res);
 });

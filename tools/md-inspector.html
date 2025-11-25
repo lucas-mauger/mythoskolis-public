@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MD Inspector</title>
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+      }
+      header {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+      input,
+      select,
+      textarea {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        font-size: 0.95rem;
+      }
+      textarea {
+        min-height: 80px;
+      }
+      input[disabled] {
+        background: #f1f5f9;
+        color: #94a3b8;
+        cursor: not-allowed;
+      }
+      .layout {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+      }
+      .item {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 10px;
+        background: #f8fafc;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .btn.save {
+        background: #6366f1;
+        color: #fff;
+        border-color: #4f46e5;
+      }
+      .btn.secondary {
+        background: #f8fafc;
+        color: #334155;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .form-grid label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.9rem;
+        color: #475569;
+      }
+      .status {
+        margin-top: 8px;
+        font-size: 0.9rem;
+      }
+      .status.ok {
+        color: #16a34a;
+      }
+      .status.err {
+        color: #dc2626;
+      }
+      .toast {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: #0ea5e9;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+        opacity: 0;
+        transition: opacity 200ms ease;
+        pointer-events: none;
+        font-size: 0.95rem;
+      }
+      .toast.err {
+        background: #dc2626;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+        z-index: 20;
+        max-height: 180px;
+        overflow-y: auto;
+        display: none;
+      }
+      .suggestions .item {
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        padding: 8px 10px;
+        background: transparent;
+        cursor: pointer;
+      }
+      .suggestions .item:hover {
+        background: #f1f5f9;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>MD Inspector</h1>
+      <label>
+        Rechercher par slug/nom
+        <input type="text" id="search" placeholder="ex: zeus" />
+      </label>
+      <button class="btn save" id="open-create">Créer une fiche</button>
+    </header>
+
+    <div class="card" id="create-card" style="display:none; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span>Nouvelle fiche</span>
+        <button class="btn secondary" id="cancel-create">Fermer</button>
+      </div>
+      <div class="form-grid">
+        <label>Titre
+          <input type="text" id="c-title" />
+        </label>
+        <label>Culture
+          <input type="text" id="c-culture" />
+        </label>
+        <label>ID (auto)
+          <input type="text" id="c-id" readonly disabled />
+        </label>
+        <label>Nature
+          <input type="text" id="c-nature" data-suggest="nature" />
+        </label>
+        <label>Genre
+          <input type="text" id="c-gender" />
+        </label>
+        <label>Rôle
+          <input type="text" id="c-role" />
+        </label>
+        <label>Description
+          <textarea id="c-description"></textarea>
+        </label>
+        <label>Domaines (CSV)
+          <input type="text" id="c-domains" data-suggest="domains" />
+        </label>
+        <label>Symboles (CSV)
+          <input type="text" id="c-symbols" data-suggest="symbols" />
+        </label>
+      </div>
+      <div class="status" id="create-status"></div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn secondary" id="reset-create">Réinitialiser</button>
+        <button class="btn save" id="save-create">Créer</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h2>Fiches entités</h2>
+        <div id="entities"></div>
+      </div>
+    </div>
+
+    <script>
+      const bySlug = new Map();
+      let entries = [];
+      let suggestionSets = { nature: new Set(), domains: new Set(), symbols: new Set() };
+      let toastTimer = null;
+
+      function showToast(message, isError = false) {
+        let toast = document.getElementById("toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "toast";
+          toast.className = "toast";
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.className = isError ? "toast err show" : "toast show";
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
+      }
+
+      function attachAutocomplete(input, mode = "slug") {
+        if (!input) return;
+        const parent = input.parentElement;
+        if (!parent) return;
+        parent.style.position = "relative";
+        const box = document.createElement("div");
+        box.className = "suggestions";
+        parent.appendChild(box);
+
+        const normalize = (s) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+        input.addEventListener("input", () => {
+          const q = normalize(input.value);
+          if (!q) {
+            box.style.display = "none";
+            box.innerHTML = "";
+            return;
+          }
+          const matches = entries
+            .filter((e) => normalize(e.slug).includes(q) || normalize(e.frontmatter.title || "").includes(q))
+            .slice(0, 8);
+          if (!matches.length) {
+            box.style.display = "none";
+            box.innerHTML = "";
+            return;
+          }
+          box.innerHTML = "";
+          matches.forEach((e) => {
+            const item = document.createElement("div");
+            item.className = "item";
+            item.textContent = `${e.slug} — ${e.frontmatter.title || ""}`.trim();
+            item.addEventListener("click", () => {
+              input.value = mode === "id" ? e.frontmatter.id || e.slug : e.slug;
+              box.style.display = "none";
+              input.dispatchEvent(new Event("input"));
+            });
+            box.appendChild(item);
+          });
+          box.style.display = "block";
+        });
+
+        input.addEventListener("blur", () => {
+          setTimeout(() => (box.style.display = "none"), 150);
+        });
+      }
+
+      function slugify(str) {
+        return str
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      }
+
+      async function loadEntries() {
+        const res = await fetch("/md/list");
+        if (!res.ok) throw new Error("Impossible de charger les fiches md");
+        const data = await res.json();
+        entries = data.files || [];
+        bySlug.clear();
+        entries.forEach((e) => bySlug.set(e.slug, e));
+        buildSuggestions();
+      }
+
+      function buildSuggestions() {
+        suggestionSets = { nature: new Set(), domains: new Set(), symbols: new Set() };
+        entries.forEach((e) => {
+          const fm = e.frontmatter || {};
+          const pushVals = (val, key) => {
+            if (!val) return;
+            if (Array.isArray(val)) {
+              val.forEach((v) => v && suggestionSets[key].add(v.toString()));
+            } else if (typeof val === "string") {
+              suggestionSets[key].add(val);
+            }
+          };
+          pushVals(fm.nature, "nature");
+          pushVals(fm.domains, "domains");
+          pushVals(fm.symbols, "symbols");
+        });
+      }
+
+      function attachCsvAutocomplete(input, key) {
+        if (!input) return;
+        const parent = input.parentElement;
+        if (!parent) return;
+        parent.style.position = "relative";
+        const box = document.createElement("div");
+        box.className = "suggestions";
+        parent.appendChild(box);
+
+        const normalize = (s) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+        input.addEventListener("input", () => {
+          const all = Array.from(suggestionSets[key] || []);
+          const value = input.value;
+          const parts = value.split(",");
+          const currentRaw = parts[parts.length - 1] || "";
+          const current = normalize(currentRaw.trim());
+          if (!current) {
+            box.style.display = "none";
+            box.innerHTML = "";
+            return;
+          }
+          const matches = all.filter((v) => normalize(v).includes(current)).slice(0, 8);
+          if (!matches.length) {
+            box.style.display = "none";
+            box.innerHTML = "";
+            return;
+          }
+          box.innerHTML = "";
+          matches.forEach((m) => {
+            const item = document.createElement("div");
+            item.className = "item";
+            item.textContent = m;
+            item.addEventListener("click", () => {
+              const prefix = parts.slice(0, -1).join(", ").trim();
+              const newVal = prefix ? `${prefix}, ${m}` : m;
+              input.value = newVal;
+              box.style.display = "none";
+              input.dispatchEvent(new Event("input"));
+            });
+            box.appendChild(item);
+          });
+          box.style.display = "block";
+        });
+
+        input.addEventListener("blur", () => {
+          setTimeout(() => (box.style.display = "none"), 150);
+        });
+      }
+
+      function renderEntries(filter) {
+        const wrap = document.getElementById("entities");
+        wrap.innerHTML = "";
+        const q = (filter || "").toLowerCase();
+        const list = !q
+          ? entries
+          : entries.filter((e) => e.slug.toLowerCase().includes(q) || (e.frontmatter.title || "").toLowerCase().includes(q));
+        if (!list.length) {
+          wrap.innerHTML = '<p class="muted">Aucune fiche</p>';
+          return;
+        }
+        list
+          .slice()
+          .sort((a, b) => a.slug.localeCompare(b.slug))
+          .forEach((e) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.dataset.slug = e.slug;
+            div.innerHTML = `
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <div>
+                  <strong>${e.frontmatter.title ?? e.slug}</strong>
+                  <div class="muted">${e.slug}</div>
+                </div>
+                <div style="display:flex; gap:8px;" data-action-bar="${e.slug}">
+                  <button class="btn" data-edit="${e.slug}">Éditer</button>
+                  <button class="btn secondary" data-inline-cancel="${e.slug}" style="display:none;">Annuler</button>
+                  <button class="btn save" data-inline-save="${e.slug}" style="display:none;">Sauvegarder</button>
+                </div>
+              </div>
+              <div class="editor small-editor" id="md-editor-${e.slug}" style="display:none;">
+                ${renderEditorForm(e.frontmatter)}
+                <div class="status"></div>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                  <button class="btn secondary" data-cancel-md>Annuler</button>
+                  <button class="btn save" data-save-md>Sauvegarder</button>
+                </div>
+              </div>
+            `;
+              wrap.appendChild(div);
+          });
+
+        wrap.querySelectorAll("[data-edit]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const slug = btn.getAttribute("data-edit");
+            const editor = document.getElementById(`md-editor-${slug}`);
+            if (editor) {
+              editor.style.display = "block";
+              btn.style.display = "none";
+              const bar = btn.closest("[data-action-bar]");
+              bar?.querySelector(`[data-inline-cancel="${slug}"]`)?.setAttribute("style", "");
+              bar?.querySelector(`[data-inline-save="${slug}"]`)?.setAttribute("style", "");
+              wireAutocomplete();
+            }
+          });
+        });
+        wrap.querySelectorAll("[data-cancel-md]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const item = e.target.closest(".item");
+            const editor = e.target.closest(".small-editor");
+            if (editor) editor.style.display = "none";
+            const editBtn = item?.querySelector("[data-edit]");
+            if (editBtn) editBtn.style.display = "";
+            const slug = item?.dataset.slug;
+            if (slug) {
+              item?.querySelector(`[data-inline-cancel="${slug}"]`)?.setAttribute("style", "display:none;");
+              item?.querySelector(`[data-inline-save="${slug}"]`)?.setAttribute("style", "display:none;");
+            }
+          });
+        });
+        wrap.querySelectorAll("[data-save-md]").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const editor = e.target.closest(".small-editor");
+            const slug = e.target.closest(".item")?.dataset.slug;
+            if (!editor || !slug) return;
+            const fm = extractForm(editor);
+            try {
+              await saveMd(slug, fm);
+              showToast("Fiche mise à jour");
+              await loadEntries();
+              renderEntries(document.getElementById("search").value);
+            } catch (err) {
+              editor.querySelector(".status").textContent = err.message;
+              editor.querySelector(".status").className = "status err";
+            }
+          });
+        });
+        wrap.querySelectorAll("[data-inline-save]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const target = e.target;
+            if (!(target instanceof HTMLElement)) return;
+            const item = target.closest(".item");
+            const footerSave = item?.querySelector("[data-save-md]");
+            footerSave?.dispatchEvent(new Event("click"));
+          });
+        });
+        wrap.querySelectorAll("[data-inline-cancel]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const target = e.target;
+            if (!(target instanceof HTMLElement)) return;
+            const item = target.closest(".item");
+            const footerCancel = item?.querySelector("[data-cancel-md]");
+            footerCancel?.dispatchEvent(new Event("click"));
+          });
+        });
+      }
+
+      function renderEditorForm(fm) {
+        return `
+          <div class="form-grid">
+            <label>Titre
+              <input type="text" name="title" value="${fm.title ?? ""}" />
+            </label>
+        <label>Culture
+          <input type="text" name="culture" value="${fm.culture ?? ""}" />
+        </label>
+        <label>ID
+          <input type="text" name="id" value="${fm.id ?? ""}" disabled />
+        </label>
+        <label>Nature
+          <input type="text" name="nature" data-suggest="nature" value="${Array.isArray(fm.nature) ? fm.nature.join(", ") : fm.nature ?? ""}" />
+        </label>
+        <label>Genre
+          <input type="text" name="gender" value="${fm.gender ?? ""}" />
+        </label>
+        <label>Rôle
+          <input type="text" name="role" value="${fm.role ?? ""}" />
+        </label>
+        <label>Description
+          <textarea name="description">${fm.description ?? ""}</textarea>
+        </label>
+        <label>Domaines (CSV)
+          <input type="text" name="domains" data-suggest="domains" value="${(fm.domains || []).join(", ")}" />
+        </label>
+        <label>Symboles (CSV)
+          <input type="text" name="symbols" data-suggest="symbols" value="${(fm.symbols || []).join(", ")}" />
+        </label>
+      </div>
+        `;
+      }
+
+      function extractForm(form) {
+        const getVal = (selector) => form.querySelector(selector)?.value.trim() || "";
+        const csv = (selector) =>
+          form
+            .querySelector(selector)
+            ?.value.split(",")
+            .map((s) => s.trim())
+            .filter(Boolean) || [];
+        const natureRaw = getVal('input[name="nature"]');
+        return {
+          title: getVal('input[name="title"]'),
+          culture: getVal('input[name="culture"]'),
+          id: getVal('input[name="id"]'),
+          nature: natureRaw ? natureRaw.split(",").map((s) => s.trim()) : undefined,
+          gender: getVal('input[name="gender"]'),
+          role: getVal('input[name="role"]'),
+          description: form.querySelector('textarea[name="description"]')?.value ?? "",
+          domains: csv('input[name="domains"]'),
+          symbols: csv('input[name="symbols"]'),
+        };
+      }
+
+      async function saveMd(slug, frontmatter) {
+        const cleanSlug = (slug || "").replace(/\.md$/i, "");
+        const file = `${cleanSlug}.md`;
+        const body = { file, frontmatter };
+        const res = await fetch("/md/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const out = await res.json();
+        if (!res.ok) throw new Error(out.error || "Erreur sauvegarde md");
+      }
+
+      function setupCreate() {
+        const card = document.getElementById("create-card");
+        const openBtn = document.getElementById("open-create");
+        const closeBtn = document.getElementById("cancel-create");
+        const resetBtn = document.getElementById("reset-create");
+        const saveBtn = document.getElementById("save-create");
+        const status = document.getElementById("create-status");
+        const titleInput = document.getElementById("c-title");
+        const slugInput = document.getElementById("c-slug");
+        const cultureInput = document.getElementById("c-culture");
+        const idInput = document.getElementById("c-id");
+
+        function recompute() {
+          const rawSlug = titleInput.value ? slugify(titleInput.value) : slugInput.value;
+          const cleanSlug = (rawSlug || "").replace(/\.md$/i, "");
+          if (titleInput.value) slugInput.value = cleanSlug;
+          const culture = cultureInput.value.trim();
+          idInput.value = cleanSlug && culture ? `${culture}-${cleanSlug}` : "";
+        }
+
+        function resetForm() {
+          ["c-title", "c-slug", "c-culture", "c-id", "c-nature", "c-gender", "c-role", "c-description", "c-domains", "c-symbols"].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.value = "";
+          });
+          status.textContent = "";
+          status.className = "status";
+        }
+
+        openBtn?.addEventListener("click", () => {
+          resetForm();
+          card.style.display = "block";
+        });
+        closeBtn?.addEventListener("click", () => {
+          card.style.display = "none";
+        });
+        resetBtn?.addEventListener("click", resetForm);
+        titleInput?.addEventListener("input", recompute);
+        slugInput?.addEventListener("input", recompute);
+        cultureInput?.addEventListener("input", recompute);
+
+        saveBtn?.addEventListener("click", async () => {
+          status.textContent = "";
+          status.className = "status";
+          const title = titleInput.value.trim();
+          const slug = slugInput.value.trim().replace(/\.md$/i, "");
+          const culture = cultureInput.value.trim();
+          const id = idInput.value.trim();
+          if (!title || !slug || !culture || !id) {
+            status.textContent = "Titre, slug, culture et id requis";
+            status.className = "status err";
+            return;
+          }
+          const payload = {
+            title,
+            culture,
+            id,
+            nature: document.getElementById("c-nature").value.split(",").map((s) => s.trim()).filter(Boolean),
+            gender: document.getElementById("c-gender").value.trim(),
+            role: document.getElementById("c-role").value.trim(),
+            description: document.getElementById("c-description").value,
+            domains: document.getElementById("c-domains").value.split(",").map((s) => s.trim()).filter(Boolean),
+            symbols: document.getElementById("c-symbols").value.split(",").map((s) => s.trim()).filter(Boolean),
+            slug, // utilisé uniquement pour le nom de fichier
+          };
+          try {
+            const res = await fetch("/md/create", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const out = await res.json();
+            if (!res.ok) throw new Error(out.error || "Erreur création md");
+            showToast("Fiche créée");
+            await loadEntries();
+            renderEntries(document.getElementById("search").value);
+            card.style.display = "none";
+          } catch (err) {
+            status.textContent = err.message;
+            status.className = "status err";
+          }
+        });
+      }
+
+      function wireAutocomplete() {
+        document.querySelectorAll('input[data-suggest]').forEach((input) => {
+          const key = input.getAttribute('data-suggest');
+          if (key === 'nature' || key === 'domains' || key === 'symbols') {
+            attachCsvAutocomplete(input, key);
+          }
+        });
+      }
+
+      async function init() {
+        await loadEntries();
+        setupCreate();
+        renderEntries("");
+        wireAutocomplete();
+        const search = document.getElementById("search");
+        search.addEventListener("input", () => renderEntries(search.value));
+        attachAutocomplete(search, "slug");
+      }
+
+      init().catch((err) => {
+        document.body.innerHTML = `<p style="color:red">Erreur : ${err.message}</p>`;
+        console.error(err);
+      });
+    </script>
+  </body>
+</html>

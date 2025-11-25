@@ -57,7 +57,7 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
 
           return (
             <a
-              href={`/entites/${entite.slug}/`}
+            href={`/entites/${entite.data.id ?? entite.slug}/`}
               class="entite-card flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition"
             >
               <div class="flex-1">

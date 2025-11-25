@@ -128,7 +128,25 @@ entities:
     culture: grecque
     id: grecque-gaia
     relations:
-      parents: []
+      parents:
+        - id: grecque-chaos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardives
+              passage: ''
+        - id: grecque-chaos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardivesr
+              passage: ''
+        - id: grecque-chaos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardives
+              passage: ''
       children:
         - id: grecque-rhea
           consensus: true
@@ -136,17 +154,74 @@ entities:
         - id: grecque-cronos
           consensus: true
           sources: []
+        - id: grecque-ouranos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.126–132
+        - id: grecque-pontos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.129–131
+        - id: grecque-les-geants
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+        - id: grecque-les-erinyes
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+        - id: grecque-les-meliades
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+        - id: grecque-typhon
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
       siblings: []
       consorts:
         - id: grecque-ouranos
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.126–132
+        - id: grecque-pontos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.126–132
+        - id: grecque-tartare
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.820–868
   - name: Ouranos
     slug: ouranos
     culture: grecque
     id: grecque-ouranos
     relations:
-      parents: []
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.126–132
       children:
         - id: grecque-cronos
           consensus: true
@@ -158,4 +233,856 @@ entities:
       consorts:
         - id: grecque-gaia
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.126–132
+  - name: Pontos
+    slug: pontos
+    culture: grecque
+    id: grecque-pontos
+    relations:
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.129–131
+      children: []
+      siblings: []
+      consorts:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.126–132
+  - name: Les géants
+    slug: les-geants
+    culture: grecque
+    id: grecque-les-geants
+    relations:
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+      children: []
+      siblings: []
+      consorts: []
+  - name: Les Érinyes
+    slug: les-erinyes
+    culture: grecque
+    id: grecque-les-erinyes
+    relations:
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+      children: []
+      siblings: []
+      consorts: []
+  - name: Les Méliades
+    slug: les-meliades
+    culture: grecque
+    id: grecque-les-meliades
+    relations:
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+      children: []
+      siblings: []
+      consorts: []
+  - name: Typhon
+    slug: typhon
+    culture: grecque
+    id: grecque-typhon
+    relations:
+      parents:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+        - id: grecque-tartare
+          consensus: true
+          sources:
+            - author: ésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+      children: []
+      siblings: []
+      consorts: []
+  - name: Tartare
+    slug: tartare
+    culture: grecque
+    id: grecque-tartare
+    relations:
+      parents: []
+      children:
+        - id: grecque-typhon
+          consensus: true
+          sources:
+            - author: ésiode
+              work: Théogonie
+              passage: v.176–194 ; v.820–868
+      siblings: []
+      consorts:
+        - id: grecque-gaia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.820–868
+  - name: Ouréa
+    slug: ourea
+    culture: grecque
+    id: grecque-ourea
+    relations:
+      parents:
+        - id: grecque-ourea
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.129–130
+      children:
+        - id: grecque-ourea
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.129–130
+      siblings: []
+      consorts: []
+  - name: Chaos
+    slug: chaos
+    culture: grecque
+    id: grecque-chaos
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardives
+              passage: ''
+        - id: grecque-uf-primordial
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardives
+              passage: ''
+      children:
+        - id: grecque-erebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.123–125
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.123–125
+        - id: grecque-gaia
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardives
+              passage: ''
+      siblings: []
+      consorts: []
+  - name: Érèbe
+    slug: erebe
+    culture: grecque
+    id: grecque-erebe
+    relations:
+      parents:
+        - id: grecque-chaos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.123–125
+        - id: grecque-uf-primordial
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments tardifs
+              passage: ''
+        - id: grecque-nuit-primordiale
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments tardifs
+              passage: ''
+      children:
+        - id: grecque-ether
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+        - id: grecque-hemera
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+      siblings:
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.123–125
+      consorts:
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+  - name: Nyx
+    slug: nyx
+    culture: grecque
+    id: grecque-nyx
+    relations:
+      parents:
+        - id: grecque-chaos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.123–125
+        - id: grecque-hemera
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+      children:
+        - id: grecque-chaos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardives
+              passage: ''
+        - id: grecque-ether
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+        - id: grecque-les-moires
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.217–222
+        - id: grecque-les-keres
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: v.211–212
+              passage: ''
+        - id: grecque-moros
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-thanatos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-hypnos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-oneiroi
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-cosmos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments divers
+              passage: ''
+      siblings:
+        - id: grecque-erebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.123–125
+      consorts:
+        - id: grecque-erebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+  - name: Œuf primordial
+    slug: uf-primordial
+    culture: grecque
+    id: grecque-uf-primordial
+    relations:
+      parents: []
+      children:
+        - id: grecque-chaos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments orphiques — cosmologies tardives
+              passage: ''
+        - id: grecque-erebe
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments tardifs
+              passage: ''
+      siblings: []
+      consorts: []
+  - name: Éther
+    slug: ether
+    culture: grecque
+    id: grecque-ether
+    relations:
+      parents:
+        - id: grecque-erebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+      children: []
+      siblings:
+        - id: grecque-hemera
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+      consorts: []
+  - name: Héméra
+    slug: hemera
+    culture: grecque
+    id: grecque-hemera
+    relations:
+      parents:
+        - id: grecque-erebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+      children:
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+      siblings:
+        - id: grecque-ether
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.124–127
+      consorts: []
+  - name: Nuit primordiale
+    slug: nuit-primordiale
+    culture: grecque
+    id: grecque-nuit-primordiale
+    relations:
+      parents: []
+      children:
+        - id: grecque-erebe
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments tardifs
+              passage: ''
+      siblings: []
+      consorts: []
+  - name: Les Moires
+    slug: les-moires
+    culture: grecque
+    id: grecque-les-moires
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.217–222
+      children: []
+      siblings: []
+      consorts: []
+  - name: Les Kères
+    slug: les-keres
+    culture: grecque
+    id: grecque-les-keres
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: v.211–212
+              passage: ''
+      children: []
+      siblings:
+        - id: grecque-moros
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-thanatos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-hypnos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-oneiroi
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+      consorts: []
+  - name: Moros
+    slug: moros
+    culture: grecque
+    id: grecque-moros
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-nemesis
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+      children: []
+      siblings:
+        - id: grecque-thanatos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-hypnos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-oneiroi
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-les-keres
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-apate
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+        - id: grecque-geras
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+        - id: grecque-eris
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+      consorts: []
+  - name: Thanatos
+    slug: thanatos
+    culture: grecque
+    id: grecque-thanatos
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+      children: []
+      siblings:
+        - id: grecque-moros
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-hypnos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-oneiroi
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-les-keres
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-nemesis
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+        - id: grecque-eris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+        - id: grecque-apate
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+        - id: grecque-geras
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+      consorts: []
+  - name: Hypnos
+    slug: hypnos
+    culture: grecque
+    id: grecque-hypnos
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+      children: []
+      siblings:
+        - id: grecque-moros
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-thanatos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-oneiroi
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-les-keres
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-nemesis
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+        - id: grecque-apate
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+        - id: grecque-geras
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+        - id: grecque-eris
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+      consorts: []
+  - name: Oneiroi
+    slug: oneiroi
+    culture: grecque
+    id: grecque-oneiroi
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+      children: []
+      siblings:
+        - id: grecque-moros
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-thanatos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-hypnos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–232
+        - id: grecque-les-keres
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.211–212
+        - id: grecque-nemesis
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+        - id: grecque-apate
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+        - id: grecque-geras
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+        - id: grecque-eris
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+      consorts: []
+  - name: Cosmos
+    slug: cosmos
+    culture: grecque
+    id: grecque-cosmos
+    relations:
+      parents:
+        - id: grecque-nyx
+          consensus: false
+          sources:
+            - author: Orphica
+              work: fragments divers
+              passage: ''
+      children: []
+      siblings: []
+      consorts: []
+  - name: Némésis
+    slug: nemesis
+    culture: grecque
+    id: grecque-nemesis
+    relations:
+      parents: []
+      children:
+        - id: grecque-moros
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+      siblings:
+        - id: grecque-thanatos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+        - id: grecque-hypnos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+        - id: grecque-oneiroi
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.223–225
+      consorts: []
+  - name: Apaté
+    slug: apate
+    culture: grecque
+    id: grecque-apate
+    relations:
+      parents: []
+      children: []
+      siblings:
+        - id: grecque-moros
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+        - id: grecque-thanatos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+        - id: grecque-hypnos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+        - id: grecque-oneiroi
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.224–225
+      consorts: []
+  - name: Géras
+    slug: geras
+    culture: grecque
+    id: grecque-geras
+    relations:
+      parents: []
+      children: []
+      siblings:
+        - id: grecque-moros
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+        - id: grecque-thanatos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+        - id: grecque-hypnos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+        - id: grecque-oneiroi
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.225–226
+      consorts: []
+  - name: Éris
+    slug: eris
+    culture: grecque
+    id: grecque-eris
+    relations:
+      parents: []
+      children: []
+      siblings:
+        - id: grecque-moros
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+        - id: grecque-thanatos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+        - id: grecque-hypnos
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+        - id: grecque-oneiroi
+          consensus: false
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.226–232
+      consorts: []
