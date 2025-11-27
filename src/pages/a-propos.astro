@@ -9,11 +9,14 @@ const page = await getEntryBySlug('pages', 'a-propos');
 if (!page) {
   throw new Error("Contenu 'a-propos' introuvable");
 }
-const { Content } = await page.render();
+const { Content, headings } = await page.render();
+const toc = (headings ?? []).filter((h) => h.depth === 2 || h.depth === 3);
 const metaTitle = `${page.data.title} | Mythoskolis`;
 const metaDescription =
   page.data.description ||
   "Philosophie du projet Mythoskolis : médiation culturelle, mythes et expérimentation visuelle.";
+
+const introMd = page.data.intro ?? "";
 ---
 
 <html lang="fr">
@@ -31,8 +34,23 @@ const metaDescription =
   <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
     <Header />
 
-    <main class="flex-1 max-w-3xl mx-auto px-4 py-12">
-      <h1 class="text-4xl font-bold mb-8">{page.data.title}</h1>
+    <main class="flex-1 max-w-3xl mx-auto px-4 py-12 space-y-8">
+      <h1 class="text-4xl font-bold">{page.data.title}</h1>
+
+      <section class="prose prose-gray prose-lg max-w-none" set:html={introMd}></section>
+
+      {toc.length ? (
+        <nav class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-700 toc">
+          <p class="font-semibold text-gray-900 mb-3">Sommaire</p>
+          <ul class="space-y-2">
+            {toc.map((h) => (
+              <li class={h.depth === 3 ? 'pl-4 text-gray-600' : ''}>
+                <a class="hover:text-indigo-600" href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
 
       <section class="prose prose-gray prose-lg max-w-none">
         <Content />
@@ -42,3 +60,26 @@ const metaDescription =
     <Footer />
   </body>
 </html>
+
+<style>
+  .toc a {
+    text-decoration: none;
+  }
+  .toc a:hover {
+    text-decoration: underline;
+  }
+  :global(.theme-dark .toc) {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .toc p) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .toc a) {
+    color: #c7d6ff;
+  }
+  :global(.theme-dark .toc a:hover) {
+    color: #e5e7eb;
+  }
+</style>

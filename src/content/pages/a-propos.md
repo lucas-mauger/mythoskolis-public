@@ -1,7 +1,7 @@
-# À propos de Mythoskolis
-
-Mythoskolis est un projet de médiation culturelle consacré aux mythologies, avec pour objectif de rendre leurs récits, leurs figures et leurs symboles accessibles à tous. Le site propose une lecture claire, structurée et moderne de traditions anciennes souvent riches, complexes et contradictoires.
-
+---
+title: À propos de Mythoskolis
+intro: |
+  Mythoskolis est un projet de médiation culturelle consacré aux mythologies, avec pour objectif de rendre leurs récits, leurs figures et leurs symboles accessibles à tous. Le site propose une lecture claire, structurée et moderne de traditions anciennes souvent riches, complexes et contradictoires.
 ---
 
 ## Philosophie du projet
@@ -57,4 +57,3 @@ L’objectif reste le même : proposer un lieu où l’on peut comprendre, appre
 
 ## Contact
 Une page de contact sera mise en place pour les questions, suggestions et propositions futures.
-

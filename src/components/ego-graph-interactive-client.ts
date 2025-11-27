@@ -722,9 +722,12 @@ function getFaceUrls(slug: string, id: string, culture?: string): string[] {
   if (culture) {
     urls.push(`/faces/${culture}/${id}.webp`);
     urls.push(`/faces/${culture}/${slug}.webp`);
+    urls.push(`/faces/${culture}/${culture}-unknown_x.webp`);
   }
   urls.push(`/faces/${id}.webp`);
   urls.push(`/faces/${slug}.webp`);
+  urls.push(`/faces/grecque/grecque-unknown_x.webp`);
+  urls.push(`/faces/unknown_x.webp`);
   urls.push(`/faces/unknown_m.webp`);
   return urls;
 }

@@ -14,9 +14,24 @@
         ☰
       </button>
       <ul class="hidden md:flex items-center gap-6 text-gray-700 order-1 md:order-1" data-desktop-links>
-        <li><a class="hover:text-black" href="/entites/">Entités</a></li>
-        <li><a class="hover:text-black" href="/ressources/">Ressources</a></li>
-        <li><a class="hover:text-black" href="/a-propos/">À propos</a></li>
+        <li>
+          <a class="hover:text-black inline-flex items-center gap-2" href="/entites/">
+            <img src="/icons/entites_clear.webp" alt="" class="menu-icon" loading="lazy" />
+            Entités
+          </a>
+        </li>
+        <li>
+          <a class="hover:text-black inline-flex items-center gap-2" href="/ressources/">
+            <img src="/icons/ressources_clear.webp" alt="" class="menu-icon" loading="lazy" />
+            Ressources
+          </a>
+        </li>
+        <li>
+          <a class="hover:text-black inline-flex items-center gap-2" href="/a-propos/">
+            <img src="/icons/a_propos_clear.webp" alt="" class="menu-icon" loading="lazy" />
+            À propos
+          </a>
+        </li>
       </ul>
       <button
         id="theme-toggle"
@@ -51,23 +66,38 @@
     </div>
     <ul class="flex flex-col text-gray-700">
       <li>
-        <a class="block border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:bg-gray-50" href="/entites/">
+        <a class="flex items-center gap-2 border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:bg-gray-50" href="/entites/">
+          <img src="/icons/entites_clear.webp" alt="" class="menu-icon" loading="lazy" />
           Entités
         </a>
       </li>
       <li>
-        <a class="block border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:bg-gray-50" href="/ressources/">
+        <a class="flex items-center gap-2 border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:bg-gray-50" href="/ressources/">
+          <img src="/icons/ressources_clear.webp" alt="" class="menu-icon" loading="lazy" />
           Ressources
         </a>
       </li>
       <li>
-        <a class="block border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:bg-gray-50" href="/a-propos/">
+        <a class="flex items-center gap-2 border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:bg-gray-50" href="/a-propos/">
+          <img src="/icons/a_propos_clear.webp" alt="" class="menu-icon" loading="lazy" />
           À propos
         </a>
       </li>
     </ul>
   </aside>
 </header>
+
+<style>
+  .menu-icon {
+    width: 1rem;
+    height: 1rem;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  :global(.theme-dark) .menu-icon {
+    filter: brightness(0) invert(1);
+  }
+</style>
 
 <script>
   const THEME_KEY = "mythos-theme";

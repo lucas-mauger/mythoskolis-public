@@ -1,11 +1,11 @@
 # 🏛️ Mythoskolis — Site de médiation autour des mythologies
 
-Mythoskolis est un site web moderne dédié à la découverte des mythologies à travers des fiches synthétiques, des illustrations originales et (à terme) un système dynamique de filiations entre divinités.
+Mythoskolis est un site web moderne dédié à la découverte des mythologies à travers des fiches synthétiques, des illustrations originales et un système dynamique de filiations entre entités d'un décorum mythologique donné, exclusivement grec dans un premier temps.
 
 Le projet a pour objectifs :
 - de proposer un accès **simple, clair et gratuit** à des contenus culturels de qualité ;
 - de rendre les mythes **visuels, vivants et accessibles** ;
-- d’offrir aux enseignants, élèves et curieux un outil propre et sans distraction ;
+- d’offrir à tous les amateurs de vulgarisation mythologique, aux curieux, aux enseignants, aux élèves, ou quiconque en aurait l'utilité un outil propre et sans distraction ;
 - d’expérimenter une **modélisation de données** (généalogies, relations, sources) intégrée à une interface Web moderne.
 
 Le site est construit avec **Astro**, **TailwindCSS**, une structuration des contenus en **Markdown + frontmatter**, et des outils maison pour piloter les données (inspecteurs YAML/MD).
