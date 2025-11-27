@@ -204,6 +204,31 @@
       .suggestions .item:hover {
         background: #f1f5f9;
       }
+      .pill-list {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #ede9fe;
+        color: #4338ca;
+        border: 1px solid #c4b5fd;
+        padding: 4px 8px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .chip button {
+        border: none;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        font-size: 0.9em;
+      }
     </style>
   </head>
   <body>
@@ -213,8 +238,63 @@
         Rechercher par slug
         <input type="text" id="search" placeholder="ex: zeus" />
       </label>
+      <button class="btn save" id="open-bulk" type="button">Ajouter des relations multiples</button>
       <button class="btn save" id="open-create">Créer une entité</button>
     </header>
+
+    <div class="card" id="bulk-card" style="display:none; margin-bottom:12px;">
+      <div class="section-title">
+        <span>Ajout multi-relations</span>
+        <button class="btn secondary" id="close-bulk" type="button">Fermer</button>
+      </div>
+      <div class="form-grid">
+        <label>Type
+          <select id="b-type">
+            <option value="parent">parent</option>
+            <option value="child">child</option>
+            <option value="sibling">sibling</option>
+            <option value="consort">consort</option>
+          </select>
+        </label>
+        <label>Consensus ?
+          <input type="checkbox" id="b-consensus" checked />
+        </label>
+        <label>Créer aussi l'inverse
+          <input type="checkbox" id="b-inverse" checked />
+        </label>
+        <label>Sources (CSV auteur, œuvre, passage)
+          <input type="text" id="b-combo" placeholder="Auteur, Œuvre, Passage" />
+        </label>
+        <label>Source auteur
+          <input type="text" id="b-author" />
+        </label>
+        <label>Source œuvre
+          <input type="text" id="b-work" />
+        </label>
+        <label>Passage
+          <input type="text" id="b-passage" />
+        </label>
+      </div>
+      <div class="form-grid">
+        <label>Sources (entités)
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input type="text" id="b-source-input" placeholder="slug ou id" autocomplete="off" />
+          </div>
+          <div class="pill-list" id="b-source-list"></div>
+        </label>
+        <label>Cibles (entités)
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input type="text" id="b-target-input" placeholder="slug ou id" autocomplete="off" />
+          </div>
+          <div class="pill-list" id="b-target-list"></div>
+        </label>
+      </div>
+      <div class="status" id="b-status"></div>
+      <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+        <button class="btn secondary" id="b-reset" type="button">Réinitialiser</button>
+        <button class="btn save" id="b-apply" type="button">Créer les relations</button>
+      </div>
+    </div>
 
     <div class="card" id="create-card" style="display:none; margin-bottom:12px;">
       <div class="section-title">
@@ -635,7 +715,6 @@
                 <button class="btn secondary" data-delete="${e.id}">Supprimer</button>
               </div>
             </div>
-              <div class="relations-block">${renderRelationsForEntity(e)}</div>
               <div class="editor small-editor" id="rel-editor-${e.id}" style="display:none;">
         <div class="form-grid">
           <label>Type
@@ -674,6 +753,7 @@
                   <button class="btn save" data-save-rel>Ajouter</button>
                 </div>
               </div>
+              <div class="relations-block">${renderRelationsForEntity(e)}</div>
             `;
             wrap.appendChild(div);
           });
@@ -689,7 +769,11 @@
           btn.addEventListener("click", () => {
             const id = btn.getAttribute("data-add-rel");
             const form = document.getElementById(`rel-editor-${id}`);
-            if (form) form.style.display = "block";
+            if (form) {
+              form.style.display = "block";
+              form.scrollIntoView({ behavior: "smooth", block: "start" });
+              form.querySelector('input[name="target"]')?.focus();
+            }
           });
         });
         wrap.querySelectorAll("[data-delete]").forEach((btn) => {
@@ -821,6 +905,15 @@
         });
       }
 
+      function normalize(str) {
+        return (str || "")
+          .toString()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .trim();
+      }
+
       function normalizeEdgeKey(type, a, b, consensus, sources) {
         if (type === "parent" || type === "sibling" || type === "consort") {
           const ordered = [a, b].sort();
@@ -829,7 +922,19 @@
         return `${type}|${a}|${b}|${consensus !== false ? "1" : "0"}|${JSON.stringify(sources || [])}`;
       }
 
-      function attachAutocomplete(input, mode = "id") {
+      function resolveEntity(term) {
+        const n = normalize(term || "");
+        if (!n) return null;
+        return (
+          entities.find((e) => normalize(e.id) === n) ||
+          entities.find((e) => normalize(e.slug || "") === n) ||
+          entities.find((e) => normalize(e.slug || "").includes(n)) ||
+          entities.find((e) => normalize(e.name || "").startsWith(n)) ||
+          entities.find((e) => normalize(e.name || "").includes(n))
+        );
+      }
+
+      function attachAutocomplete(input, mode = "id", onPick) {
         if (!input) return;
         const wrap = input.parentElement;
         if (wrap) wrap.style.position = "relative";
@@ -837,16 +942,23 @@
         sugg.className = "suggestions";
         if (wrap) wrap.appendChild(sugg);
         function render(q) {
-          const query = (q || "").toLowerCase().trim();
+          const query = normalize(q || "");
           if (!query) {
             sugg.style.display = "none";
             sugg.innerHTML = "";
             return;
           }
           const matches = entities.filter((e) => {
-            const slug = (e.slug || "").toLowerCase();
-            const name = (e.name || "").toLowerCase();
-            return slug.startsWith(query) || name.startsWith(query);
+            const slug = normalize(e.slug || "");
+            const name = normalize(e.name || "");
+            const id = normalize(e.id || "");
+            return (
+              slug.startsWith(query) ||
+              name.startsWith(query) ||
+              id.includes(query) ||
+              slug.includes(query) ||
+              name.includes(query)
+            );
           });
           if (!matches.length) {
             sugg.style.display = "none";
@@ -863,7 +975,11 @@
           sugg.querySelectorAll("[data-id]").forEach((node) => {
             node.addEventListener("click", () => {
               const ent = entities.find((e) => e.id === node.getAttribute("data-id"));
-              input.value = mode === "slug" ? ent?.slug || ent?.id || "" : ent?.id || "";
+              if (onPick && ent) {
+                onPick(ent);
+              } else {
+                input.value = mode === "slug" ? ent?.slug || ent?.id || "" : ent?.id || "";
+              }
               sugg.innerHTML = "";
               sugg.style.display = "none";
             });
@@ -961,12 +1077,12 @@
         document.body.appendChild(modal);
         const close = () => modal.remove();
         content.querySelector("#u-cancel").addEventListener("click", close);
-        setupSourceCombo(
-          content.querySelector("#u-rel-combo"),
-          content.querySelector("#u-author"),
-          content.querySelector("#u-work"),
-          content.querySelector("#u-passage"),
-        );
+      setupSourceCombo(
+        content.querySelector("#u-rel-combo"),
+        content.querySelector("#u-author"),
+        content.querySelector("#u-work"),
+        content.querySelector("#u-passage"),
+      );
         content.querySelector("#u-save").addEventListener("click", async () => {
           const status = content.querySelector("#u-status");
           status.textContent = "Mise à jour...";
@@ -1151,12 +1267,231 @@
         await loadData();
         setupEditor();
         setupCreate();
+        // Simple toggle for le placeholder multi-relations
+        const bulkCard = document.getElementById("bulk-card");
+        const openBulk = document.getElementById("open-bulk");
+        const closeBulk = document.getElementById("close-bulk");
+        openBulk?.addEventListener("click", () => {
+          if (bulkCard) bulkCard.style.display = "block";
+        });
+        closeBulk?.addEventListener("click", () => {
+          if (bulkCard) bulkCard.style.display = "none";
+        });
         const search = document.getElementById("search");
         renderEntities(search.value);
         renderRelations(search.value);
         search.addEventListener("input", () => renderEntities(search.value));
         search.addEventListener("input", () => renderRelations(search.value));
         attachAutocomplete(search, "slug");
+        // Sync CSV combo -> auteur/œuvre/passage (placeholder)
+        attachSourceCombo(
+          document.getElementById("b-combo"),
+          document.getElementById("b-author"),
+          document.getElementById("b-work"),
+          document.getElementById("b-passage"),
+        );
+        // Mini-gestion des listes visibles pour le bulk (human-readable)
+        const bSrcList = document.getElementById("b-source-list");
+        const bTgtList = document.getElementById("b-target-list");
+        const bSrcInput = document.getElementById("b-source-input");
+        const bTgtInput = document.getElementById("b-target-input");
+        const bReset = document.getElementById("b-reset");
+        const bStatus = document.getElementById("b-status");
+        const bType = document.getElementById("b-type");
+        const bConsensus = document.getElementById("b-consensus");
+        const bInverse = document.getElementById("b-inverse");
+        const bApply = document.getElementById("b-apply");
+        const bulkSources = [];
+        const bulkTargets = [];
+
+        const renderBulkLists = () => {
+          if (bSrcList)
+            bSrcList.innerHTML = bulkSources
+              .map(
+                (e, i) =>
+                  `<span class="chip">${e.name || e.slug || e.id}<button data-bulk-del-src="${i}">✕</button></span>`,
+              )
+              .join("");
+          if (bTgtList)
+            bTgtList.innerHTML = bulkTargets
+              .map(
+                (e, i) =>
+                  `<span class="chip">${e.name || e.slug || e.id}<button data-bulk-del-tgt="${i}">✕</button></span>`,
+              )
+              .join("");
+          bSrcList?.querySelectorAll("[data-bulk-del-src]").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              bulkSources.splice(Number(btn.getAttribute("data-bulk-del-src")), 1);
+              renderBulkLists();
+            }),
+          );
+          bTgtList?.querySelectorAll("[data-bulk-del-tgt]").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              bulkTargets.splice(Number(btn.getAttribute("data-bulk-del-tgt")), 1);
+              renderBulkLists();
+            }),
+          );
+        };
+
+        const addBulkEntity = (input, bucket, entOverride) => {
+          if (!input) return;
+          const ent = entOverride || resolveEntity(input.value);
+          if (!ent) {
+            if (bStatus) {
+              bStatus.textContent = "Entité introuvable";
+              bStatus.className = "status err";
+            }
+            return;
+          }
+          const targetArr = bucket === "src" ? bulkSources : bulkTargets;
+          if (!targetArr.some((x) => x.id === ent.id)) {
+            targetArr.push(ent);
+            renderBulkLists();
+          }
+          input.value = "";
+          if (bStatus) {
+            bStatus.textContent = "";
+            bStatus.className = "status";
+          }
+        };
+
+        bSrcInput?.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addBulkEntity(bSrcInput, "src");
+          }
+        });
+        bTgtInput?.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addBulkEntity(bTgtInput, "tgt");
+          }
+        });
+        // Autocomplete : clic direct ajoute l'entité dans la liste
+        attachAutocomplete(bSrcInput, "id", (ent) => addBulkEntity(bSrcInput, "src", ent));
+        attachAutocomplete(bTgtInput, "id", (ent) => addBulkEntity(bTgtInput, "tgt", ent));
+        bReset?.addEventListener("click", () => {
+          bulkSources.length = 0;
+          bulkTargets.length = 0;
+          renderBulkLists();
+          if (bStatus) {
+            bStatus.textContent = "";
+            bStatus.className = "status";
+          }
+        });
+
+        bApply?.addEventListener("click", async () => {
+          if (!bType) return;
+          const consensus = bConsensus?.checked ?? false;
+          const addInverse = bInverse?.checked ?? true;
+          const sourceInfo = {
+            author: document.getElementById("b-author")?.value.trim() || "",
+            work: document.getElementById("b-work")?.value.trim() || "",
+            passage: document.getElementById("b-passage")?.value.trim() || "",
+          };
+          const type = bType.value;
+          const skipped = [];
+          let created = 0;
+          if (bStatus) {
+            bStatus.textContent = "Création en cours...";
+            bStatus.className = "status";
+          }
+
+          // Cas spécial fratrie : une seule liste suffit, on génère toutes les paires i ≠ j
+          if (type === "sibling") {
+            const list = bulkSources.length ? bulkSources : bulkTargets;
+            if (!list || list.length < 2) {
+              if (bStatus) {
+                bStatus.textContent = "Ajoute au moins deux entités pour une fratrie.";
+                bStatus.className = "status err";
+              }
+              return;
+            }
+            for (let i = 0; i < list.length; i++) {
+              for (let j = i + 1; j < list.length; j++) {
+                const s = list[i];
+                const t = list[j];
+                if (!s || !t || s.id === t.id) continue;
+                try {
+                  const res = await fetch("/relations", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      sourceId: s.id,
+                      targetId: t.id,
+                      type: "sibling",
+                      consensus,
+                      addInverse: true, // fratrie toujours bilatérale
+                      sourceInfo,
+                    }),
+                  });
+                  const out = await res.json();
+                  if (!res.ok) {
+                    if (res.status === 409) {
+                      skipped.push(`${s.id} ↔ ${t.id}`);
+                      continue;
+                    }
+                    throw new Error(out.error || "Erreur ajout");
+                  }
+                  created += 1;
+                } catch (err) {
+                  skipped.push(`${s.id} ↔ ${t.id} (${err.message})`);
+                }
+              }
+            }
+          } else {
+            // autres types : sources x cibles
+            if (!bulkSources.length || !bulkTargets.length) {
+              if (bStatus) {
+                bStatus.textContent = "Ajoute au moins une source et une cible.";
+                bStatus.className = "status err";
+              }
+              return;
+            }
+            for (const s of bulkSources) {
+              for (const t of bulkTargets) {
+                if (!s || !t || s.id === t.id) continue;
+                try {
+                  const res = await fetch("/relations", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      sourceId: s.id,
+                      targetId: t.id,
+                      type,
+                      consensus,
+                      addInverse,
+                      sourceInfo,
+                    }),
+                  });
+                  const out = await res.json();
+                  if (!res.ok) {
+                    if (res.status === 409) {
+                      skipped.push(`${s.id} → ${t.id}`);
+                      continue;
+                    }
+                    throw new Error(out.error || "Erreur ajout");
+                  }
+                  created += 1;
+                } catch (err) {
+                  skipped.push(`${s.id} → ${t.id} (${err.message})`);
+                }
+              }
+            }
+          }
+
+          await loadData();
+          renderEntities(document.getElementById("search").value);
+          renderRelations(document.getElementById("search").value);
+          if (bStatus) {
+            const skips = skipped.length ? ` | Skips: ${skipped.join(", ")}` : "";
+            bStatus.textContent = `Relations créées: ${created}${skips}`;
+            bStatus.className = skipped.length ? "status err" : "status ok";
+          }
+          showToast("Relations créées");
+        });
+
+        renderBulkLists();
       }
 
       init().catch((err) => {

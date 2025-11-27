@@ -188,6 +188,9 @@
         <label>Description
           <textarea id="c-description"></textarea>
         </label>
+        <label style="grid-column: 1 / -1;">Contenu (Markdown)
+          <textarea id="c-content" rows="8"></textarea>
+        </label>
         <label>Domaines (CSV)
           <input type="text" id="c-domains" data-suggest="domains" />
         </label>
@@ -393,7 +396,7 @@
                 </div>
               </div>
               <div class="editor small-editor" id="md-editor-${e.slug}" style="display:none;">
-                ${renderEditorForm(e.frontmatter)}
+                ${renderEditorForm(e.frontmatter, e.content)}
                 <div class="status"></div>
                 <div style="display:flex; gap:8px; margin-top:8px;">
                   <button class="btn secondary" data-cancel-md>Annuler</button>
@@ -469,7 +472,7 @@
         });
       }
 
-      function renderEditorForm(fm) {
+      function renderEditorForm(fm, content = "") {
         return `
           <div class="form-grid">
             <label>Titre
@@ -496,10 +499,13 @@
         <label>Domaines (CSV)
           <input type="text" name="domains" data-suggest="domains" value="${(fm.domains || []).join(", ")}" />
         </label>
-        <label>Symboles (CSV)
-          <input type="text" name="symbols" data-suggest="symbols" value="${(fm.symbols || []).join(", ")}" />
-        </label>
-      </div>
+            <label>Symboles (CSV)
+              <input type="text" name="symbols" data-suggest="symbols" value="${(fm.symbols || []).join(", ")}" />
+            </label>
+            <label style="grid-column: 1 / -1;">Contenu (Markdown)
+              <textarea name="content" rows="8">${content ?? ""}</textarea>
+            </label>
+          </div>
         `;
       }
 
@@ -522,13 +528,15 @@
           description: form.querySelector('textarea[name="description"]')?.value ?? "",
           domains: csv('input[name="domains"]'),
           symbols: csv('input[name="symbols"]'),
+          content: form.querySelector('textarea[name="content"]')?.value ?? "",
         };
       }
 
       async function saveMd(slug, frontmatter) {
         const cleanSlug = (slug || "").replace(/\.md$/i, "");
         const file = `${cleanSlug}.md`;
-        const body = { file, frontmatter };
+        const body = { file, frontmatter, content: frontmatter.content };
+        delete body.frontmatter.content;
         const res = await fetch("/md/update", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -559,7 +567,7 @@
         }
 
         function resetForm() {
-          ["c-title", "c-slug", "c-culture", "c-id", "c-nature", "c-gender", "c-role", "c-description", "c-domains", "c-symbols"].forEach((id) => {
+          ["c-title", "c-slug", "c-culture", "c-id", "c-nature", "c-gender", "c-role", "c-description", "c-domains", "c-symbols", "c-content"].forEach((id) => {
             const el = document.getElementById(id);
             if (el) el.value = "";
           });
@@ -601,6 +609,7 @@
             description: document.getElementById("c-description").value,
             domains: document.getElementById("c-domains").value.split(",").map((s) => s.trim()).filter(Boolean),
             symbols: document.getElementById("c-symbols").value.split(",").map((s) => s.trim()).filter(Boolean),
+            content: document.getElementById("c-content")?.value || "",
             slug, // utilisé uniquement pour le nom de fichier
           };
           try {

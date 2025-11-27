@@ -76,9 +76,19 @@ class EgoGraphController {
   private nodeInstances = new Map<string, HTMLElement>();
   private sectionContainers = new Map<RelationSection, HTMLElement>();
   private sectionScrollTops = new Map<RelationSection, number>();
+  private pageIds = new Set<string>();
 
   constructor(private root: HTMLElement, private store: GenealogieStore) {
     this.messageEl = this.root.querySelector(".ego-graph-message");
+    const pageIdsRaw = this.root.dataset.pageIds;
+    if (pageIdsRaw) {
+      try {
+        const parsed = JSON.parse(pageIdsRaw) as string[];
+        parsed.forEach((id) => this.pageIds.add(id));
+      } catch {
+        this.pageIds = new Set();
+      }
+    }
     RELATION_SECTIONS.forEach((section) => {
       const container = this.root.querySelector<HTMLElement>(`[data-section="${section}"]`);
       if (container) {
@@ -185,7 +195,7 @@ class EgoGraphController {
           nodes = [...prioritized, ...rest];
           this.childrenOrder = nodes.map((n) => n.entity.slug);
         } else if (this.focusedChildSlug) {
-          nodes = reorderSiblings(nodes, this.focusedChildSlug, graph.consorts, this.store);
+          nodes = reorderSiblings(nodes, this.focusedChildSlug, this.store);
           this.childrenOrder = nodes.map((n) => n.entity.slug);
         } else if (this.childrenOrder && this.childrenOrder.length) {
           nodes = sortByOrder(nodes, this.childrenOrder);
@@ -210,7 +220,7 @@ class EgoGraphController {
         const isSibling =
           isChild &&
           this.focusedChildSlug !== null &&
-          this.isSiblingOfFocused(item.entity.slug, this.focusedChildSlug, graph.consorts);
+          this.isSiblingOfFocused(item.entity.slug, this.focusedChildSlug);
         const isMuted =
           (isConsort && this.selectedConsortSlug && this.selectedConsortSlug !== item.entity.slug) ||
           (isConsort &&
@@ -221,7 +231,7 @@ class EgoGraphController {
             !this.store.hasParent(item.entity.slug, this.focusedConsortSlug)) ||
           (isChild &&
             this.focusedChildSlug !== null &&
-            !this.isSiblingOfFocused(item.entity.slug, this.focusedChildSlug, graph.consorts) &&
+            !this.isSiblingOfFocused(item.entity.slug, this.focusedChildSlug) &&
             item.entity.slug !== this.focusedChildSlug);
         const node = this.createNode({
           key: `${section}-${item.entity.id}`,
@@ -394,7 +404,7 @@ class EgoGraphController {
     label.className = "ego-node-label";
     label.textContent = node.name;
 
-    if (node.role === "central") {
+    if (node.role === "central" && this.pageIds.has(node.id)) {
       const action = document.createElement("div");
       action.className = "ego-node-action";
       action.textContent = "Aller à la fiche";
@@ -449,13 +459,9 @@ class EgoGraphController {
       .filter((slug): slug is string => Boolean(slug));
   }
 
-  private isSiblingOfFocused(childSlug: string, focusedChildSlug: string, consorts: RelatedNode[]): boolean {
+  private isSiblingOfFocused(childSlug: string, focusedChildSlug: string): boolean {
     if (childSlug === focusedChildSlug) return false;
-    const parentConsorts = consorts
-      .filter((consort) => this.store.hasParent(focusedChildSlug, consort.entity.slug))
-      .map((c) => c.entity.slug);
-    if (!parentConsorts.length) return false;
-    return parentConsorts.some((parentSlug) => this.store.hasParent(childSlug, parentSlug));
+    return this.store.hasSibling(childSlug, focusedChildSlug);
   }
 
   private async animateToCenter(nodeEl: HTMLElement): Promise<void> {
@@ -773,24 +779,14 @@ function prioritizeConsorts(
   return { prioritized, rest };
 }
 
-function reorderSiblings(
-  nodes: RelatedNode[],
-  focusedChildSlug: string,
-  consorts: RelatedNode[],
-  store: GenealogieStore,
-): RelatedNode[] {
+function reorderSiblings(nodes: RelatedNode[], focusedChildSlug: string, store: GenealogieStore): RelatedNode[] {
   const focusIndex = nodes.findIndex((n) => n.entity.slug === focusedChildSlug);
   if (focusIndex === -1) return nodes;
-  const parentConsorts = consorts
-    .filter((consort) => store.hasParent(focusedChildSlug, consort.entity.slug))
-    .map((c) => c.entity.slug);
-
-  if (!parentConsorts.length) return nodes;
   const siblings = nodes.filter(
-    (child) => child.entity.slug !== focusedChildSlug && parentConsorts.some((slug) => store.hasParent(child.entity.slug, slug)),
+    (child) => child.entity.slug !== focusedChildSlug && store.hasSibling(child.entity.slug, focusedChildSlug),
   );
   const others = nodes.filter(
-    (child) => child.entity.slug === focusedChildSlug || !parentConsorts.some((slug) => store.hasParent(child.entity.slug, slug)),
+    (child) => child.entity.slug === focusedChildSlug || !store.hasSibling(child.entity.slug, focusedChildSlug),
   );
 
   const ordered: (RelatedNode | null)[] = Array(nodes.length).fill(null);

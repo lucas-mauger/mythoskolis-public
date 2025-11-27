@@ -4,6 +4,7 @@ culture: grecque
 id: grecque-ouranos
 nature:
   - primordial
+  - dieu
 gender: m
 role: Divinité primordiale du Ciel
 description: 'Le Ciel primordial, époux de Gaïa et père des Titans.'
@@ -15,12 +16,17 @@ symbols:
   - Voûte étoilée
   - Éther
   - Serpe (symbole de sa chute)
-display_class: Divinité primordiale
 ---
-Ouranos est le Ciel vivant, couvrant et enserrant la Terre. En s’unissant à Gaïa, il engendre les Titans, dont Cronos et Rhéa, mais aussi les Cyclopes et les Hécatonchires. Désireux de maintenir son pouvoir, il tente d’étouffer sa progéniture, ce qui pousse Gaïa à fomenter sa chute.
+# Ouranos
 
-Cronos, armé d’une serpe forgée par sa mère, mutile Ouranos et libère les forces retenues. De son sang surgiront encore d’autres êtres, rappelant que même déchu, le Ciel primitif demeure source de vie et de destin.
+## Nature cosmique
+Ouranos est la divinité primordiale du Ciel, l’une des premières entités surgies après la naissance de Gaïa. Il représente la voûte céleste elle-même, couvrant et enveloppant la Terre. Sa nature n’est pas anthropomorphique à l’origine : il est le Ciel vivant, une force cosmique plutôt qu’un dieu olympien.
 
-### Héritage
-- **Père des Titans** : Ouranos inaugure la lignée divine qui mènera jusqu’aux Olympiens.  
-- **Symbole d’un ordre brisé** : sa chute marque la fin d’un âge et ouvre la voie aux révolutions cosmiques menées par ses descendants.
+## Rôle dans la création
+De son union avec Gaïa naissent les Titans, les Cyclopes et les Hécatonchires. Il tente de maintenir ces enfants enfermés dans le ventre de leur mère, créant une tension fondamentale à l’origine des premiers bouleversements du cosmos.
+
+## Chute et héritage
+Poussé par Gaïa, Cronos renverse Ouranos en le mutilant avec une faucille. Le sang et la semence d’Ouranos donnent naissance à de nouvelles créatures, dont les Érinyes, les Géants et Aphrodite selon certaines traditions. Sa chute marque le passage de l’ordre primordial au règne titanesque, première grande transition de la mythologie grecque.
+
+## Iconographie
+Ouranos est rarement représenté sous forme humaine. Quand il l’est, son apparence incorpore des motifs célestes : peau constellée, forme éthérée, fusion de lumière et de nuit.

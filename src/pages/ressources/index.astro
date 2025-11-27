@@ -1,15 +1,21 @@
 ---
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
 ---
 
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <title>Ressources | Mythoskolis</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title="Ressources | Mythoskolis"
+    description="Analyses, sources antiques et fiches pédagogiques pour explorer la mythologie."
+    canonical="/ressources/"
+    type="website"
+  />
+</head>
 
   <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
     <Header />

@@ -1,9 +1,10 @@
 ---
 interface Props {
   initialSlug: string;
+  pageIds?: string[];
 }
 
-const { initialSlug } = Astro.props as Props;
+const { initialSlug, pageIds = [] } = Astro.props as Props;
 const componentId = `ego-graph-${initialSlug}`;
 const clientModule = (await import('./ego-graph-interactive-client.ts?url')) as { default: string };
 const clientScriptSrc = clientModule.default;
@@ -17,6 +18,7 @@ const clientScriptSrc = clientModule.default;
       aria-live="polite"
       data-ego-graph
       data-initial-slug={initialSlug}
+      data-page-ids={JSON.stringify(pageIds)}
     >
       <div class="ego-graph-grid" aria-hidden="true">
         <div class="ego-quadrant" data-quadrant="parents">

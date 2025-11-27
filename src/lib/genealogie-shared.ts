@@ -71,11 +71,23 @@ export interface GenealogieStore {
   getEgoGraphById(id: string): EgoGraph | undefined;
   getGraphDisplayData(slug: string): GraphDisplayData | undefined;
   hasParent(childSlug: string, parentSlug: string): boolean;
+  hasSibling(entitySlug: string, otherSlug: string): boolean;
 }
 
 export function createGenealogieStore(data: GenealogieData): GenealogieStore {
   const entityById = new Map(data.entities.map((entity) => [entity.id, entity]));
   const entityBySlug = new Map(data.entities.map((entity) => [entity.slug, entity]));
+  const siblingsById = new Map<string, Set<string>>();
+
+  data.relations.forEach((relation) => {
+    if (relation.type !== "sibling") return;
+    const { source_id, target_id } = relation;
+    if (!source_id || !target_id) return;
+    if (!siblingsById.has(source_id)) siblingsById.set(source_id, new Set());
+    if (!siblingsById.has(target_id)) siblingsById.set(target_id, new Set());
+    siblingsById.get(source_id)!.add(target_id);
+    siblingsById.get(target_id)!.add(source_id);
+  });
 
   function toRelatedNode(targetId: string, relation: GenealogieRelation): RelatedNode | undefined {
     const entity = entityById.get(targetId);
@@ -178,6 +190,13 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
         (relation) =>
           relation.type === "parent" && relation.source_id === parent.id && relation.target_id === child.id,
       );
+    },
+    hasSibling: (entitySlug: string, otherSlug: string) => {
+      if (entitySlug === otherSlug) return false;
+      const entity = entityBySlug.get(entitySlug);
+      const other = entityBySlug.get(otherSlug);
+      if (!entity || !other) return false;
+      return siblingsById.get(entity.id)?.has(other.id) ?? false;
     },
   };
 }

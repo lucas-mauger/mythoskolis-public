@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
 import { getCollection } from 'astro:content';
 import EgoGraph from '../../components/EgoGraph.astro';
@@ -31,6 +32,8 @@ const {
 } = entry.data;
 const { Content } = await entry.render();
 const entityId = (frontId ?? entry.data.id ?? entry.slug).toString();
+const allEntries = await getCollection('entites');
+const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 const yamlEntity = getEntityById(entityId) ?? getEntityBySlug(entityId) ?? getEntityBySlug(entry.slug);
 const genealogie = getGraphDisplayData(entityId);
 const entityCulture = (frontCulture ?? yamlEntity?.culture ?? 'grecque').toString();
@@ -51,6 +54,16 @@ const imageSrc =
 
 const isGrecPantheon = (yamlEntity?.culture ?? entry.data.culture ?? entityCulture) === 'grecque';
 const natureLabel = getNatureLabel(yamlEntity, entry.data);
+const natureBadges = Array.from(
+  new Set(
+    [
+      ...(Array.isArray(entry.data.nature) ? entry.data.nature : entry.data.nature ? [entry.data.nature] : []),
+      ...(Array.isArray(yamlEntity?.nature) ? (yamlEntity?.nature as any[]).map((n) => (typeof n === 'string' ? n : n?.category ?? n?.subtype).toString()).filter(Boolean) : []),
+    ]
+      .map((n) => (n ?? '').toString().trim())
+      .filter(Boolean),
+  ),
+);
 
 function buildMediaBases(kind: 'images' | 'videos') {
   const bases: string[] = [];
@@ -100,30 +113,41 @@ function findFirstExistingFromList(bases: string[], extensions: string[]): strin
 function findFallbackUnknown(gender?: string): string | null {
   const normalized = gender?.toString().toLowerCase();
   const byGender: Record<string, string> = {
-    m: 'images/unknown_m.webp',
-    male: 'images/unknown_m.webp',
-    masculin: 'images/unknown_m.webp',
-    f: 'images/unknown_f.webp',
-    femelle: 'images/unknown_f.webp',
-    fem: 'images/unknown_f.webp',
-    female: 'images/unknown_f.webp',
-    feminin: 'images/unknown_f.webp',
-    autre: 'images/unknown_x.webp',
-    other: 'images/unknown_x.webp',
-    x: 'images/unknown_x.webp',
+    m: 'images/grecque/grecque-unknown_m.webp',
+    male: 'images/grecque/grecque-unknown_m.webp',
+    masculin: 'images/grecque/grecque-unknown_m.webp',
+    f: 'images/grecque/grecque-unknown_f.webp',
+    femelle: 'images/grecque/grecque-unknown_f.webp',
+    fem: 'images/grecque/grecque-unknown_f.webp',
+    female: 'images/grecque/grecque-unknown_f.webp',
+    feminin: 'images/grecque/grecque-unknown_f.webp',
+    autre: 'images/grecque/grecque-unknown_x.webp',
+    other: 'images/grecque/grecque-unknown_x.webp',
+    x: 'images/grecque/grecque-unknown_x.webp',
   };
   const prioritized: string[] = [];
   if (normalized && byGender[normalized]) {
     prioritized.push(byGender[normalized]);
   }
-  const candidates = [...prioritized, 'images/unknown_m.webp', 'images/unknown_f.webp', 'images/unknown_x.webp'];
+  const candidates = [
+    ...prioritized,
+    'images/grecque/grecque-unknown_m.webp',
+    'images/grecque/grecque-unknown_f.webp',
+    'images/grecque/grecque-unknown_x.webp',
+    'images/unknown_m.webp',
+    'images/unknown_f.webp',
+    'images/unknown_x.webp',
+  ];
   for (const rel of candidates) {
     const full = path.join(publicDir, rel);
     if (fs.existsSync(full)) {
       return '/' + rel;
     }
   }
-  return null;
+  const fallbackSvg = encodeURI(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200" fill="none"><rect width="800" height="1200" rx="40" fill="#E2E8F0"/><text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" fill="#475569" font-family="Arial, sans-serif" font-size="96">?</text></svg>`
+  );
+  return `data:image/svg+xml;utf8,${fallbackSvg}`;
 }
 
 function getMimeFromExt(filePath: string): string | null {
@@ -181,21 +205,34 @@ function getNatureLabel(
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title>{title} | Mythoskolis</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={`${title} | Mythoskolis`}
+    description={(role ? role.toString() : (description || 'Fiche entité Mythoskolis')).toString()}
+    image={imageSrc}
+    canonical={`/entites/${entityId}/`}
+    type="article"
+  />
 </head>
 
 <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
   <Header />
 
-  <main class="flex-1 max-w-4xl mx-auto px-4 py-12">
-    <div class="flex flex-wrap gap-3 text-sm mb-4">
+  <main class="flex-1 max-w-4xl mx-auto px-4 py-5">
+    <div class="flex flex-wrap gap-3 text-sm mb-9">
       <a href="/entites/" class="badge-link badge-link--neutral badge-link--back">Toutes les entités</a>
       <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">Voir la généalogie</a>
     </div>
 
     <div class="text-center">
-      <h1 class={`entity-name text-5xl md:text-6xl font-bold mb-2 ${isGrecPantheon ? 'grec-name' : ''}`}>{title}</h1>
+      <h1 class={`entity-name text-5xl md:text-6xl font-bold mb-1 ${isGrecPantheon ? 'grec-name' : ''}`}>{title}</h1>
+      {natureBadges.length > 0 && (
+        <div class="nature-badges">
+          {natureBadges.map((n) => (
+            <span class="nature-pill">{n}</span>
+          ))}
+        </div>
+      )}
       {natureLabel && <span class="nature-badge">{natureLabel}</span>}
       {role && <p class="text-xl text-gray-600 mb-6">{role}</p>}
     </div>
@@ -217,13 +254,13 @@ function getNatureLabel(
         </video>
       ) : (
         imageSrc && (
-          <img 
-            src={imageSrc} 
-            alt={title} 
-            class="media select-none"
-            draggable="false"
-            oncontextmenu="event.preventDefault()"
-          />
+        <img 
+          src={imageSrc} 
+          alt={`Portrait de ${title}`} 
+          class="media select-none"
+          draggable="false"
+          oncontextmenu="event.preventDefault()"
+        />
         )
       )}
     </div>
@@ -272,7 +309,7 @@ function getNatureLabel(
             </a>
           </div>
         </div>
-        <EgoGraph {...genealogie} />
+        <EgoGraph {...genealogie} pageIds={pageIds} />
       </section>
     ) : (
       <section class="mt-12 rounded-2xl border border-dashed border-indigo-200 bg-white p-6 text-sm text-gray-700 space-y-3">
@@ -314,11 +351,35 @@ function getNatureLabel(
     margin-top: 0.35rem;
     padding: 0.3rem 0.75rem;
     border-radius: 9999px;
-    background: #f8f1e7;
-    color: #8b5a2b;
+    background: #f4e7d0;
+    color: #7a4f27;
     font-size: 0.85rem;
     font-weight: 600;
-    border: 1px solid rgba(139, 90, 43, 0.25);
+    border: 1px solid rgba(214, 185, 156, 0.7);
+  }
+  .nature-badges {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .nature-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 9999px;
+    background: #f4e7d0;
+    color: #7a4f27;
+    border: 1px solid rgba(214, 185, 156, 0.7);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  :global(.theme-dark .nature-pill) {
+    background: rgba(120, 85, 50, 0.25);
+    border-color: rgba(214, 185, 156, 0.5);
+    color: #f1dec2;
   }
   .media-frame {
     width: min(90vw, 820px);

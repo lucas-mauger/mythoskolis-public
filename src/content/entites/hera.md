@@ -4,6 +4,8 @@ culture: grecque
 id: grecque-hera
 nature:
   - olympien
+  - dieu
+gender: f
 role: 'Reine des dieux — Déesse du mariage, des femmes et de la famille'
 description: >-
   Épouse de Zeus et protectrice des unions légitimes, Héra incarne l’autorité,
@@ -19,63 +21,18 @@ symbols:
   - Voile nuptial
   - Lys
 ---
-Héra est la reine de l’Olympe, épouse de Zeus et protectrice du mariage.  
-Fière, majestueuse et souvent inflexible, elle représente les structures familiales et sociales du monde grec.  
-Elle est particulièrement honorée dans les rites liés à la vie domestique, aux unions, et à la légitimité des naissances.
+# Héra
 
-## Position et rôle dans l’Olympe
+## Identité et autorité
+Héra est la reine des dieux, déesse du mariage, de la vie familiale et de la légitimité institutionnelle. Sa fonction dépasse largement la simple sphère conjugale : elle incarne l’ordre social, la stabilité des unions et la continuité des lignées.
 
-Héra occupe une place centrale parmi les dieux :
+## Naissance et position dans l’Olympe
+Fille de Cronos et de Rhéa, sœur et épouse de Zeus, Héra participe à la mise en place du nouvel ordre divin après la défaite des Titans. Son autorité repose sur la dignité, la puissance symbolique de son rôle et une souveraineté qui la place au sommet de la hiérarchie féminine de l’Olympe.
 
-- elle siège aux côtés de Zeus en tant que reine  
-- elle veille à l’ordre des unions divines et mortelles  
-- elle garantit le respect des serments matrimoniaux  
+## Rôle dans les récits
+Héra intervient souvent pour défendre l’institution du mariage, particulièrement face aux infidélités de Zeus. Ce motif nourrit de nombreux mythes où sa jalousie tient lieu de moteur narratif, mais il serait réducteur de la limiter à cela. Héra protège les femmes mariées, soutient les unions légitimes, veille aux accouchements et punit l’adultère, qu’il soit divin ou humain.
 
-Malgré les infidélités de Zeus, Héra reste l’archétype de l’épouse souveraine.
+Elle agit aussi comme force politique : elle soutient les Achéens dans l’Iliade, manipule les dieux lorsque l’équilibre cosmique l’exige et œuvre à maintenir l’ordre que Zeus peut parfois perturber par caprice.
 
-## Attributs et représentations
-
-On reconnaît Héra grâce à :
-
-- le **paon**, son animal emblématique  
-- la **grenade**, symbole de fécondité  
-- la **couronne** ou le **diadème royal**  
-- parfois le **lys** ou le **voile** du mariage
-
-Elle est souvent représentée comme une femme majestueuse, assise sur un trône.
-
-## Domaines et pouvoirs
-
-Héra préside :
-
-- aux **mariages** et aux **noces sacrées**  
-- à la **protection des femmes mariées**  
-- à la **naissance** (dans certains cultes locaux)  
-- à la **famille** et à la **lignée**
-
-Son influence touche autant les dieux que les mortels.
-
-## Interventions mythologiques
-
-Bien qu’elle soit associée à la jalousie dans de nombreux récits, Héra demeure avant tout :
-
-- une déesse de l’**ordre familial**  
-- une garante de la **légitimité**  
-- une figure d’autorité au sein de l’Olympe  
-
-Elle intervient dans plusieurs épisodes majeurs, notamment :
-
-- le **Jugement de Pâris**, où elle se présente comme une candidate au titre de déesse la plus belle  
-- la naissance de **Héphaïstos**, dans certaines traditions  
-- la protection d’**Argos** et de plusieurs cités grecques
-
-## Une divinité d’autorité et de stabilité
-
-Héra incarne :
-
-- la **majesté**  
-- la **légalité**  
-- l’**ordre familial**  
-- la **structure sociale**  
-
-Elle représente l’alliance divine qui soutient la société humaine et les institutions grecques.
+## Iconographie
+Héra est représentée couronnée, majestueuse, tenant parfois un sceptre ou une grenade — symbole de fertilité et de continuité. Le paon, animal sacré, accompagne fréquemment ses images.

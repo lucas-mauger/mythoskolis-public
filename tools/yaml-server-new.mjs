@@ -143,6 +143,14 @@ function sameRel(rel, targetId, consensusFlag, sources) {
   return sameId && sameConsensus && srcA === srcB;
 }
 
+function sourcesEqual(a, b) {
+  return JSON.stringify(a || []) === JSON.stringify(b || []);
+}
+
+function hasSources(src) {
+  return Array.isArray(src) && src.some((s) => (s.author || s.work || s.passage || "").trim() !== "");
+}
+
 // MD helpers
 const FM_ORDER = ["title", "culture", "id", "nature", "gender", "role", "description", "domains", "symbols"];
 
@@ -234,21 +242,40 @@ async function addRelation(req, res) {
     const sources = buildSources(sourceInfo);
     const key = keyForType(type);
     ensureRelations(src, key);
-    if (consensus && hasConsensus(src.relations[key], targetId)) {
-      res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
-      return res.end(JSON.stringify({ error: "Cette relation existe déjà de façon consensuelle." }));
+    const existingCons = src.relations[key].find((r) => r.id === targetId && r.consensus !== false);
+    if (consensus) {
+      if (existingCons) {
+        if (!hasSources(existingCons.sources) && hasSources(sources)) {
+          existingCons.sources = sources;
+        } else if (hasSources(existingCons.sources) && hasSources(sources) && !sourcesEqual(existingCons.sources, sources)) {
+          res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
+          return res.end(JSON.stringify({ error: "Relation consensuelle déjà renseignée avec une autre source." }));
+        }
+      } else {
+        src.relations[key].push({ id: targetId, consensus, sources });
+      }
+    } else {
+      src.relations[key].push({ id: targetId, consensus, sources });
     }
-    // autoriser plusieurs versions non consensuelles
-    src.relations[key].push({ id: targetId, consensus, sources });
 
     if (addInverse && inverseType) {
       const invKey = keyForType(inverseType);
       ensureRelations(tgt, invKey);
-      if (consensus && hasConsensus(tgt.relations[invKey], sourceId)) {
-        res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
-        return res.end(JSON.stringify({ error: "Cette relation existe déjà de façon consensuelle." }));
+      const existingInv = tgt.relations[invKey].find((r) => r.id === sourceId && r.consensus !== false);
+      if (consensus) {
+        if (existingInv) {
+          if (!hasSources(existingInv.sources) && hasSources(sources)) {
+            existingInv.sources = sources;
+          } else if (hasSources(existingInv.sources) && hasSources(sources) && !sourcesEqual(existingInv.sources, sources)) {
+            res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
+            return res.end(JSON.stringify({ error: "Relation consensuelle déjà renseignée avec une autre source." }));
+          }
+        } else {
+          tgt.relations[invKey].push({ id: sourceId, consensus, sources });
+        }
+      } else {
+        tgt.relations[invKey].push({ id: sourceId, consensus, sources });
       }
-      tgt.relations[invKey].push({ id: sourceId, consensus, sources });
     }
 
     const next = dumpYaml({ ...data, entities }, { lineWidth: 0, noRefs: true });
@@ -258,6 +285,66 @@ async function addRelation(req, res) {
   } catch (err) {
     res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
     res.end(JSON.stringify({ error: "Échec ajout relation", details: err.message }));
+  }
+}
+
+async function addRelationsBulk(req, res) {
+  try {
+    let body = "";
+    for await (const chunk of req) body += chunk.toString();
+    const payload = JSON.parse(body || "{}");
+    const { type, consensus = false, inverse = true, sources = [], targets = [], sourceInfo = {} } = payload;
+    if (!type || !Array.isArray(sources) || !Array.isArray(targets) || sources.length === 0 || targets.length === 0) {
+      res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+      return res.end(JSON.stringify({ error: "type, sources et targets requis (au moins 1 de chaque)" }));
+    }
+    const { data, entities } = await readYaml();
+    const missing = [];
+    const byId = new Map(entities.map((e) => [e.id, e]));
+    const srcEntities = sources.map((id) => byId.get(id) || missing.push(id));
+    const tgtEntities = targets.map((id) => byId.get(id) || missing.push(id));
+    if (missing.length) {
+      res.writeHead(404, { "Content-Type": "application/json; charset=utf-8" });
+      return res.end(JSON.stringify({ error: `Entités introuvables: ${missing.join(", ")}` }));
+    }
+    const sourceObjs = buildSources(sourceInfo);
+    let created = 0;
+    const skipped = [];
+    const inverseType = inverse ? invertType(type) : null;
+
+    for (const s of srcEntities) {
+      for (const t of tgtEntities) {
+        if (!s || !t || s.id === t.id) continue;
+        const key = keyForType(type);
+        ensureRelations(s, key);
+        if (consensus) clearConsensus(s.relations[key], t.id);
+        if (consensus && hasConsensus(s.relations[key], t.id)) {
+          skipped.push(`${s.id} -> ${t.id}`);
+        } else if (!sameRel({ id: t.id, consensus, sources: sourceObjs }, t.id, consensus, sourceObjs)) {
+          s.relations[key].push({ id: t.id, consensus, sources: sourceObjs });
+          created++;
+        }
+
+        if (inverseType) {
+          const invKey = keyForType(inverseType);
+          ensureRelations(t, invKey);
+          if (consensus) clearConsensus(t.relations[invKey], s.id);
+          if (consensus && hasConsensus(t.relations[invKey], s.id)) {
+            skipped.push(`${t.id} -> ${s.id}`);
+          } else if (!sameRel({ id: s.id, consensus, sources: sourceObjs }, s.id, consensus, sourceObjs)) {
+            t.relations[invKey].push({ id: s.id, consensus, sources: sourceObjs });
+          }
+        }
+      }
+    }
+
+    const next = dumpYaml({ ...data, entities }, { lineWidth: 0, noRefs: true });
+    await writeFile(yamlPath, next, "utf8");
+    res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(JSON.stringify({ ok: true, created, skipped }));
+  } catch (err) {
+    res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(JSON.stringify({ error: "Échec multi-ajout", details: err.message }));
   }
 }
 
@@ -314,7 +401,8 @@ async function updateRelation(req, res) {
     const sources = buildSources(sourceInfo);
     const newKey = keyForType(newType);
     ensureRelations(src, newKey);
-    if (consensus && hasConsensus(src.relations[newKey], targetId)) {
+    const isNewOrPromoted = originalConsensus === undefined || originalConsensus === false;
+    if (consensus && hasConsensus(src.relations[newKey], targetId) && isNewOrPromoted) {
       res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
       return res.end(JSON.stringify({ error: "Cette relation existe déjà de façon consensuelle." }));
     }
@@ -325,7 +413,7 @@ async function updateRelation(req, res) {
       const tgtEnt = entities.find((e) => e.id === targetId);
       if (tgtEnt) {
         ensureRelations(tgtEnt, invKey);
-        if (consensus && hasConsensus(tgtEnt.relations[invKey], sourceId)) {
+        if (consensus && hasConsensus(tgtEnt.relations[invKey], sourceId) && isNewOrPromoted) {
           res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
           return res.end(JSON.stringify({ error: "Cette relation existe déjà de façon consensuelle." }));
         }
@@ -486,6 +574,9 @@ const server = http.createServer((req, res) => {
   }
   if (req.method === "POST" && req.url.startsWith("/relation-update")) {
     return updateRelation(req, res);
+  }
+  if (req.method === "POST" && req.url.startsWith("/relations-bulk")) {
+    return addRelationsBulk(req, res);
   }
   if (req.method === "POST" && req.url.startsWith("/relations")) {
     return addRelation(req, res);

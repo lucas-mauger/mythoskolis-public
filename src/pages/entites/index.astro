@@ -9,7 +9,7 @@ import path from 'node:path';
 const entites = await getCollection('entites');
 const publicDir = path.resolve(process.cwd(), 'public');
 
-function findFirstExistingFace(slug: string, id?: string, culture?: string): string {
+function findFirstExistingFace(slug: string, id?: string, culture?: string): string | null {
   const normalizedCulture = culture?.toString().toLowerCase();
   const defaultCulture = 'grecque';
   const normalizedSlug = `${normalizedCulture ?? defaultCulture}-${slug}`;
@@ -32,7 +32,7 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
       return '/' + `${base}.webp`;
     }
   }
-  return `/faces/grecque/unknown_m.webp`;
+  return null;
 }
 ---
 
@@ -47,31 +47,56 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
     <Header />
 
 <main class="flex-1 max-w-5xl mx-auto px-4 py-12">
-      <h1 class="text-4xl font-bold mb-10">Les entités de la mythologie grecque</h1>
+      <div class="mb-6 space-y-3">
+        <h1 class="text-4xl font-bold">Les entités de la mythologie grecque</h1>
+        <div class="flex items-center gap-3">
+          <input
+            id="entite-filter"
+            type="search"
+            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 outline-none transition"
+            placeholder="🔍 Rechercher par nom ou nature (ex : olympien, primordiale...)"
+            aria-label="Filtrer les entités"
+          />
+        </div>
+      </div>
 
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {entites.map((entite) => {
           const culture = entite.data.culture;
           const id = entite.data.id?.toString();
           const portrait = findFirstExistingFace(entite.slug, id, culture);
+          const natures = Array.isArray(entite.data.nature) ? entite.data.nature : [];
+          const searchText = `${entite.data.title} ${entite.data.id ?? entite.slug} ${natures.join(' ')}`;
 
           return (
             <a
-            href={`/entites/${entite.data.id ?? entite.slug}/`}
+            data-entite-card
+            data-search={searchText.toLowerCase()}
+              href={`/entites/${entite.data.id ?? entite.slug}/`}
               class="entite-card flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition"
             >
               <div class="flex-1">
                 <h2 class="entite-card-title text-xl font-semibold text-gray-900">{entite.data.title}</h2>
                 {entite.data.role && <p class="entite-card-role text-gray-500 text-sm mt-1">{entite.data.role}</p>}
+                {natures.length > 0 && (
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    {natures.map((nature) => (
+                      <span class="inline-flex items-center rounded-full bg-amber-100 text-amber-900 border border-amber-200 px-2 py-0.5 text-xs font-semibold">
+                        {nature}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-              <img
-                src={portrait}
-                alt={entite.data.title}
-                class="w-20 h-20 rounded-2xl object-cover border border-gray-200 entite-card-image shadow-inner flex-shrink-0 select-none"
-                draggable="false"
-                loading="lazy"
-                onerror="this.onerror=null;this.src='/faces/grecque/unknown_m.webp';"
-              />
+              {portrait && (
+                <img
+                  src={portrait}
+                  alt={entite.data.title}
+                  class="w-20 h-20 rounded-2xl object-cover border border-gray-200 entite-card-image shadow-inner flex-shrink-0 select-none"
+                  draggable="false"
+                  loading="lazy"
+                />
+              )}
             </a>
           );
         })}
@@ -97,4 +122,29 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
   :global(.theme-dark .entite-card-image) {
     border-color: rgba(148, 163, 184, 0.4);
   }
+  :global(.theme-dark #entite-filter) {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(148, 163, 184, 0.5);
+    color: #e5e7eb;
+  }
 </style>
+
+<script>
+  const input = document.getElementById('entite-filter');
+  const cards = Array.from(document.querySelectorAll('[data-entite-card]'));
+
+  const normalize = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  const filterCards = (value) => {
+    const tokens = normalize(value).split(/\s+/).filter(Boolean);
+    cards.forEach((card) => {
+      const haystack = card.dataset.search ? normalize(card.dataset.search) : '';
+      const ok = tokens.every((t) => haystack.includes(t));
+      card.style.display = ok ? '' : 'none';
+    });
+  };
+
+  input?.addEventListener('input', (e) => {
+    filterCards(e.target.value || '');
+  });
+</script>

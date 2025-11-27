@@ -4,6 +4,9 @@ culture: grecque
 id: grecque-persephone
 nature:
   - olympien
+  - chthonien
+  - dieu
+gender: f
 role: Reine des Enfers — Déesse du renouveau et des cycles saisonniers
 description: >-
   Fille de Déméter et compagne d’Hadès, Perséphone règne sur les Enfers et
@@ -19,66 +22,16 @@ symbols:
   - Fleurs printanières
   - Trône infernal
 ---
-Perséphone est la reine des Enfers et l’une des divinités les plus importantes du panthéon grec.  
-Déesse double, elle incarne à la fois la jeunesse lumineuse du printemps et la force mystérieuse du monde souterrain.
+# Perséphone
 
-## Origine et statut
+## Identité et dualité
+Perséphone est la reine des Enfers, mais aussi la déesse du renouveau végétal. Sa nature est double : elle partage le trône souterrain avec Hadès, tout en demeurant liée au cycle de la germination et de la vie terrestre. Elle incarne la frontière entre obscurité et lumière, absence et retour, mort et renaissance.
 
-Fille de **Déméter** et de **Zeus**, Perséphone appartient à la seconde génération olympienne.  
-Elle devient reine des Enfers après son union avec **Hadès**, mais conserve un lien profond avec la terre fertile et la végétation.
+## Enlèvement et cycle saisonnier
+Fille de Déméter et Zeus, elle est enlevée par Hadès alors qu’elle cueille des fleurs. Son séjour forcé dans le royaume souterrain plonge sa mère dans un deuil cosmique, provoquant la stérilité de la Terre. Lorsque Zeus ordonne son retour, Perséphone a mangé des grains de grenade, l’obligeant à passer une partie de l’année auprès d’Hadès. Ce cycle fonde la succession des saisons.
 
-## Symboles et représentations
+## Rôle dans les rites et traditions
+Perséphone tient un rôle central dans les Mystères d’Éleusis, où son descensus symbolise la mort et son retour la promesse d’une renaissance. Elle est à la fois souveraine sévère et espérance de renouveau, une figure au cœur de la spiritualité grecque.
 
-Perséphone est associée :
-
-- à la **grenade**, fruit des Enfers  
-- aux **torches**, symboles de sa recherche par Déméter  
-- aux **fleurs du printemps**, rappel de son innocence originelle  
-- à un **trône**, marque de son autorité souterraine  
-
-Elle est représentée tantôt jeune et lumineuse, tantôt majestueuse et sévère.
-
-## Cycle des saisons
-
-Le mythe fondamental de Perséphone explique le cycle des saisons :
-
-- lorsqu’elle est **aux Enfers** : automne / hiver  
-- lorsqu’elle **revient auprès de Déméter** : printemps / été  
-
-Ce partage symbolise :
-
-- la mort et la renaissance  
-- l’alternance naturelle  
-- l’équilibre entre monde visible et invisible
-
-## Rôle dans les Enfers
-
-En tant que reine, elle :
-
-- partage le trône avec Hadès  
-- accueille les âmes des morts  
-- préside à certains jugements  
-- veille à l’ordre sacré du monde souterrain
-
-Elle y est respectée et crainte.
-
-## Mystères et culte
-
-Perséphone, avec Déméter, est au cœur des **Mystères d’Éleusis**, rites initiatiques liés :
-
-- à la fertilité  
-- au destin des âmes  
-- à la promesse de renaissance spirituelle  
-
-Son culte est parmi les plus anciens et les plus importants de Grèce.
-
-## Une divinité de dualité
-
-Perséphone incarne :
-
-- la **transition** entre lumière et obscurité  
-- la **double nature** de la vie  
-- les **cycles naturels**  
-- la **continuité entre mort et renouveau**
-
-Elle est la figure même du passage, du rythme cosmique et du retour éternel.
+## Représentation
+Elle apparaît comme une jeune femme portant torche, épis de blé ou grenade. Ses représentations oscillent entre douceur lumineuse et majesté sombre.

@@ -1,6 +1,9 @@
 ---
 type GraphDisplayData = import("../lib/genealogie").GraphDisplayData;
-const { central, sections } = Astro.props as GraphDisplayData;
+interface Props extends GraphDisplayData {
+  pageIds?: string[];
+}
+const { central, sections, pageIds = [] } = Astro.props as Props;
 
 function getNatureLabel(node: any): string | null {
   if (node.display_class) return node.display_class;
@@ -43,12 +46,14 @@ function getNatureLabel(node: any): string | null {
                         <span class="nature-badge">{getNatureLabel(node)}</span>
                       ) : null}
                     </div>
-                    <a
-                    href={`/entites/${node.id}/`}
-                      class="text-xs text-indigo-600 hover:text-indigo-700 underline"
-                    >
-                      Voir la fiche
-                    </a>
+                    {pageIds.includes(node.id) ? (
+                      <a
+                        href={`/entites/${node.id}/`}
+                        class="text-xs text-indigo-600 hover:text-indigo-700 underline"
+                      >
+                        Voir la fiche
+                      </a>
+                    ) : null}
                   </div>
 
                   {node.variant && (

@@ -8,7 +8,7 @@ Le projet a pour objectifs :
 - d’offrir aux enseignants, élèves et curieux un outil propre et sans distraction ;
 - d’expérimenter une **modélisation de données** (généalogies, relations, sources) intégrée à une interface Web moderne.
 
-Le site est construit avec **Astro**, **TailwindCSS**, un **CMS headless (Decap)** et une structuration des contenus en **Markdown + frontmatter**.
+Le site est construit avec **Astro**, **TailwindCSS**, une structuration des contenus en **Markdown + frontmatter**, et des outils maison pour piloter les données (inspecteurs YAML/MD).
 
 ---
 
@@ -69,23 +69,35 @@ npm run lint      # Analyse le code avec ESLint
 
 ---
 
+## 🧰 5bis. Inspecteurs locaux (maintenance sans Decap)
+
+- `npm run yaml:tool:new` ouvre l’inspecteur YAML (nouvelle structure) pour créer/éditer entités et relations, avec gestion bilatérale des liens et validation consensus.
+- `npm run md:tool` ouvre l’inspecteur Markdown pour lister/filtrer/éditer les fiches (`frontmatter` + contenu brut).
+
+> V1 se maintient directement dans les fichiers YAML/MD ; l’ancien Decap n’est plus utilisé.
+
+---
+
 ## 🧱 5. Structure du projet
 
 ```
 mythoskolis/
 │
 ├── public/                 # Fichiers statiques (images, vidéos, assets)
-│   └── admin/              # Interface Decap CMS
 │
 ├── data/
-│   └── genealogie.yaml     # Source unique des relations familiales
+│   └── genealogie.yaml     # Source unique des relations familiales (nouveau format)
 │
 ├── src/
 │   ├── components/         # Composants Astro réutilisables (EgoGraph, Header, …)
-│   ├── content/            # Fiches (dieux, ressources...) en Markdown
+│   ├── content/            # Fiches (dieux, ressources...) en Markdown (frontmatter + corps)
 │   ├── lib/                # Utilitaires (lecture du YAML généalogique)
 │   ├── pages/              # Pages Astro => routes du site
 │   └── styles/             # Styles globaux (Tailwind)
+│
+├── tools/
+│   ├── yaml-inspector-new.html  # Inspecteur/générateur relations YAML (nouveau format)
+│   └── md-inspector.html        # Inspecteur/éditeur de frontmatters + corps Markdown
 │
 ├── .astro/                 # Types générés automatiquement par Astro
 ├── astro.config.mjs        # Configuration Astro
@@ -117,11 +129,19 @@ Le projet suit une organisation simple :
 
 ## 📌 8. État actuel du projet
 
-- Base Astro + Tailwind opérationnelle (pages d’accueil, dieux, ressources, à propos).  
-- Decap CMS configuré (`public/admin/config.yml`) pour éditer les fiches dieux/ressources.  
-- Données généalogiques centralisées dans `data/genealogie.yaml`, lues via `src/lib/genealogie.ts` puis exportées en JSON statique pour l’ego-graph.  
-- Nouvelle expérience `/genealogie/[slug]` : un composant interactif affiche les colonnes Parents / Fratrie / Consorts / Enfants (versions desktop + mobile), avec portraits tirés de `public/faces/` et transitions fluides entre personnages.  
-- README, docs et workflow Git alignés (travail sur branches `feature/*` + PR vers `main`).
+- Base Astro + Tailwind opérationnelle (pages d’accueil, dieux, ressources, à propos).
+- Données généalogiques centralisées dans `data/genealogie.yaml` (nouveau format), lues via `src/lib/genealogie.ts` puis exportées en JSON statique pour l’ego-graph.
+- Inspecteurs custom (YAML + MD) pour maintenir relations et fiches sans CMS externe.
+- Ego-graph interactif `/genealogie/[slug]` : colonnes Parents / Fratrie / Consorts / Enfants (desktop + mobile), portraits tirés de `public/faces/`.
+- Workflow Git : travail sur branches `feature/*` + PR vers `main`.
+
+## 🧭 Parcours du site
+
+- **Accueil** : introduction, mise en avant aléatoire de fiches et accès rapide à la généalogie interactive.
+- **Entités** (`/entites/`) : liste filtrable (nom/slug/nature) + fiches détaillées (`/entites/<id>/`) avec portrait, résumé, domaines/symboles, vidéo/image et encart “Généalogie détaillée”.
+- **Généalogie** (`/genealogie/<id>/`) : graphe interactif parents/fratrie/consorts/enfants, avec navigation entre entités et liens vers les fiches.
+- **Ressources** (`/ressources/`) : contenu éditorial/notes annexes (à compléter).
+- **À propos** : contexte du projet.
 
 ---
 

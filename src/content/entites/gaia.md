@@ -4,6 +4,7 @@ culture: grecque
 id: grecque-gaia
 nature:
   - primordial
+  - dieu
 gender: f
 role: Divinité primordiale de la Terre
 description: 'Mère primordiale, source vivante de toute chose.'
@@ -15,16 +16,17 @@ symbols:
   - Terre nourricière
   - Montagnes
   - Serpent
-display_class: Divinité primordiale
 ---
-Gaïa est la Terre vivante, la matrice d’où tout surgit. Des montagnes aux mers, des dieux aux mortels, elle enfante la première génération divine. Elle s’unit à Ouranos, puis à Pontos, donnant naissance aux Titans, aux Cyclopes et aux créatures primordiales.  
+# Gaïa
 
-Mère protectrice mais redoutable, elle ose se dresser contre Ouranos pour libérer leur descendance, et plus tard aide Zeus à renverser Cronos, afin que l’ordre du monde continue d’évoluer.
+## Nature cosmique
+Gaïa est la Terre primordiale, l’une des premières entités issues du Chaos. Elle incarne la fondation même de l’univers ordonné, mère du ciel, des montagnes, de la mer et de nombreuses divinités et créatures. Sa nature n’est pas anthropomorphique : elle est à la fois un être divin et le sol lui-même.
 
-### Rôle cosmique
-- **Fondation du monde** : Gaïa est le sol fertile, la stabilité sur laquelle reposent mers, montagnes et cités.  
-- **Mère des Titans** : elle engendre Cronos et Rhéa, ancêtres des Olympiens.  
-- **Alliée rusée** : elle fournit à Cronos la serpe qui affaiblit Ouranos, puis soutient Zeus face aux Titans.
+## Générations et descendance
+Gaïa engendre Ouranos (le Ciel), les Titans, les Cyclopes et les Hécatonchires. Elle joue un rôle essentiel dans les grands renversements cosmiques : elle aide Cronos à détrôner Ouranos, puis soutient les Géants dans leur révolte contre l’Olympe. Sa volonté influence les changements d’ère et le passage d’un ordre divin à un autre.
 
-### Héritage
-Gaïa incarne l’équilibre entre générosité et puissance brute : elle donne naissance, nourrit, mais peut aussi rappeler aux dieux leur ancrage dans la terre qu’ils habitent.
+## Rôle mythologique
+Gaïa n’agit pas comme une déesse olympienne : elle représente la force matricielle qui guide et corrige les déséquilibres du cosmos. Elle intervient pour rétablir une justice naturelle plus que morale, et ses actions visent souvent à contrer la tyrannie ou l’abus de pouvoir.
+
+## Iconographie
+Elle est parfois figurée comme une femme surgissant de la terre, à demi intégrée au paysage, entourée de fruits et de créatures naturelles. Le plus souvent, elle est évoquée plutôt que représentée, car elle incarne la Terre elle-même.

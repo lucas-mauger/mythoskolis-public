@@ -4,6 +4,8 @@ culture: grecque
 id: grecque-hebe
 nature:
   - olympien
+  - dieu
+gender: f
 role: Déesse de la jeunesse éternelle et échanson des dieux
 description: >-
   Fille de Zeus et d'Héra, Hébé personnifie la jeunesse resplendissante et
@@ -18,14 +20,16 @@ symbols:
   - Fleurs printanières
   - Voile lumineux
 ---
-Hébé représente l'énergie et la fraîcheur perpétuelles des dieux. Elle sert le nectar et l'ambroisie lors des banquets et assure à l'Olympe sa vitalité.
+# Hébé
 
-## Rôle et fonctions
+## Fonction et identité
+Hébé est la déesse de la jeunesse éternelle et l’échanson officielle de l’Olympe. Elle personnifie la fraîcheur, le renouveau et la vitalité divine, assurant la perpétuelle vigueur des dieux en leur servant le nectar et l’ambroisie.
 
-- **Échanson des dieux** : elle offre le nectar et reste garante des cérémonies olympiennes.
-- **Protectrice de la jeunesse** : elle symbolise la croissance harmonieuse, la santé et le renouveau.
-- **Épouse d'Héraclès** : après l'apothéose du héros, elle l'accueille et l'unit définitivement à l'Olympe.
+## Rôle familial
+Fille de Zeus et d’Héra, elle incarne l’harmonie et la continuité divine au sein de la famille olympienne. Sa présence contribue à l’image idéale de la cour céleste, où la jeunesse n’est pas un âge mais un état cosmique perpétuel.
 
-## Représentations
+## Mariage avec Héraclès
+Après l’apothéose d’Héraclès, Hébé devient son épouse, ce qui symbolise la restauration complète du héros et son intégration définitive parmi les immortels. Leur union marque la récompense ultime de l’effort héroïque : entrer dans l’éternité rajeunie.
 
-Hébé est généralement montrée souriante, tenant une coupe dorée ou un pichet à nectar, parfois munie de légères ailes. Ses vêtements fluides soulignent son éternelle jeunesse.
+## Iconographie
+Elle est représentée comme une jeune femme sereine, portant une coupe ou un pichet. Son image exprime douceur, stabilité et jeunesse préservée.

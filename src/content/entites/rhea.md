@@ -14,12 +14,17 @@ domains:
 symbols:
   - Tambourin
   - Lion
-display_class: Titan / Titanide
 ---
-Rhéa, sœur-épouse de Cronos, protège sa descendance en cachant Zeus pour éviter qu’il ne soit dévoré. Elle incarne la maternité et la fécondité, et accompagne la transition entre l’ère des Titans et l’ordre olympien. Dans la Théogonie, elle se présente aussi comme une médiatrice : elle ne renverse pas directement Cronos, mais ouvre la voie au renouvellement du cosmos.
+# Rhéa
 
-### Épisode clé
-- **La naissance de Zeus** : Rhéa confie Zeus aux nymphes du mont Ida en Crète et trompe Cronos avec une pierre emmaillotée. Ce geste déclenche la chute du règne titan et l’ascension des Olympiens.
+## Nature et identité
+Rhéa est une Titanide, fille de Gaïa et d’Ouranos, et figure maternelle majeure de la mythologie grecque. Elle incarne la fécondité, la sagesse tranquille et la continuité d’un monde divin qui passe des Titans aux Olympiens. Son rôle est essentiel dans la transition entre les anciennes puissances et l’ordre nouveau.
 
-### Iconographie
-- Souvent accompagnée de lions tirant son char ou tenant un tambourin (lien possible avec Cybèle dans certaines traditions), Rhéa évoque la puissance de la terre nourricière et la protection maternelle.
+## Mère des dieux olympiens
+Rhéa met au monde Hestia, Déméter, Héra, Hadès, Poséidon et Zeus. Mais Cronos, effrayé par une prophétie annonçant qu'il serait renversé par l’un de ses enfants, les dévore tous à leur naissance.
+
+## Le stratagème décisif
+Pour sauver Zeus, Rhéa cache le nouveau-né en Crète et donne à Cronos une pierre emmaillotée, que celui-ci avale. Ce subterfuge permet à Zeus d’échapper à son père et pose les bases de la révolte qui mènera à la Titanomachie. Par cette ruse déterminante, Rhéa devient l’un des moteurs silencieux du changement cosmique.
+
+## Iconographie
+Rhéa est représentée comme une mère majestueuse, parfois assise sur un trône ou accompagnée de lions, évoquant sa proximité symbolique avec Cybèle. Ses images soulignent sa dignité, sa force maternelle et son lien avec les traditions les plus anciennes.

@@ -4,6 +4,8 @@ culture: grecque
 id: grecque-demeter
 nature:
   - olympien
+  - dieu
+gender: f
 role: 'Déesse des moissons, de la fertilité et du cycle des saisons'
 description: >-
   Protectrice des cultures et mère de Perséphone, Déméter incarne la terre
@@ -18,50 +20,18 @@ symbols:
   - Torche
   - Corne d’abondance
 ---
-Déméter est l’une des divinités les plus essentielles de toute la mythologie grecque.  
-Elle représente la **terre féconde**, l’abondance, le pain, les récoltes et tout ce qui permet à l’humanité de survivre.
+# Déméter
 
-Son culte est profondément enraciné dans les sociétés agricoles, notamment en Attique, où elle est honorée dans les **mystères d’Éleusis**, des rites sacrés parmi les plus importants du monde antique.
+## Domaine et identité
+Déméter est la déesse de l’agriculture, des moissons et de la fertilité terrestre. Elle incarne la stabilité du cycle saisonnier, la générosité des récoltes et la survie des communautés humaines. Son culte est l’un des plus anciens et des plus essentiels du monde grec.
 
-## Le mythe fondateur : l’enlèvement de Perséphone
+## Mythe fondamental : la perte et le retour
+Le récit central qui la définit est celui de l’enlèvement de sa fille Perséphone par Hadès. Inconsolable, Déméter abandonne ses fonctions divines, plongeant la terre dans la stérilité. Ce retrait cosmique met les dieux en péril : sans humains pour offrir sacrifices et cultes, l’ordre divin s’effondrerait.
 
-L’histoire la plus célèbre liée à Déméter est celle du **rapt de sa fille Perséphone** par Hadès.
+Zeus ordonne la restitution de Perséphone, mais celle-ci ayant goûté aux fruits du monde souterrain, elle doit alterner entre les deux royaumes. Ce cycle devient l’explication mythique de l’alternance des saisons.
 
-Quand Perséphone disparaît, Déméter, folle de douleur :
+## Rôle cultuel
+Déméter est au cœur des Mystères d’Éleusis, rites initiatiques parmi les plus sacrés de la religion grecque. Ces cérémonies promettaient une forme d’espoir dans l’au-delà, fondée sur la compréhension symbolique du cycle mort–renaissance.
 
-- interrompt toutes les récoltes  
-- assèche les champs  
-- prive l’humanité de nourriture  
-
-Les dieux supplient Zeus d’intervenir.  
-Finalement, un accord est trouvé :
-
-- Perséphone passe **une partie de l’année avec Déméter** → printemps + été  
-- et **une partie avec Hadès** → automne + hiver  
-
-Ce mythe explique symboliquement **le cycle des saisons**.
-
-## Symboles et attributs
-
-Déméter est souvent représentée avec :
-
-- un **épi de blé**, symbole de vie  
-- une **torche**, utilisée pour chercher Perséphone  
-- la **corne d’abondance**, signe de prospérité  
-
-Elle apparaît comme une femme majestueuse, grave, profondément maternelle.
-
-## Rôle dans les récits
-
-Outre le mythe des saisons, Déméter joue un rôle dans :
-
-- l’éducation de **Démophon**, qu’elle tente d’immortaliser  
-- les rites sacrés de **Triptolemos**, auquel elle enseigne l’agriculture  
-- la fondation des **mystères d’Éleusis**, promesse d’un au-delà apaisé
-
-## Une force vitale et sacrée
-
-Déméter incarne la **vie même** :  
-celle qui nourrit, qui protège, qui endure, qui pleure et qui renait.
-
-Sans elle, les dieux eux-mêmes reconnaissent que l’humanité n’aurait pas pu survivre.
+## Iconographie
+Elle est représentée avec un épi de blé, une faucille, une torche ou une corne d’abondance. Sa présence évoque la fécondité, la stabilité et la protection maternelle.

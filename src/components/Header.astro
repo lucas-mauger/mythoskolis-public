@@ -132,12 +132,17 @@
     background: rgba(15, 23, 42, 0.9);
     border-color: rgba(148, 163, 184, 0.35);
   }
+  header {
+    position: relative;
+    z-index: 1000; /* garantit que le drawer passe au-dessus du contenu principal */
+  }
   .mobile-drawer {
     right: -18rem;
     transition: right 200ms ease, opacity 200ms ease;
     pointer-events: none;
     visibility: hidden;
     opacity: 0;
+    z-index: 9999; /* au-dessus des CTA/page */
   }
   .mobile-drawer.is-open {
     right: 0;

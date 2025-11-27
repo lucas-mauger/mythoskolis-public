@@ -4,6 +4,8 @@ culture: grecque
 id: grecque-hephaistos
 nature:
   - olympien
+  - dieu
+gender: m
 role: 'Dieu du feu, des forges, des métaux et de l’artisanat'
 description: >-
   Maître artisan de l’Olympe, Héphaïstos façonne les armes et objets divins,
@@ -20,55 +22,16 @@ symbols:
   - Pinces
   - Feu de forge
 ---
-Héphaïstos est le forgeron divin, artisan des armes, armures et objets sacrés les plus importants de la mythologie grecque.  
-Boiteux et souvent mis à l’écart, il est pourtant indispensable aux dieux, grâce à sa maîtrise du feu et du métal.
+# Héphaïstos
 
-## Naissance et place dans l’Olympe
+## Nature et maîtrise
+Héphaïstos est le dieu du feu créateur, des forges, des métaux et de l’artisanat. Il incarne l’ingéniosité technique, le travail acharné et la transformation de la matière brute en objets d’une perfection divine. Son talent façonne l’Olympe autant qu’il l’orne.
 
-Dans certaines traditions, Héphaïstos naît uniquement d’Héra, furieuse contre Zeus.  
-Chassé à sa naissance en raison de sa difformité, il revient plus tard à l’Olympe après avoir démontré son talent incomparable.
+## Naissance et rejet
+Selon certaines traditions, Héra le met au monde seule et le jette de l’Olympe en raison de son infirmité. D’autres récits racontent qu’il est précipité par Zeus après avoir tenté de défendre sa mère. Ces chutes successives n’entament pas sa grandeur : il se construit un empire de créativité dans les profondeurs où il règne sur des ateliers prodigieux.
 
-## Attributs et compétences
+## Œuvres et influence
+Héphaïstos forge les armes d’Achille, le trône d’Héra, les chaînes de Prométhée et une multitude d’objets divins. Il crée automates, bijoux, palais et pièges ingénieux. Par son art, il confère forme, cohérence et beauté au monde divin. Son caractère patient contraste avec la brutalité d’autres dieux.
 
-Il est représenté :
-
-- avec son **marteau**, son **enclume** et ses **pinces**,  
-- près d’un **foyer de forge**,  
-- parfois accompagné de **nymphes** ou d’**autómates** fabriqués par lui.
-
-Son domaine s’étend aux **volcans**, considérés comme les cheminées de ses ateliers.
-
-## Œuvres et créations
-
-Parmi ses créations les plus célèbres figurent :
-
-- les **éclairs de Zeus**  
-- le **trident de Poséidon**  
-- les **armes d’Achille**, dont son bouclier  
-- les **chaînes de Prométhée**  
-- l’**égide** d’Athéna  
-- la **ceinture d’Aphrodite**  
-- des **automates d’or** pour l’assister
-
-## Rôle dans la mythologie
-
-Héphaïstos intervient souvent comme artisan indispensable :
-
-- il forge des armes pour les héros  
-- construit des pièges complexes  
-- crée des artefacts magiques  
-- fabrique Pandore à la demande de Zeus
-
-Bien qu’il subisse parfois rejet et moqueries, il reste un dieu respecté pour sa technicité et son utilité.
-
-## Une divinité du travail et de l’ingéniosité
-
-Héphaïstos incarne :
-
-- l’effort  
-- la technique  
-- le savoir-faire  
-- la créativité appliquée  
-- la transformation de la matière  
-
-Il est le modèle du **créateur**, du **constructeur**, et de celui qui donne forme à la puissance divine.
+## Iconographie
+Il apparaît comme un artisan robuste, souvent boiteux, tenant marteau, enclume ou pinces. La lueur du foyer et les étincelles de la forge sont au cœur de sa représentation, symboles de la puissance créatrice issue du feu maîtrisé.

@@ -4,6 +4,8 @@ culture: grecque
 id: grecque-poseidon
 nature:
   - olympien
+  - dieu
+gender: m
 role: 'Dieu des mers, des tremblements de terre et des chevaux'
 description: >-
   Frère de Zeus et souverain des mers, Poséidon règne sur les océans et exerce
@@ -19,52 +21,16 @@ symbols:
   - Dauphin
   - Tsunami
 ---
-Poséidon est l’un des trois grands souverains du cosmos, aux côtés de Zeus et Hadès.  
-Il règne sur toutes les étendues maritimes et est responsable des phénomènes géologiques et sismiques.  
-Sa puissance est immense et redoutée, car la mer est aussi instable que son tempérament.
+# Poséidon
 
-## Rôle et attributs
+## Nature et puissance
+Poséidon est le dieu des mers, maître des profondeurs et des phénomènes violents qui agitent le monde : tempêtes, tremblements de terre, fracas des vagues. Il incarne la part sauvage et indomptable du cosmos, aussi capable de générosité maritime que de destruction brutale.
 
-Poséidon est traditionnellement représenté :
+## Rôle dans la mythologie
+Frère de Zeus et d’Hadès, il reçoit l’empire marin lors du partage du monde après la Titanomachie. Poséidon intervient dans la fondation de nombreuses cités, rivalise avec Athéna pour Athènes, protège les marins mais peut aussi se montrer implacable. L’épopée d’Ulysse témoigne de sa rancune durable et de sa puissance punitive.
 
-- tenant un **trident**, symbole de son autorité  
-- accompagné de **chevaux** ou d’animaux marins  
-- représenté comme un dieu puissant, barbu, souvent irritable  
+## Domaines d'influence
+Il est le dieu des chevaux, symbole de force et d’impulsion, et celui des sources marines ou mouvantes. Le lien entre mer et tremblement de terre fait de lui le « Secoueur de la Terre », maître des forces telluriques.
 
-Il est aussi associé à la création du **cheval**, qu’il aurait offert à l’humanité.
-
-## Domaine d’influence
-
-En tant que maître des mers :
-
-- il commande les vagues, les tempêtes et les courants  
-- peut déclencher des **tremblements de terre**, d’où son surnom de « Ébranleur de la terre »  
-- protège les marins… mais peut tout aussi bien les engloutir  
-
-Son caractère est changeant, à l’image du milieu qu’il gouverne.
-
-## Interventions mythologiques
-
-Poséidon apparaît dans de nombreux récits :
-
-- il dispute Athènes à Athéna pour le patronage de la cité  
-- intervient dans l’Odyssée comme adversaire d’Ulysse  
-- aide ou punit divers héros selon ses faveurs  
-- soutient Troie lors de la guerre, selon certaines traditions  
-- crée des monstres marins que l’on retrouve dans plusieurs mythes (Céto, Scylla…)
-
-## Relations divines
-
-Il est l’époux d’**Amphitrite**, une Néréide, avec laquelle il forme un couple régnant sur les océans.  
-Il a de nombreux enfants, divins ou monstrueux, liés aux forces marines.
-
-## Une divinité de puissance brute
-
-Poséidon incarne :
-
-- la force destructrice de la mer  
-- la nature sauvage des océans  
-- la puissance géologique  
-- les fondements mouvants du monde  
-
-Sa présence rappelle que la mer, indispensable et nourricière, peut aussi être un royaume de colère et de chaos.
+## Iconographie
+Poséidon est représenté barbu, majestueux, tenant un trident. Il peut être accompagné de créatures marines telles que hippocampes ou dauphins. Son image évoque la puissance souveraine du monde aquatique.

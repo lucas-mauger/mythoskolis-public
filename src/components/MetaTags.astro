@@ -1,0 +1,42 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string | null;
+  url?: string;
+  type?: 'website' | 'article';
+  canonical?: string;
+}
+
+const props = Astro.props as Props;
+
+function truncate(text: string, max = 160) {
+  if (!text) return '';
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  return clean.slice(0, max - 1).trimEnd() + '…';
+}
+
+const metaTitle = props.title;
+const metaDescription = truncate(props.description);
+const metaType = props.type ?? 'website';
+const metaImage = props.image || null;
+const metaUrl = props.url || props.canonical || null;
+const canonical = props.canonical || metaUrl || null;
+---
+
+<title>{metaTitle}</title>
+<meta name="description" content={metaDescription} />
+
+<meta property="og:type" content={metaType} />
+<meta property="og:title" content={metaTitle} />
+<meta property="og:description" content={metaDescription} />
+{metaUrl && <meta property="og:url" content={metaUrl} />}
+{metaImage && <meta property="og:image" content={metaImage} />}
+
+<meta name="twitter:card" content={metaImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={metaTitle} />
+<meta name="twitter:description" content={metaDescription} />
+{metaImage && <meta name="twitter:image" content={metaImage} />}
+
+{canonical && <link rel="canonical" href={canonical} />}

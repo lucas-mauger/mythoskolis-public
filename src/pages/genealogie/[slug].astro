@@ -6,6 +6,7 @@ import '../../styles/global.css';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import { getEgoGraphById, getEntityById, getEntityBySlug } from '../../lib/genealogie';
+import MetaTags from '../../components/MetaTags.astro';
 
 interface Props {
   entry: CollectionEntry<'entites'>;
@@ -26,14 +27,22 @@ const yamlEntity = getEntityById(centralId) ?? getEntityBySlug(centralId) ?? get
 const egoGraph = getEgoGraphById(centralId) ?? getEgoGraphById(entry.slug) ?? getEgoGraphById(yamlEntity?.id ?? '');
 const hasData = Boolean(egoGraph);
 const entityName = yamlEntity?.name ?? entry.data.title;
+const allEntries = await getCollection('entites');
+const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 ---
 
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <title>Généalogie de {entityName} | Mythoskolis</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={`Généalogie de ${entityName} | Mythoskolis`}
+    description={`Arbre familial de ${entityName}: parents, fratrie, enfants et consorts.`}
+    image={`/faces/${yamlEntity?.culture ?? entry.data.culture ?? 'grecque'}/${centralId}.webp`}
+    canonical={`/genealogie/${centralId}/`}
+    type="article"
+  />
+</head>
 
   <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
     <Header />
@@ -50,7 +59,7 @@ const entityName = yamlEntity?.name ?? entry.data.title;
       </div>
 
       {hasData ? (
-        <EgoGraphInteractive initialSlug={centralId} />
+        <EgoGraphInteractive initialSlug={centralId} pageIds={pageIds} />
       ) : (
         <div class="rounded-2xl border border-dashed border-indigo-300 bg-indigo-50/60 p-6 text-indigo-900">
           <h2 class="text-2xl font-semibold mb-2">Cartographie en cours</h2>
