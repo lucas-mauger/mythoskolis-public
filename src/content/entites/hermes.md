@@ -25,9 +25,6 @@ symbols:
   - Chapeau ailé (pétase)
   - Tortue
 ---
-# Hermès
-
-## Nature et fonctions
 Hermès est le messager des dieux, dieu des voyageurs, des échanges, des seuils et de la ruse. Il incarne la mobilité, l’intelligence inventive et la capacité de franchir toutes les frontières : géographiques, sociales, symboliques ou métaphysiques.
 
 ## Naissance et caractère

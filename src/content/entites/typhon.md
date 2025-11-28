@@ -20,9 +20,6 @@ symbols:
   - Montagnes en flammes
   - Tempêtes
 ---
-
-# Typhon
-
 ## Origine et essence
 Typhon est un monstre primordial né de **Gaïa** et du **Tartare**, dans une tradition où la Terre, irritée par la défaite des Titans, engendre une créature destinée à défier l’autorité de Zeus. Il appartient au monde des forces archaïques, antérieures à l’ordre olympien, et reprend dans sa personne toute la violence brute de la nature encore indomptée.
 
@@ -70,5 +67,4 @@ Cette descendance forme l’ensemble des épreuves auxquelles sont confrontés l
 
 ## Iconographie
 Typhon est représenté comme un géant ailé à corps serpentin, souvent en lutte contre Zeus. Les représentations tardives accentuent son caractère volcanique : montagnes éventrées, éclairs, et serpents enroulés autour de son corps.
-
 

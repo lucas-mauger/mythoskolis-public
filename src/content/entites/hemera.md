@@ -19,9 +19,6 @@ symbols:
   - Aube
   - Ciel clair
 ---
-
-# Héméra
-
 ## Nature et essence
 Héméra est la personnification primordiale du Jour, fille de Nyx (la Nuit) et d’Érèbe (les Ténèbres). Elle représente la lumière terrestre qui apparaît chaque matin, distincte de la lumière divine d’Éther et du simple éclat du soleil. Héméra est l’incarnation du passage de l’obscurité à la clarté, un phénomène cosmique fondamental qui rythme le monde des mortels.
 
@@ -37,4 +34,3 @@ Héméra n’a pas de rôle narratif dans les récits mythologiques. Elle ne pre
 
 ## Iconographie
 Elle apparaît parfois dans les représentations tardives comme une femme lumineuse émergeant de l’aube, drapée de voiles clairs ou tenant une torche légère. Les artistes modernes la montrent montée dans l’horizon, symbole du renouveau quotidien.
-

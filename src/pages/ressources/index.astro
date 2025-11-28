@@ -3,6 +3,10 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
+import { getCollection } from 'astro:content';
+
+const ressources = await getCollection('ressources');
+const sorted = ressources.slice().sort((a, b) => a.data.title.localeCompare(b.data.title, 'fr', { sensitivity: 'base' }));
 ---
 
 <html lang="fr">
@@ -20,19 +24,63 @@ import '../../styles/global.css';
   <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
     <Header />
 
-    <main class="flex-1 max-w-4xl mx-auto px-4 py-12">
-      <h1 class="text-4xl font-bold mb-6">Ressources</h1>
+    <main class="flex-1 max-w-5xl mx-auto px-4 py-12 space-y-8">
+      <div class="space-y-3">
+        <p class="text-sm uppercase tracking-wide text-gray-500">Ressources</p>
+        <h1 class="text-4xl font-bold">Ressources pédagogiques</h1>
+        <p class="text-lg text-gray-700 max-w-3xl">
+          Textes antiques, guides de lecture et fiches pédagogiques pour explorer la mythologie.
+        </p>
+      </div>
 
-      <p class="text-lg leading-relaxed text-gray-700">
-        Cette section accueillera diverses ressources liées à la mythologie :
-        arbres généalogiques, bibliographie, vidéos, articles, notes et analyses.
-      </p>
-
-      <p class="mt-8 text-gray-600">
-        Le contenu arrive très bientôt !
-      </p>
+      {sorted.length === 0 ? (
+        <p class="text-gray-600">Aucune ressource n'est encore disponible.</p>
+      ) : (
+        <div class="grid gap-4 sm:grid-cols-2">
+          {sorted.map((res) => (
+            <a
+              href={`/ressources/${res.slug}/`}
+              class="block p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition"
+            >
+              <h2 class="text-xl font-semibold text-gray-900">{res.data.title}</h2>
+              <p class="text-sm text-gray-600 mt-2">{res.data.description}</p>
+            </a>
+          ))}
+        </div>
+      )}
     </main>
 
     <Footer />
   </body>
 </html>
+
+<style>
+  :global(.theme-dark body) {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+  :global(.theme-dark h1) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark p) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .text-gray-500) {
+    color: #94a3b8;
+  }
+  :global(.theme-dark .text-gray-700) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .text-gray-900) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .bg-white) {
+    background: rgba(15, 23, 42, 0.9);
+  }
+  :global(.theme-dark .border-gray-200) {
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .hover\\:shadow-lg:hover) {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+</style>

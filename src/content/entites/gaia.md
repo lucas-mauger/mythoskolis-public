@@ -17,9 +17,6 @@ symbols:
   - Montagnes
   - Serpent
 ---
-# Gaïa
-
-## Nature cosmique
 Gaïa est la Terre primordiale, l’une des premières entités issues du Chaos. Elle incarne la fondation même de l’univers ordonné, mère du ciel, des montagnes, de la mer et de nombreuses divinités et créatures. Sa nature n’est pas anthropomorphique : elle est à la fois un être divin et le sol lui-même.
 
 ## Générations et descendance

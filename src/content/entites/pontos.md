@@ -18,9 +18,6 @@ symbols:
   - Courants archaïques
   - Poissons et créatures marines
 ---
-
-# Pontos
-
 ## Nature et origine
 Pontos est la divinité primordiale de la Mer, né directement de Gaïa sans union. Il représente les eaux profondes dans leur forme la plus ancienne, antérieure à l’ordre imposé par les Olympiens. Contrairement à Poséidon, dieu marin anthropomorphe, Pontos n’est pas un souverain mais une force cosmique : l’immensité marine brute, matrice fluide de nombreuses lignées.
 
@@ -43,4 +40,3 @@ Sa présence invisible mais fondamentale structure l’ensemble des forces aquat
 
 ## Iconographie
 Pontos est rarement représenté. Lorsqu’il l’est, c’est sous la forme d’une figure masculine barbue émergeant des flots, parfois enveloppée de poissons ou de coraux. Mais la plupart du temps, son identité demeure abstraite : il est la mer elle-même, dans sa profondeur originelle.
-

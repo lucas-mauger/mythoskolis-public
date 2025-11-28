@@ -18,9 +18,6 @@ symbols:
   - Flamme vacillante
   - Narcisse
 ---
-
-# Thanatos
-
 ## Nature et essence
 Thanatos est la personnification primordiale de la mort douce et inévitable. Né de Nyx, la Nuit, il appartient à la lignée des puissances abstraites qui structurent la condition humaine. Contrairement aux Kères, esprits de la mort violente et du carnage, Thanatos représente l’extinction paisible, le dernier souffle qui ne s’accompagne ni de combat ni de déchirement.
 
@@ -40,4 +37,3 @@ Dans la tragédie *Alceste* d’Euripide, il est brièvement opposé à Héracl�
 Les représentations antiques le montrent comme un jeune homme ailé, souvent d’une grande beauté, parfois tenant une torche renversée symbolisant la vie qui s’éteint. Dans l’art funéraire, il apparaît comme un guide serein, loin des visions terrifiantes associées aux morts violentes.
 
 Son iconographie insiste sur la douceur, la dignité et l’inéluctabilité tranquille.
-

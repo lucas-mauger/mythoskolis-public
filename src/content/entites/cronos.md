@@ -15,9 +15,6 @@ symbols:
   - Serpe
   - Sablier
 ---
-# Cronos
-
-## Nature et rôle cosmique
 Cronos est l’un des Titans majeurs, fils de Gaïa et d’Ouranos. Il représente le temps destructeur, l’ordre ancien et la puissance qui précède l’âge des dieux olympiens. Son règne appartient à un monde primitif où les forces cosmiques s’affrontent directement, sans médiation.
 
 ## Ascension et règne

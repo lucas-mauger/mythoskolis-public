@@ -17,9 +17,6 @@ symbols:
   - Éther
   - Serpe (symbole de sa chute)
 ---
-# Ouranos
-
-## Nature cosmique
 Ouranos est la divinité primordiale du Ciel, l’une des premières entités surgies après la naissance de Gaïa. Il représente la voûte céleste elle-même, couvrant et enveloppant la Terre. Sa nature n’est pas anthropomorphique à l’origine : il est le Ciel vivant, une force cosmique plutôt qu’un dieu olympien.
 
 ## Rôle dans la création

@@ -21,9 +21,6 @@ symbols:
   - Voile nuptial
   - Lys
 ---
-# Héra
-
-## Identité et autorité
 Héra est la reine des dieux, déesse du mariage, de la vie familiale et de la légitimité institutionnelle. Sa fonction dépasse largement la simple sphère conjugale : elle incarne l’ordre social, la stabilité des unions et la continuité des lignées.
 
 ## Naissance et position dans l’Olympe

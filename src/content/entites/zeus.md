@@ -20,9 +20,6 @@ symbols:
   - Aigle
   - Chêne
 ---
-# Zeus
-
-## Rôle et essence
 Zeus est le **dieu du ciel**, du tonnerre et de l’éclair, mais surtout le **roi des dieux**, celui qui impose l’ordre divin.  
 Son autorité ne repose pas sur la tyrannie : il écoute, arbitre, récompense et punit. Il garantit les serments, protège l’hospitalité (la *xenia*) et agit comme ultime recours lorsqu’un conflit menace l’équilibre du monde.
 

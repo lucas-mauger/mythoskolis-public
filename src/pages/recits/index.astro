@@ -1,0 +1,230 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
+import '../../styles/global.css';
+import { getCollection, getEntry } from 'astro:content';
+
+const recits = await getCollection('recits');
+const tagEntry = await getEntry('data', 'tags-recits');
+const tagLabelMap = new Map<string, string>();
+tagEntry?.data?.categories?.forEach((cat) => {
+  cat.tags.forEach((t) => tagLabelMap.set(t.id, t.label));
+});
+
+const recitsWithTags = recits.map((r) => {
+  const tagIds = r.data.tags || [];
+  const tagLabels = tagIds.map((id) => tagLabelMap.get(id) ?? id);
+  return { ...r, tagIds, tagLabels };
+});
+
+const sorted = recitsWithTags
+  .slice()
+  .sort((a, b) => a.data.title.localeCompare(b.data.title, 'fr', { sensitivity: 'base' }));
+const pageTitle = "Récits mythologiques | Mythoskolis";
+const pageDescription =
+  "Parcours les récits et épisodes mythologiques : résumés sourcés, personnages impliqués et contexte.";
+---
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={pageTitle}
+    description={pageDescription}
+    canonical="/recits/"
+    type="website"
+  />
+</head>
+
+  <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+    <Header />
+
+    <main class="flex-1 max-w-5xl mx-auto px-4 py-12 space-y-8">
+      <div class="space-y-3">
+        <p class="text-sm uppercase tracking-wide text-gray-500">Corpus</p>
+        <h1 class="text-4xl font-bold">Récits mythologiques</h1>
+        <p class="text-lg text-gray-700 max-w-3xl">
+          Episodes, enlèvements, naissances ou rivalités : explore les récits structurants des mythes, avec leurs sources et les personnages impliqués.
+        </p>
+        <div class="filter-bar">
+          <label for="tag-filter" class="text-sm text-gray-600">Filtrer par tag</label>
+          <input id="tag-filter" type="text" placeholder="ex : jalousie, descente aux enfers…" class="filter-input" />
+        </div>
+        <div class="actions-row">
+          <a href="/recits/tags/" class="tag-link">Voir les tags</a>
+        </div>
+      </div>
+
+      {sorted.length === 0 ? (
+        <p class="text-gray-600">Aucun récit n'est encore disponible.</p>
+      ) : (
+        <div id="recits-grid" class="grid gap-4 sm:grid-cols-2">
+          {sorted.map((recit) => {
+            const tagString = (recit.tagLabels || []).join(' ');
+            return (
+              <a
+                href={`/recits/${recit.slug}/`}
+                class="recit-card block p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition"
+                data-tags={tagString}
+              >
+                <h2 class="text-xl font-semibold text-gray-900">{recit.data.title}</h2>
+                {recit.data.era && (
+                  <p class="text-xs text-gray-500 mt-1">{recit.data.era}</p>
+                )}
+                {recit.data.summary && (
+                  <p class="text-sm text-gray-600 mt-3 line-clamp-3">{recit.data.summary}</p>
+                )}
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </main>
+
+    <Footer />
+
+    <script>
+      const input = document.getElementById('tag-filter');
+      const cards = Array.from(document.querySelectorAll('.recit-card'));
+
+      const normalize = (str) =>
+        str
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu, '')
+          .toLowerCase();
+
+      const applyFilter = () => {
+        const q = normalize(input?.value || '');
+        cards.forEach((card) => {
+          const tags = normalize(card.dataset.tags || '');
+          if (!q || tags.includes(q)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const initial = params.get('tag') || '';
+      if (input) input.value = initial;
+
+      input?.addEventListener('input', applyFilter);
+      applyFilter();
+    </script>
+  </body>
+</html>
+
+<style>
+  .filter-bar {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    max-width: 480px;
+  }
+  .filter-input {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.95rem;
+    color: #111827;
+    background: #fff;
+  }
+  .filter-input:focus {
+    outline: none;
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+  }
+  .tag-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.65rem;
+    border-radius: 9999px;
+    background: #f3f4f6;
+    color: #374151;
+    font-size: 0.8rem;
+    border: 1px solid #e5e7eb;
+  }
+  .actions-row {
+    margin-top: 0.4rem;
+  }
+  .tag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    color: #4338ca;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 9999px;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  }
+  .tag-link:hover {
+    border-color: #a5b4fc;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.18);
+    transform: translateY(-1px);
+  }
+  :global(.theme-dark body) {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+  :global(.theme-dark h1) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark p) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .text-gray-500) {
+    color: #94a3b8;
+  }
+  :global(.theme-dark .text-gray-700) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .text-gray-900) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .bg-white) {
+    background: rgba(15, 23, 42, 0.9);
+  }
+  :global(.theme-dark .border-gray-200) {
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .hover\\:shadow-lg:hover) {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+  :global(.theme-dark .tag-link) {
+    background: rgba(79, 70, 229, 0.15);
+    border-color: rgba(129, 140, 248, 0.5);
+    color: #c7d2fe;
+  }
+  :global(.theme-dark .tag-link:hover) {
+    border-color: rgba(129, 140, 248, 0.8);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  :global(.theme-dark .filter-input) {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(148, 163, 184, 0.45);
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .filter-input:focus) {
+    border-color: rgba(129, 140, 248, 0.6);
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
+  }
+  :global(.theme-dark .tag-pill) {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #e5e7eb;
+  }
+</style>

@@ -22,9 +22,6 @@ symbols:
   - Chien
   - Vautour
 ---
-# Arès
-
-## Essence martiale
 Arès personnifie la violence guerrière à l’état brut, le tumulte du combat et la part la plus sauvage de la guerre. Contrairement à Athéna, qui incarne stratégie et intelligence militaire, Arès représente l’impulsion, la charge frontale, le fracas des armes.
 
 ## Position dans l’Olympe

@@ -22,9 +22,6 @@ symbols:
   - Olive
   - Casque et lance
 ---
-# Athéna
-
-## Nature et souveraineté intellectuelle
 Athéna est la déesse de la sagesse, de la stratégie militaire, de l’artisanat et de la maîtrise technique. Elle incarne l’intelligence ordonnée, la réflexion, l’équilibre politique et la capacité de transformer la violence en organisation. Son autorité repose sur la raison et la lucidité.
 
 ## Naissance singulière

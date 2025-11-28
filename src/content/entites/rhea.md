@@ -15,9 +15,6 @@ symbols:
   - Tambourin
   - Lion
 ---
-# Rhéa
-
-## Nature et identité
 Rhéa est une Titanide, fille de Gaïa et d’Ouranos, et figure maternelle majeure de la mythologie grecque. Elle incarne la fécondité, la sagesse tranquille et la continuité d’un monde divin qui passe des Titans aux Olympiens. Son rôle est essentiel dans la transition entre les anciennes puissances et l’ordre nouveau.
 
 ## Mère des dieux olympiens

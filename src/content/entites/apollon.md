@@ -22,9 +22,6 @@ symbols:
   - Arc d’argent
   - Soleil
 ---
-# Apollon
-
-## Identité divine
 Apollon est le dieu de la lumière mesurée, de la musique, de la divination, de l’harmonie intérieure et de la rigueur intellectuelle. Il représente l’ordre contre le chaos, la pureté contre la souillure, l’équilibre contre l’excès. Dans l’imaginaire grec, il incarne l’idéal aristocratique de maîtrise et de cohérence.
 
 ## Naissance et affirmation

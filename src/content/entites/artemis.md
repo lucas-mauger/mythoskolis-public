@@ -20,9 +20,6 @@ symbols:
   - Biche
   - Lune
 ---
-# Artémis
-
-## Identité et domaine
 Artémis est la déesse de la chasse, de la nature sauvage, de la virginité et de la protection des jeunes êtres, qu’ils soient humains ou animaux. Elle représente l’indépendance absolue, la maîtrise du territoire et une relation intime avec les lieux naturels que les mortels n’occupent qu’en invités.
 
 ## Naissance et traits fondamentaux

@@ -18,9 +18,6 @@ symbols:
   - Étoiles des Pléiades
   - Cape nocturne
 ---
-# Maia
-
-## Nature et position
 Maia est l’aînée des Pléiades, nymphes astrales filles d’Atlas et de Pléioné. Elle est connue pour sa discrétion, sa douceur et sa nature retirée. Bien qu’elle appartienne à une lignée céleste, Maia préfère l’isolement paisible des grottes et des lieux reculés.
 
 ## Union avec Zeus et maternité

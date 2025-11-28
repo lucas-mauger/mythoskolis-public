@@ -20,9 +20,6 @@ symbols:
   - Lance en bois
   - Feuillage dense
 ---
-
-# Méliades
-
 ## Origine et nature
 Les Méliades — parfois appelées « nymphes des frênes » — sont nées du sang d’Ouranos lorsque Cronos mutila son père. En tombant sur Gaïa, ce sang engendra plusieurs lignées primordiales : les Géants, les Érinyes, et les Méliades.  
 Elles appartiennent donc à la génération des êtres sauvages issus de la violence fondatrice du cosmos.
@@ -46,5 +43,4 @@ Elles figurent parmi les puissances anciennes que l’on respecte mais que l’o
 
 ## Iconographie
 Les Méliades sont représentées comme des nymphes associées aux frênes, souvent vêtues de feuilles ou tenant des rameaux. Parfois, leur iconographie met l’accent sur leur puissance guerrière en les montrant avec des lances ou des hampes de bois.
-
 

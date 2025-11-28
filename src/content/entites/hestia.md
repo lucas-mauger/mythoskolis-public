@@ -20,9 +20,6 @@ symbols:
   - Âtre domestique
   - Voile
 ---
-# Hestia
-
-## Nature et rôle fondamental
 Hestia est la déesse du foyer, du feu sacré et de l’hospitalité. Elle représente la stabilité domestique, la cohésion communautaire et le centre immobile autour duquel s’organise la vie humaine. Sa présence est discrète mais essentielle : elle n’intervient presque jamais dans les récits, mais elle structure symboliquement toute la société grecque.
 
 ## Importance rituelle

@@ -18,9 +18,6 @@ symbols:
   - Chemin inéluctable
   - Fil brisé
 ---
-
-# Moros
-
 ## Nature et essence
 Moros est la personnification primordiale du destin fatal, celui qui ne peut être évité ni contourné. Issu de Nyx seule selon Hésiode, il représente l’inflexible nécessité qui pèse sur les dieux comme sur les mortels. Contrairement aux Moires, qui tissent le destin, Moros incarne l’issue elle-même : la part sombre de l’avenir, déjà écrite et impossible à modifier.
 
@@ -38,4 +35,3 @@ Moros représente parmi eux la part la plus radicale de l’avenir : non le chem
 
 ## Iconographie
 Il n’existe aucune représentation antique assurée de Moros. Les traditions postérieures le montrent parfois comme une figure sombre, enveloppée d’un voile noir, avançant sans détour vers un but fixé. Sa représentation symbolique met souvent en avant un chemin unique, une silhouette indistincte ou un fil rompu, signes de l’inévitabilité.
-

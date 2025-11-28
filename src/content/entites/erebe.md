@@ -18,9 +18,6 @@ symbols:
   - Brouillard sombre
   - Profondeurs
 ---
-
-# Érèbe
-
 ## Nature et essence
 Érèbe est une divinité primordiale représentant les ténèbres profondes et la part obscure du monde avant toute structuration. Il ne s’agit pas d’un dieu personnifié au sens olympien, mais d’une force fondamentale liée aux zones où la lumière est absente, l’ombre originelle qui précède la création ordonnée.
 
@@ -40,4 +37,3 @@ Cette descendance souligne une idée centrale : de l’obscurité première naî
 
 ## Iconographie
 Érèbe est rarement représenté. Lorsqu’il l’est, c’est sous la forme d’une silhouette indistincte plongée dans l’ombre, ou d’un voile sombre enveloppant l’espace. Les artistes modernes le figurent parfois comme une présence obscure et diffuse, incarnation du mystère primordial.
-

@@ -18,9 +18,6 @@ symbols:
   - Palmier sacré
   - Arc jumeau
 ---
-# Léto
-
-## Nature et identité
 Léto est une Titanide associée à la douceur, à la pudeur et à la protection maternelle. Discrète mais respectée, elle incarne la dignité silencieuse et la force calme des divinités anciennes qui précèdent l’ordre olympien.
 
 ## Rôle dans la naissance d’Apollon et d’Artémis

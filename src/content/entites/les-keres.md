@@ -19,9 +19,6 @@ symbols:
   - Voiles sombres
   - Sang
 ---
-
-# Kères
-
 ## Nature et essence
 Les Kères sont des esprits féminins redoutables, personnifications de la mort violente. Issues de Nyx, la Nuit primordiale, elles représentent l’aspect le plus terrifiant du destin : la mort brutale qui frappe sans avertir, souvent dans la fureur du combat. Elles se distinguent clairement de Thanatos, qui incarne la mort paisible, et des Érinyes, liées à la justice du sang.
 
@@ -61,4 +58,3 @@ Leur iconographie évoque la violence incontrôlable, la terreur brutale et la f
 Les Kères incarnent l’un des aspects fondamentaux de l’expérience humaine pour les Grecs : la mort violente, imprévisible, inévitable pour nombre de héros et de mortels.  
 Elles ne jugent pas, ne punissent pas, ne protègent pas. Elles prennent.  
 Elles représentent le versant sombre et inéluctable de la destinée guerrière.
-

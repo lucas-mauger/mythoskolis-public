@@ -22,11 +22,6 @@ symbols:
   - Miroir
   - Ceinture magique
 ---
-  # Aphrodite
-
-
-  ## Nature et puissance
-
   Aphrodite incarne la force de l’attraction, la beauté sous toutes ses formes
   et le désir qui rapproche les êtres. Son domaine dépasse largement la
   séduction : elle influence les alliances, les passions, la fertilité et la

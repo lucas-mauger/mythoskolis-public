@@ -18,9 +18,6 @@ symbols:
   - Ailes légères
   - Bâton ou corne du sommeil
 ---
-
-# Hypnos
-
 ## Nature et essence
 Hypnos est la personnification primordiale du sommeil. Né de Nyx, la Nuit, et jumeau de Thanatos, la Mort paisible, il représente l’état intermédiaire où les sens s’éteignent et où l’esprit se retire du monde. Loin d’être une force menaçante, Hypnos est une puissance douce, capable d’apaiser les mortels comme les dieux.
 
@@ -36,4 +33,3 @@ Hypnos intervient rarement mais de manière décisive. Dans l’Iliade, il aide 
 
 ## Iconographie
 Hypnos est représenté comme un jeune homme délicat, parfois ailé, tenant une fleur de pavot, une corne, ou un bâton symbolique. D’autres représentations le montrent versant un liquide soporifique ou effleurant le front des dormeurs. Sa figure exprime la douceur, la discrétion et la puissance silencieuse du sommeil.
-

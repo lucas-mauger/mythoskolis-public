@@ -20,9 +20,6 @@ symbols:
   - Fleurs printanières
   - Voile lumineux
 ---
-# Hébé
-
-## Fonction et identité
 Hébé est la déesse de la jeunesse éternelle et l’échanson officielle de l’Olympe. Elle personnifie la fraîcheur, le renouveau et la vitalité divine, assurant la perpétuelle vigueur des dieux en leur servant le nectar et l’ambroisie.
 
 ## Rôle familial

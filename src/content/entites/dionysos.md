@@ -5,6 +5,7 @@ id: grecque-dionysos
 nature:
   - olympien
   - dieu
+  - chtonien
 gender: m
 role: 'Dieu du vin, de l’ivresse sacrée, du théâtre et de la transe'
 description: >-
@@ -22,9 +23,6 @@ symbols:
   - Panthère
   - Coupe de vin
 ---
-# Dionysos
-
-## Nature et paradoxe
 Dionysos, dieu du vin, de l’extase et de la transformation, incarne la force qui brise les limites, libère les instincts et abolit les frontières entre les états d’être. Il est à la fois civilisateur et subversif, porteur de joie comme de folie. Sa présence déstabilise l’ordre établi pour révéler des vérités profondes enfouies sous les conventions sociales.
 
 ## Naissance et parcours

@@ -21,9 +21,6 @@ symbols:
   - Cyprès
   - Corne d’abondance
 ---
-# Hadès
-
-## Nature et autorité
 Hadès est le souverain du royaume des morts, gardien des âmes et garant de l’ordre souterrain. Il n’incarne ni la cruauté ni la damnation éternelle : son rôle est celui d’un administrateur inflexible, chargé de maintenir l’équilibre entre le monde des vivants et celui des défunts.
 
 ## Domaine et organisation du monde souterrain

@@ -19,9 +19,6 @@ symbols:
   - Ailes nocturnes
   - Étoiles éparses
 ---
-
-# Nyx
-
 ## Nature et essence
 Nyx est l’une des plus anciennes divinités primordiales, surgie directement du Chaos. Elle personnifie la Nuit, non comme simple absence de lumière, mais comme une force cosmique autonome : profonde, enveloppante, mystérieuse. Dans la pensée grecque archaïque, Nyx est une puissance redoutée et respectée, dont même Zeus reconnaît l’autorité.
 
@@ -54,4 +51,3 @@ Son autorité est telle que même les dieux olympiens hésitent à la défier. H
 
 ## Iconographie
 Nyx est rarement représentée dans l’art grec ancien, mais les traditions iconographiques ultérieures la montrent sous les traits d’une femme majestueuse, drapée d’un voile sombre constellé d’étoiles, parfois ailée ou accompagnée de formes évanescentes. Elle incarne la beauté mystérieuse et l’abîme silencieux de la nuit originelle.
-

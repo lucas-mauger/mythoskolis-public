@@ -20,9 +20,6 @@ symbols:
   - Torche
   - Corne d’abondance
 ---
-# Déméter
-
-## Domaine et identité
 Déméter est la déesse de l’agriculture, des moissons et de la fertilité terrestre. Elle incarne la stabilité du cycle saisonnier, la générosité des récoltes et la survie des communautés humaines. Son culte est l’un des plus anciens et des plus essentiels du monde grec.
 
 ## Mythe fondamental : la perte et le retour

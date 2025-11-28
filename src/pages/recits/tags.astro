@@ -1,0 +1,108 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
+import '../../styles/global.css';
+import { getEntry } from 'astro:content';
+import { normalizeTagForSearch } from '../../utils/tags';
+
+const tagEntry = await getEntry('data', 'tags-recits');
+const categories = tagEntry?.data?.categories || [];
+const pageTitle = "Tags des récits | Mythoskolis";
+const pageDescription = "Liste des thèmes utilisés pour classifier les récits mythologiques.";
+---
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={pageTitle}
+    description={pageDescription}
+    canonical="/recits/tags/"
+    type="website"
+  />
+</head>
+
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+  <Header />
+
+  <main class="flex-1 max-w-4xl mx-auto px-4 py-12 space-y-8">
+    <header class="space-y-2">
+      <p class="text-sm uppercase tracking-wide text-gray-500">Récits</p>
+      <h1 class="text-3xl font-bold text-gray-900">Tags des récits</h1>
+      <p class="text-base text-gray-700">Thèmes et motifs utilisés pour filtrer les récits.</p>
+    </header>
+
+    <section class="space-y-6">
+      {categories.map((cat) => (
+        <div class="cat-card">
+          <h2 class="cat-title">{cat.label}</h2>
+          <div class="tag-list">
+            {cat.tags.map((t) => (
+              <a class="tag-pill" href={`/recits/?tag=${encodeURIComponent(normalizeTagForSearch(t.label))}`}>
+                {t.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  </main>
+
+  <Footer />
+</body>
+</html>
+
+<style>
+  .cat-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    background: #ffffff;
+    padding: 1rem;
+  }
+  .cat-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.75rem;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    background: #f3f4f6;
+    color: #374151;
+    font-size: 0.85rem;
+    border: 1px solid #e5e7eb;
+    text-decoration: none;
+  }
+  :global(.theme-dark body) {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+  :global(.theme-dark h1) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark p) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .cat-card) {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .cat-title) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark .tag-pill) {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #e5e7eb;
+  }
+</style>

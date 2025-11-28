@@ -21,9 +21,6 @@ symbols:
   - Dauphin
   - Tsunami
 ---
-# Poséidon
-
-## Nature et puissance
 Poséidon est le dieu des mers, maître des profondeurs et des phénomènes violents qui agitent le monde : tempêtes, tremblements de terre, fracas des vagues. Il incarne la part sauvage et indomptable du cosmos, aussi capable de générosité maritime que de destruction brutale.
 
 ## Rôle dans la mythologie

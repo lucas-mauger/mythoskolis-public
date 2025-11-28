@@ -19,9 +19,6 @@ symbols:
   - Serpents
   - Torches
 ---
-
-# Érinyes
-
 ## Origine et nature
 Les Érinyes — souvent appelées « Furies » dans la tradition latine — sont des divinités anciennes, nées du sang d’Ouranos lorsque Cronos mutila son père. Leur origine les rattache directement aux forces primordiales de la terre en colère, à l’instar des Géants et des autres êtres issus de cette violence originelle.
 
@@ -54,5 +51,4 @@ Elles ne sont ni monstrueuses ni séduisantes : leur aspect exprime la terreur m
 
 ## Place cosmologique
 Elles appartiennent au monde souterrain et agissent comme gardiennes d’une justice intemporelle. Leur existence rappelle que certains crimes appellent une réparation qui dépasse la société humaine et relève des lois profondes du cosmos.
-
 

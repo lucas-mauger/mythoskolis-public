@@ -1,0 +1,398 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
+import '../../styles/global.css';
+import { getCollection, getEntry } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
+
+export async function getStaticPaths() {
+  const recits = await getCollection('recits');
+  const entites = await getCollection('entites');
+  const entiteById = new Map(entites.map((e) => [e.data.id, e]));
+
+  return recits.map((recit) => ({
+    params: { slug: recit.slug },
+    props: { recit, entiteById },
+  }));
+}
+
+const { recit, entiteById } = Astro.props;
+const { Content, headings } = await recit.render();
+const pageTitle = `${recit.data.title} | Mythoskolis`;
+const pageDescription = recit.data.summary ?? recit.data.title;
+const recitImagePath = recit.data.picture
+  ? path.join(process.cwd(), 'public', 'recits_images', `${recit.data.id}.webp`)
+  : null;
+const recitImageUrl =
+  recitImagePath && fs.existsSync(recitImagePath)
+    ? `/recits_images/${recit.data.id}.webp`
+    : null;
+
+const tagsEntry = await getEntry('data', 'tags-recits');
+const tagLabelMap = new Map<string, string>();
+tagsEntry?.data?.categories?.forEach((cat) => {
+  cat.tags.forEach((t) => tagLabelMap.set(t.id, t.label));
+});
+const tagList = (recit.data.tags || [])
+  .map((id) => ({ id, label: tagLabelMap.get(id) ?? id }))
+  .filter((t, idx, arr) => arr.findIndex((x) => x.id === t.id) === idx);
+
+function getFaceForEntity(entity) {
+  const gender = entity?.data?.gender?.toLowerCase?.() ?? 'x';
+  const id = entity?.data?.id;
+  if (!id) return null;
+  const abs = path.join(process.cwd(), 'public', 'faces', 'grecque', `${id}.webp`);
+  if (fs.existsSync(abs)) return `/faces/grecque/${id}.webp`;
+  // Pas de portrait disponible : pas d'image de fallback
+  return null;
+}
+
+const mainEntities = (recit.data.main_entities || [])
+  .map((id) => entiteById.get(id))
+  .filter(Boolean)
+  .map((ent) => ({
+    id: ent.data.id,
+    title: ent.data.title,
+    img: getFaceForEntity(ent),
+  }));
+
+const opponentEntities = (recit.data.opponents || [])
+  .map((id) => entiteById.get(id))
+  .filter(Boolean)
+  .map((ent) => ({
+    id: ent.data.id,
+    title: ent.data.title,
+    img: getFaceForEntity(ent),
+  }));
+---
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={pageTitle}
+    description={pageDescription}
+    canonical={`/recits/${recit.slug}/`}
+    type="article"
+  />
+</head>
+
+  <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+    <Header />
+
+    <main class="flex-1 max-w-3xl mx-auto px-4 py-12 space-y-8">
+      <header class="space-y-2">
+        <p class="text-sm uppercase tracking-wide text-gray-500">Récit</p>
+        <h1 class="text-4xl font-bold">{recit.data.title}</h1>
+        {recit.data.summary && <p class="text-base text-gray-700">{recit.data.summary}</p>}
+
+        {(recit.data.era || recit.data.importance) && (
+          <div class="flex flex-wrap gap-2 text-xs text-gray-600 mt-2">
+            {recit.data.era && <span class="px-2 py-1 rounded-full border border-gray-300 bg-gray-100">{recit.data.era}</span>}
+            {recit.data.importance && (
+              <span class="px-2 py-1 rounded-full border border-indigo-200 bg-indigo-50 uppercase tracking-wide text-indigo-700">
+                {recit.data.importance}
+              </span>
+            )}
+          </div>
+        )}
+      </header>
+
+      {(recit.data.main_entities?.length || recit.data.opponents?.length) && (
+        <section class="space-y-4">
+          {mainEntities.length > 0 && (
+            <div class="entity-strip">
+              <div class="strip-header">
+                <h2>Protagonistes</h2>
+              </div>
+              <div class="chip-row">
+                {mainEntities.map((ent) => (
+                  <a href={`/entites/${ent.id}/`} class={`chip ${ent.img ? '' : 'no-img'}`}>
+                    {ent.img && <img src={ent.img} alt={`Portrait de ${ent.title}`} loading="lazy" />}
+                    <span>{ent.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+          {opponentEntities.length > 0 && (
+            <div class="entity-strip">
+              <div class="strip-header">
+                <h2>Antagonistes</h2>
+              </div>
+              <div class="chip-row">
+                {opponentEntities.map((ent) => (
+                  <a href={`/entites/${ent.id}/`} class={`chip ${ent.img ? '' : 'no-img'}`}>
+                    {ent.img && <img src={ent.img} alt={`Portrait de ${ent.title}`} loading="lazy" />}
+                    <span>{ent.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {recitImageUrl && (
+        <div class="recit-hero">
+          <img src={recitImageUrl} alt={`Illustration du récit ${recit.data.title}`} loading="lazy" />
+        </div>
+      )}
+
+      <article class="prose prose-gray prose-lg max-w-none">
+        <Content />
+      </article>
+
+      {tagList.length > 0 && (
+        <section class="tag-block">
+          <h2 class="tag-title">Thèmes abordés</h2>
+          <div class="tag-grid">
+            {tagList.map((tag) => (
+              <span class="tag-pill">{tag.label}</span>
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  :global(.theme-dark body) {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+  :global(.theme-dark h1),
+  :global(.theme-dark h2),
+  :global(.theme-dark h3) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark p),
+  :global(.theme-dark li) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .prose a) {
+    color: #c7d2fe;
+  }
+  :global(.theme-dark .prose a:hover) {
+    color: #e0e7ff;
+  }
+  :global(.theme-dark .prose) {
+    --tw-prose-body: #cbd5e1;
+    --tw-prose-headings: #e2e8f0;
+    --tw-prose-links: #c7d2fe;
+    --tw-prose-bullets: #cbd5e1;
+    --tw-prose-counters: #cbd5e1;
+    --tw-prose-quotes: #e2e8f0;
+    --tw-prose-hr: rgba(148, 163, 184, 0.4);
+  }
+  :global(.theme-dark .border-gray-200) {
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .bg-white) {
+    background: rgba(15, 23, 42, 0.85);
+  }
+  :global(.theme-dark .bg-gray-50) {
+    background: rgba(30, 41, 59, 0.6);
+  }
+  :global(.theme-dark .text-gray-900) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .text-gray-700) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .text-gray-500) {
+    color: #94a3b8;
+  }
+  :global(.theme-dark .border-gray-300) {
+    border-color: rgba(148, 163, 184, 0.5);
+  }
+  :global(.theme-dark .bg-gray-100) {
+    background: rgba(30, 41, 59, 0.6);
+  }
+  :global(.theme-dark .bg-indigo-50) {
+    background: rgba(79, 70, 229, 0.15);
+  }
+  :global(.theme-dark .text-indigo-700) {
+    color: #c7d2fe;
+  }
+  :global(.theme-dark .hover\\:border-indigo-300:hover) {
+    border-color: rgba(129, 140, 248, 0.5);
+  }
+  :global(.theme-dark .hover\\:text-indigo-700:hover) {
+    color: #e0e7ff;
+  }
+  :global(.theme-dark .bg-rose-50) {
+    background: rgba(225, 29, 72, 0.12);
+  }
+  :global(.theme-dark .text-rose-700) {
+    color: #fecdd3;
+  }
+  :global(.theme-dark .hover\\:border-rose-300:hover) {
+    border-color: rgba(248, 113, 113, 0.6);
+  }
+  :global(.theme-dark .hover\\:text-rose-700:hover) {
+    color: #ffe4e6;
+  }
+  :global(html),
+  :global(body) {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  /* entity strips */
+  .entity-strip {
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    background: #ffffff;
+    padding: 1rem;
+    max-width: 100%;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .strip-header h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 9999px;
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+    color: #111827;
+    text-decoration: none;
+  }
+  .chip.no-img {
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+  }
+  .recit-hero {
+    margin: 1rem 0 0.5rem;
+  }
+  .recit-hero img {
+    width: 100%;
+    border-radius: 1rem;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  @media (max-width: 640px) {
+    .chip-row {
+      gap: 0.5rem;
+    }
+    .chip {
+      padding: 0.4rem 0.55rem;
+    }
+  }
+  .chip:hover {
+    border-color: #c7d2fe;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  }
+  .chip img {
+    width: 48px;
+    height: 48px;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+  }
+  .chip span {
+    color: #111827;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  /* tags */
+  .tag-block {
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    background: #ffffff;
+    padding: 1rem;
+  }
+  .tag-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.75rem;
+  }
+  .tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    color: #111827;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  :global(.theme-dark .entity-strip) {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .strip-header h2) {
+    color: #e2e8f0;
+  }
+  :global(.theme-dark a.chip),
+  :global(.theme-dark a.chip:visited) {
+    color: #f8fafc;
+    text-decoration: none;
+  }
+  :global(.theme-dark .chip) {
+    background: rgba(30, 41, 59, 0.92);
+    border-color: rgba(226, 232, 240, 0.55);
+    color: #f8fafc;
+    text-decoration: none;
+  }
+  :global(.theme-dark .chip.no-img) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark .chip:hover) {
+    border-color: rgba(226, 232, 240, 0.7);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+  }
+  :global(.theme-dark .chip span) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark .chip img) {
+    border-color: rgba(226, 232, 240, 0.35);
+  }
+  :global(.theme-dark .tag-block) {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .tag-title) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark .tag-pill) {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #e5e7eb;
+  }
+  :global(body) {
+    overflow-x: hidden;
+  }
+</style>

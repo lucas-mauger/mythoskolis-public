@@ -19,9 +19,6 @@ symbols:
   - Lances
   - Montagnes arrachées
 ---
-
-# Géants
-
 ## Origine et nature
 Les Géants sont une race de créatures primordiales nées du sang d’Ouranos, tombé sur Gaïa lorsque Cronos mutila son père. Ce sang fécondant, mêlé à la terre en souffrance, donna naissance à des êtres puissants, violents et profondément liés aux forces telluriques.
 
@@ -65,5 +62,4 @@ Dans l’art grec, ils apparaissent :
 - combattant les dieux dans des scènes dynamiques.
 
 Les frises du Parthénon, par exemple, ont largement contribué à fixer leur iconographie héroïque.
-
 

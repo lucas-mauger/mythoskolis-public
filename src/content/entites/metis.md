@@ -18,9 +18,6 @@ symbols:
   - Eaux profondes
   - Voix conseillère
 ---
-# Métis
-
-## Identité et essence
 Métis est une Océanide personnifiant la sagesse rusée, l’intelligence stratégique et la prudence. Sa nature associe réflexion profonde et capacité à concevoir des solutions subtiles. Elle appartient à la génération des divinités aquatiques liées à l’ordre ancien.
 
 ## Union avec Zeus et destinée

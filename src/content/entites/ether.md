@@ -18,9 +18,6 @@ symbols:
   - Brume lumineuse
   - Voûte céleste
 ---
-
-# Éther
-
 ## Nature et essence
 Éther est l’une des premières émanations des divinités primordiales. Fils de Nyx (la Nuit) et d’Érèbe (les Ténèbres), il représente la lumière supérieure, pure et immobile, celle qui règne au-dessus des nuages et des cimes du monde. Contrairement à la lumière solaire, Éther n’est pas un phénomène : il est une réalité cosmique, une luminosité originelle qui définit le domaine divin.
 
@@ -38,4 +35,3 @@ Il ne joue aucun rôle narratif dans les mythes, mais son existence donne au cos
 
 ## Iconographie
 Éther est rarement figuré, et presque jamais dans l’Antiquité. Les représentations modernes le montrent comme une forme lumineuse ou une silhouette masculine baignée de clarté diffuse, évoquant la transparence et l’altitude. Sa nature même — pure lumière — le rend difficile à représenter autrement que de manière symbolique.
-

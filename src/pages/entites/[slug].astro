@@ -6,6 +6,7 @@ import '../../styles/global.css';
 import { getCollection } from 'astro:content';
 import EgoGraph from '../../components/EgoGraph.astro';
 import { getGraphDisplayData, getEntityById, getEntityBySlug } from '../../lib/genealogie';
+import { getRecitsForEntity } from '../../utils/recits';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -37,6 +38,7 @@ const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 const yamlEntity = getEntityById(entityId) ?? getEntityBySlug(entityId) ?? getEntityBySlug(entry.slug);
 const genealogie = getGraphDisplayData(entityId);
 const entityCulture = (frontCulture ?? yamlEntity?.culture ?? 'grecque').toString();
+const recitsAssocies = await getRecitsForEntity(entityId);
 
 // Resolve project root from this file (/src/pages/entites/[slug].astro -> up 3 levels)
 const projectRoot = fileURLToPath(new URL('../../..', import.meta.url));
@@ -325,6 +327,30 @@ function getNatureLabel(
         </p>
       </section>
     )}
+
+    {recitsAssocies.length > 0 && (
+      <section class="mt-12">
+        <div class="recits-card rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-semibold text-gray-900">Récits associés</h2>
+            <span class="text-xs text-gray-500">{recitsAssocies.length} récit(s)</span>
+          </div>
+          <ul class="space-y-3 text-sm">
+            {recitsAssocies.map((recit) => (
+              <li>
+                <a
+                  href={`/recits/${recit.slug}/`}
+                  class="recit-link-card block p-3 rounded-xl border border-gray-100 bg-gray-50 hover:border-gray-200 transition"
+                >
+                  <span class="text-gray-900 font-semibold block">{recit.data.title}</span>
+                  {recit.data.summary && <p class="text-gray-600 text-xs mt-1">{recit.data.summary}</p>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
   </main>
 
   <Footer />
@@ -398,5 +424,47 @@ function getNatureLabel(
     .media {
       width: 70%;
     }
+  }
+  /* Récits associés */
+  .recits-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+  }
+  :global(.theme-dark .recits-card) {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .recits-card h2),
+  :global(.theme-dark .recits-card a) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .recits-card span),
+  :global(.theme-dark .recits-card p) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .recits-card li) {
+    background: rgba(30, 41, 59, 0.65);
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .recits-card li:hover) {
+    border-color: rgba(226, 232, 240, 0.6);
+    background: rgba(37, 47, 66, 0.75);
+  }
+  :global(.recit-link-card:hover .text-gray-900) {
+    color: #111827;
+  }
+  :global(.theme-dark .recit-link-card) {
+    background: rgba(30, 41, 59, 0.65);
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .recit-link-card:hover) {
+    border-color: rgba(226, 232, 240, 0.6);
+    background: rgba(37, 47, 66, 0.75);
+  }
+  :global(.theme-dark .recit-link-card .text-gray-900) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .recit-link-card .text-gray-600) {
+    color: #cbd5e1;
   }
 </style>

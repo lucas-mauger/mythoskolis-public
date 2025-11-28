@@ -1,0 +1,127 @@
+categories:
+  - id: conflit
+    label: "Conflits"
+    tags:
+      - id: combat
+        label: "Combat"
+      - id: guerre
+        label: "Guerre"
+      - id: duel
+        label: "Duel"
+      - id: rivalite
+        label: "Rivalité"
+      - id: rebellion
+        label: "Rébellion"
+      - id: affrontement-cosmique
+        label: "Affrontement cosmique"
+
+  - id: ruse
+    label: "Ruses et complots"
+    tags:
+      - id: tromperie
+        label: "Tromperie"
+      - id: ruse
+        label: "Ruse"
+      - id: complot
+        label: "Complot"
+      - id: trahison
+        label: "Trahison"
+      - id: manipulation-divine
+        label: "Manipulation divine"
+
+  - id: justice
+    label: "Justice et morale"
+    tags:
+      - id: justice-divine
+        label: "Justice divine"
+      - id: punition
+        label: "Punition"
+      - id: vengeance
+        label: "Vengeance"
+      - id: chatiment
+        label: "Châtiment"
+      - id: hubris
+        label: "Hubris"
+
+  - id: destin
+    label: "Sort, destin, transformation"
+    tags:
+      - id: prophetie
+        label: "Prophétie"
+      - id: destin
+        label: "Destin"
+      - id: fatalite
+        label: "Fatalité"
+      - id: metamorphose
+        label: "Métamorphose"
+      - id: transformation
+        label: "Transformation"
+
+  - id: relations
+    label: "Amour et relations"
+    tags:
+      - id: amour-interdit
+        label: "Amour interdit"
+      - id: jalousie
+        label: "Jalousie"
+      - id: seduction
+        label: "Séduction"
+      - id: union-divine
+        label: "Union divine"
+
+  - id: mort
+    label: "Mort, Enfers, renaissance"
+    tags:
+      - id: mort
+        label: "Mort"
+      - id: descente-aux-enfers
+        label: "Descente aux Enfers"
+      - id: resurrection
+        label: "Résurrection"
+      - id: renaissance
+        label: "Renaissance"
+
+  - id: naissance
+    label: "Naissances et origines"
+    tags:
+      - id: naissance-divine
+        label: "Naissance divine"
+      - id: origine-dun-dieu
+        label: "Origine d’un dieu"
+      - id: creation
+        label: "Création"
+
+  - id: pouvoir
+    label: "Pouvoir et souveraineté"
+    tags:
+      - id: prise-de-pouvoir
+        label: "Prise de pouvoir"
+      - id: usurpation
+        label: "Usurpation"
+      - id: legitimation
+        label: "Légitimation"
+      - id: succession-divine
+        label: "Succession divine"
+
+  - id: nature
+    label: "Nature et chaos"
+    tags:
+      - id: chaos-primordial
+        label: "Chaos primordial"
+      - id: forces-de-la-nature
+        label: "Forces de la nature"
+      - id: desordre-cosmique
+        label: "Désordre cosmique"
+
+  - id: initiation
+    label: "Initiation et mystères"
+    tags:
+      - id: revelation
+        label: "Révélation"
+      - id: initiation
+        label: "Initiation"
+      - id: secret-divin
+        label: "Secret divin"
+      - id: rites-sacres
+        label: "Rites sacrés"
+

@@ -18,9 +18,6 @@ symbols:
   - Voiles éthérés
   - Brouillard onirique
 ---
-
-# Oneiroi
-
 ## Nature et essence
 Les Oneiroi sont les personnifications primordiales des Songes. Enfants d’Hypnos, le Sommeil, ils représentent les multiples formes que prennent les visions nocturnes : messages divins, illusions trompeuses, pressentiments ou simples images sans conséquence.
 
@@ -41,4 +38,3 @@ Leur existence reflète la conviction grecque que les rêves sont un espace ambi
 
 ## Iconographie
 Les Oneiroi sont rarement représentés individuellement. Dans l’art tardif, ils apparaissent comme des figures ailées, élégantes et sombres, parfois enveloppées de voiles ou de brouillards symbolisant l’irréalité des visions nocturnes.
-

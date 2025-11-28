@@ -1,0 +1,81 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
+import '../../styles/global.css';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const ressources = await getCollection('ressources');
+  return ressources.map((res) => ({
+    params: { slug: res.slug },
+    props: { ressource: res },
+  }));
+}
+
+const { ressource } = Astro.props;
+const { Content } = await ressource.render();
+const pageTitle = `${ressource.data.title} | Mythoskolis`;
+const pageDescription = ressource.data.description ?? ressource.data.title;
+---
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={pageTitle}
+    description={pageDescription}
+    canonical={`/ressources/${ressource.slug}/`}
+    type="article"
+  />
+</head>
+
+  <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+    <Header />
+
+    <main class="flex-1 max-w-3xl mx-auto px-4 py-12">
+      <article class="prose prose-gray max-w-none"><Content /></article>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  :global(.theme-dark body) {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+  :global(.theme-dark h1) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark p),
+  :global(.theme-dark li) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .prose a) {
+    color: #c7d2fe;
+  }
+  :global(.theme-dark .prose a:hover) {
+    color: #e0e7ff;
+  }
+  :global(.theme-dark .prose) {
+    --tw-prose-body: #cbd5e1;
+    --tw-prose-headings: #e2e8f0;
+    --tw-prose-links: #c7d2fe;
+    --tw-prose-bullets: #cbd5e1;
+    --tw-prose-counters: #cbd5e1;
+    --tw-prose-quotes: #e2e8f0;
+    --tw-prose-hr: rgba(148, 163, 184, 0.4);
+  }
+  :global(.theme-dark .text-gray-500) {
+    color: #94a3b8;
+  }
+  :global(.theme-dark .text-gray-700) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .text-gray-900) {
+    color: #e5e7eb;
+  }
+</style>

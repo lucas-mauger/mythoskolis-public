@@ -18,9 +18,6 @@ symbols:
   - Gouffre
   - Nuit sans forme
 ---
-
-# Chaos
-
 ## Nature et essence
 Chaos est l’entité primordiale qui surgit au commencement du monde, avant toute organisation, avant toute divinité anthropomorphe. Il ne s’agit ni d’un dieu ni d’une force personnifiée au sens classique, mais d’un état d’être : une béance indistincte, un espace ouvert et informe qui rend possible l’existence.
 
@@ -43,4 +40,3 @@ Cette ambiguïté — entité ou concept — fait partie de sa nature même : Ch
 
 ## Iconographie
 Chaos est rarement représenté, car il transcende la forme. Lorsqu’il apparaît visuellement, c’est souvent sous l’aspect d’un gouffre, d’une nuit sans contours, ou d’une silhouette cosmique abstraite évoquant l’immensité indistincte du premier monde.
-
