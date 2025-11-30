@@ -3,8 +3,8 @@ title: Héra
 culture: grecque
 id: grecque-hera
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: f
 role: 'Reine des dieux — Déesse du mariage, des femmes et de la famille'
 description: >-

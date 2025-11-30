@@ -3,7 +3,9 @@ title: Maia
 culture: grecque
 id: grecque-maia
 nature:
-  - pléïade
+  - divinite
+  - nymphe
+  - pleiade
 gender: f
 role: 'Aînée des Pléiades, nymphe discrète et mère d''Hermès'
 description: >-

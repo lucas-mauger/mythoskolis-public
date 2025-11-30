@@ -3,7 +3,8 @@ title: Léto
 culture: grecque
 id: grecque-leto
 nature:
-  - titan
+  - divinite
+  - titanide
 gender: f
 role: 'Titanide protectrice des mères, mère d''Apollon et Artémis'
 description: >-

@@ -3,7 +3,8 @@ title: Cronos
 culture: grecque
 id: grecque-cronos
 nature:
-  - titan
+  - divinite
+  - titanide
 gender: m
 role: 'Titan, maître du temps et du règne avant les Olympiens'
 description: 'Ancien souverain des Titans, fils de Gaïa et Ouranos.'

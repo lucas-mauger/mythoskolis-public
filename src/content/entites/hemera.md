@@ -3,12 +3,13 @@ title: Héméra
 culture: grecque
 id: grecque-hemera
 nature:
-  - primordiale
+  - divinite
+  - primordial
 gender: f
 role: Divinité primordiale du Jour
 description: >
-  Fille de Nyx et d’Érèbe, Héméra personnifie la clarté du jour terrestre.
-  Elle incarne l’alternance cosmique qui succède à la nuit et régit le rythme
+  Fille de Nyx et d’Érèbe, Héméra personnifie la clarté du jour terrestre. Elle
+  incarne l’alternance cosmique qui succède à la nuit et régit le rythme
   fondamental de la vie humaine.
 domains:
   - Lumière du jour

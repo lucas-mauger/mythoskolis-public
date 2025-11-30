@@ -3,7 +3,6 @@ title: "L’enlèvement de Perséphone"
 slug: "enlevement-persephone"
 id: "enlevement-persephone"
 type: "recit"
-picture: yes
 
 main_entities:
   - grecque-persephone

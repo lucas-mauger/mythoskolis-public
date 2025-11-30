@@ -3,7 +3,9 @@ title: Oneiroi
 culture: grecque
 id: grecque-oneiroi
 nature:
-  - primordiale
+  - divinite
+  - groupe_divin
+  - personnification_abstraite
 gender: x
 role: Divinités primordiales des Songes
 description: >

@@ -3,7 +3,8 @@ title: Rhéa
 culture: grecque
 id: grecque-rhea
 nature:
-  - titan
+  - divinite
+  - titanide
 gender: f
 role: 'Titanide, mère des dieux'
 description: 'Titanide de la fertilité, mère de la plupart des Olympiens.'

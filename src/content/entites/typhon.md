@@ -4,7 +4,8 @@ culture: grecque
 id: grecque-typhon
 nature:
   - creature
-  - primordiale
+  - monstre
+  - chthonien
 gender: m
 role: Monstre primordial — Adversaire suprême de Zeus
 description: >

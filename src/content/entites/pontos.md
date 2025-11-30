@@ -3,7 +3,8 @@ title: Pontos
 culture: grecque
 id: grecque-pontos
 nature:
-  - primordiale
+  - divinite
+  - primordial
 gender: m
 role: Divinité primordiale de la Mer
 description: >

@@ -3,7 +3,8 @@ title: Chaos
 culture: grecque
 id: grecque-chaos
 nature:
-  - primordiale
+  - divinite
+  - primordial
 gender: x
 role: Divinité primordiale — Source indistincte de toute existence
 description: >

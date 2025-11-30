@@ -3,9 +3,9 @@ title: Perséphone
 culture: grecque
 id: grecque-persephone
 nature:
+  - divinite
   - olympien
   - chthonien
-  - dieu
 gender: f
 role: Reine des Enfers — Déesse du renouveau et des cycles saisonniers
 description: >-

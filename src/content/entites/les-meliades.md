@@ -3,14 +3,14 @@ title: Méliades
 culture: grecque
 id: grecque-les-meliades
 nature:
-  - nymphe
-  - primordiale
+  - divinite
+  - groupe_divin
 gender: f
 role: Nymphes des frênes — Générées par le sang d’Ouranos
 description: >
-  Nées du sang d’Ouranos tombé sur Gaïa, les Méliades sont des nymphes liées
-  aux frênes et à la fécondité primitive. Elles incarnent la vigueur sauvage,
-  la croissance végétale et les premières générations humaines.
+  Nées du sang d’Ouranos tombé sur Gaïa, les Méliades sont des nymphes liées aux
+  frênes et à la fécondité primitive. Elles incarnent la vigueur sauvage, la
+  croissance végétale et les premières générations humaines.
 domains:
   - Arbres sacrés
   - Nature primitive

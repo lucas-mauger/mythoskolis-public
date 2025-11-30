@@ -3,8 +3,8 @@ title: Ouranos
 culture: grecque
 id: grecque-ouranos
 nature:
+  - divinite
   - primordial
-  - dieu
 gender: m
 role: Divinité primordiale du Ciel
 description: 'Le Ciel primordial, époux de Gaïa et père des Titans.'

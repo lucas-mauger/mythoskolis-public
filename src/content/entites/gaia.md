@@ -3,8 +3,8 @@ title: Gaïa
 culture: grecque
 id: grecque-gaia
 nature:
+  - divinite
   - primordial
-  - dieu
 gender: f
 role: Divinité primordiale de la Terre
 description: 'Mère primordiale, source vivante de toute chose.'

@@ -3,7 +3,9 @@ title: Érèbe
 culture: grecque
 id: grecque-erebe
 nature:
-  - primordiale
+  - divinite
+  - primordial
+  - chthonien
 gender: m
 role: Divinité primordiale des Ténèbres et des profondeurs
 description: >

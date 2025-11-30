@@ -2,12 +2,30 @@
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import '../../styles/global.css';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import fs from 'node:fs';
 import path from 'node:path';
 
 const entites = await getCollection('entites');
 const publicDir = path.resolve(process.cwd(), 'public');
+const natureEntry = await getEntry('data', 'natures-entites');
+const natureLabelMap = new Map<string, { fr?: Record<string, string> }>();
+natureEntry?.data?.natures?.forEach((n) => {
+  natureLabelMap.set(n.id, { fr: n.labels?.fr ?? {} });
+});
+const natureDisplayLabelMap: Record<string, string> = {};
+natureEntry?.data?.natures?.forEach((n) => {
+  natureLabelMap.set(n.id, { fr: n.labels?.fr ?? {} });
+  const fr = n.labels?.fr ?? {};
+  natureDisplayLabelMap[n.id] = fr.x ?? fr.m ?? fr.f ?? Object.values(fr)[0] ?? n.id;
+});
+
+function getNatureLabel(natureId: string, gender?: string): string {
+  const labels = natureLabelMap.get(natureId)?.fr;
+  if (!labels) return natureId;
+  const g = (gender ?? 'x').toLowerCase();
+  return labels[g] ?? labels.x ?? labels.f ?? labels.m ?? natureId;
+}
 
 function findFirstExistingFace(slug: string, id?: string, culture?: string): string | null {
   const normalizedCulture = culture?.toString().toLowerCase();
@@ -66,7 +84,8 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
           const id = entite.data.id?.toString();
           const portrait = findFirstExistingFace(entite.slug, id, culture);
           const natures = Array.isArray(entite.data.nature) ? entite.data.nature : [];
-          const searchText = `${entite.data.title} ${entite.data.id ?? entite.slug} ${natures.join(' ')}`;
+          const natureLabels = natures.map((nature) => getNatureLabel(nature, entite.data.gender));
+          const searchText = `${entite.data.title} ${entite.data.id ?? entite.slug} ${natures.join(' ')} ${natureLabels.join(' ')}`;
 
           return (
             <a
@@ -82,7 +101,7 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
                   <div class="mt-2 flex flex-wrap gap-2">
                     {natures.map((nature) => (
                       <span class="inline-flex items-center rounded-full bg-amber-100 text-amber-900 border border-amber-200 px-2 py-0.5 text-xs font-semibold">
-                        {nature}
+                        {getNatureLabel(nature, entite.data.gender)}
                       </span>
                     ))}
                   </div>
@@ -129,10 +148,13 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
   }
 </style>
 
+<script type="application/json" id="nature-label-map" set:html={JSON.stringify(natureDisplayLabelMap)}></script>
+
 <script>
   const input = document.getElementById('entite-filter');
   const cards = Array.from(document.querySelectorAll('[data-entite-card]'));
 
+  const natureLabelMap = JSON.parse(document.getElementById('nature-label-map')?.textContent || '{}');
   const normalize = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   const filterCards = (value) => {
@@ -147,4 +169,12 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
   input?.addEventListener('input', (e) => {
     filterCards(e.target.value || '');
   });
+
+  const params = new URLSearchParams(window.location.search);
+  const initial = params.get('q') || '';
+  if (initial && input) {
+    const display = natureLabelMap[initial] || initial;
+    input.value = display;
+    filterCards(initial);
+  }
 </script>

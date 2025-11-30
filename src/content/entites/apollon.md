@@ -3,8 +3,8 @@ title: Apollon
 culture: grecque
 id: grecque-apollon
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: m
 role: 'Dieu de la lumière, de la musique, des arts et de la divination'
 description: >-

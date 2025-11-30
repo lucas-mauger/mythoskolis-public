@@ -3,7 +3,9 @@ title: Thanatos
 culture: grecque
 id: grecque-thanatos
 nature:
-  - primordiale
+  - divinite
+  - personnification_abstraite
+  - chthonien
 gender: m
 role: Divinité primordiale de la Mort paisible
 description: >

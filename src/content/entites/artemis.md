@@ -3,8 +3,8 @@ title: Artémis
 culture: grecque
 id: grecque-artemis
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: f
 role: Déesse de la chasse et de la nature sauvage
 description: >-

@@ -3,7 +3,8 @@ title: Éther
 culture: grecque
 id: grecque-ether
 nature:
-  - primordiale
+  - divinite
+  - primordial
 gender: m
 role: Divinité primordiale de la Lumière céleste
 description: >

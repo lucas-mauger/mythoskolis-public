@@ -3,7 +3,8 @@ title: Géants
 culture: grecque
 id: grecque-les-geants
 nature:
-  - creature
+  - divinite
+  - groupe_divin
 gender: x
 role: Race mythologique née du sang d’Ouranos — Adversaires des dieux de l’Olympe
 description: >

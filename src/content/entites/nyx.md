@@ -3,7 +3,9 @@ title: Nyx
 culture: grecque
 id: grecque-nyx
 nature:
-  - primordiale
+  - divinite
+  - primordial
+  - chthonien
 gender: f
 role: Divinité primordiale de la Nuit
 description: >

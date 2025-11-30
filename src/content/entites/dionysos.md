@@ -3,9 +3,9 @@ title: Dionysos
 culture: grecque
 id: grecque-dionysos
 nature:
+  - divinite
   - olympien
-  - dieu
-  - chtonien
+  - chthonien
 gender: m
 role: 'Dieu du vin, de l’ivresse sacrée, du théâtre et de la transe'
 description: >-

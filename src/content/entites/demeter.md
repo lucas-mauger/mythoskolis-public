@@ -3,8 +3,8 @@ title: Déméter
 culture: grecque
 id: grecque-demeter
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: f
 role: 'Déesse des moissons, de la fertilité et du cycle des saisons'
 description: >-

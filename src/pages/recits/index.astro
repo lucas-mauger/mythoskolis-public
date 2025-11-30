@@ -48,9 +48,12 @@ const pageDescription =
         <p class="text-lg text-gray-700 max-w-3xl">
           Episodes, enlèvements, naissances ou rivalités : explore les récits structurants des mythes, avec leurs sources et les personnages impliqués.
         </p>
-        <div class="filter-bar">
+        <div class="filter-bar filter-bar-wide">
           <label for="tag-filter" class="text-sm text-gray-600">Filtrer par tag</label>
-          <input id="tag-filter" type="text" placeholder="ex : jalousie, descente aux enfers…" class="filter-input" />
+          <div class="filter-input-wrapper">
+            <input id="tag-filter" type="text" placeholder="ex : jalousie, descente aux enfers…" class="filter-input" />
+            <button id="tag-filter-clear" type="button" aria-label="Effacer le filtre">×</button>
+          </div>
         </div>
         <div class="actions-row">
           <a href="/recits/tags/" class="tag-link">Voir les tags</a>
@@ -87,6 +90,7 @@ const pageDescription =
 
     <script>
       const input = document.getElementById('tag-filter');
+      const clearBtn = document.getElementById('tag-filter-clear');
       const cards = Array.from(document.querySelectorAll('.recit-card'));
 
       const normalize = (str) =>
@@ -112,6 +116,12 @@ const pageDescription =
       if (input) input.value = initial;
 
       input?.addEventListener('input', applyFilter);
+      clearBtn?.addEventListener('click', () => {
+        if (!input) return;
+        input.value = '';
+        applyFilter();
+        input.focus();
+      });
       applyFilter();
     </script>
   </body>
@@ -125,13 +135,36 @@ const pageDescription =
     gap: 0.35rem;
     max-width: 480px;
   }
+  .filter-bar-wide {
+    max-width: none;
+  }
+  .filter-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
   .filter-input {
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
-    padding: 0.65rem 0.85rem;
+    padding: 0.65rem 2.4rem 0.65rem 0.85rem;
     font-size: 0.95rem;
     color: #111827;
     background: #fff;
+    width: 100%;
+  }
+  #tag-filter-clear {
+    position: absolute;
+    right: 0.65rem;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    line-height: 1;
+  }
+  #tag-filter-clear:hover {
+    color: #4b5563;
   }
   .filter-input:focus {
     outline: none;
@@ -217,6 +250,12 @@ const pageDescription =
     background: rgba(30, 41, 59, 0.8);
     border-color: rgba(148, 163, 184, 0.45);
     color: #e5e7eb;
+  }
+  :global(.theme-dark #tag-filter-clear) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark #tag-filter-clear:hover) {
+    color: #f1f5f9;
   }
   :global(.theme-dark .filter-input:focus) {
     border-color: rgba(129, 140, 248, 0.6);

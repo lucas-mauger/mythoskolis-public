@@ -1,0 +1,14 @@
+---
+import { initEgoGraphInteractive } from './ego-graph-interactive-client';
+
+interface Props {
+  componentId: string;
+  initialSlug: string;
+}
+
+const { componentId, initialSlug } = Astro.props as Props;
+
+if (typeof window !== 'undefined') {
+  initEgoGraphInteractive(componentId, initialSlug);
+}
+---

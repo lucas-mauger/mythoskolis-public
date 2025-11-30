@@ -58,8 +58,7 @@ Zeus se tient sur l’Olympe, jeune vainqueur encore auréolé des éclairs que 
 Cyclopes lui ont forgés.
 
 Pourtant, la victoire militaire ne suffit pas. Les dieux libérés de Cronos,
-ainsi que les puissances plus anciennes, hésitent encore. Le règne d’Ouranos a
-fin valu dans la violence. Celui de Cronos a sombré dans la tyrannie. Rien ne
+ainsi que les puissances plus anciennes, hésitent encore. Le règne d’Ouranos s'est vu finir dans la violence. Celui de Cronos a sombré dans la tyrannie. Rien ne
 prouve que Zeus n’imposera pas la même oppression.
 
 Le monde attend un signe qui prouvera que ce nouveau souverain est autre chose

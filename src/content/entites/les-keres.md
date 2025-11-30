@@ -3,7 +3,9 @@ title: Kères
 culture: grecque
 id: grecque-keres
 nature:
-  - creature
+  - divinite
+  - groupe_divin
+  - chthonien
 gender: f
 role: Esprits féminins de la mort violente
 description: >

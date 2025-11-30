@@ -3,8 +3,8 @@ title: Hermès
 culture: grecque
 id: grecque-hermes
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: m
 role: >-
   Messager des dieux — Dieu des voyageurs, des échanges, de la ruse et des

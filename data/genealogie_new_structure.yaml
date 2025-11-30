@@ -66,6 +66,66 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.176–200
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-athena
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.886–900
       siblings:
         - id: grecque-hestia
           consensus: true
@@ -140,6 +200,18 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.176–200
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.886–900
   - name: Léto
     slug: leto
     culture: grecque
@@ -2541,7 +2613,61 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2609,7 +2735,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
   - name: Phoïbé
     slug: phoibe
     culture: grecque
@@ -2982,7 +3114,7 @@ entities:
               work: Théogonie
               passage: v.147–153
       consorts: []
-  - name: Crios
+  - name: Criôs
     slug: crios
     culture: grecque
     id: grecque-crios
@@ -19473,6 +19605,669 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.176–200
+      children: []
+      siblings: []
+      consorts: []
+  - name: Clio
+    slug: clio_2
+    culture: grecque
+    id: grecque-clio_2
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Calliope
+    slug: calliope
+    culture: grecque
+    id: grecque-calliope
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Euterpe
+    slug: euterpe
+    culture: grecque
+    id: grecque-euterpe
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Thalie
+    slug: thalie
+    culture: grecque
+    id: grecque-thalie
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Melpomène
+    slug: melpomene
+    culture: grecque
+    id: grecque-melpomene
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Terpsichore
+    slug: terpsichore
+    culture: grecque
+    id: grecque-terpsichore
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Érato
+    slug: erato
+    culture: grecque
+    id: grecque-erato
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Polymnie
+    slug: polymnie
+    culture: grecque
+    id: grecque-polymnie
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-uranie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Uranie
+    slug: uranie
+    culture: grecque
+    id: grecque-uranie
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-mnemosyne
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      children: []
+      siblings:
+        - id: grecque-clio_2
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-calliope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-euterpe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-thalie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-melpomene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-terpsichore
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-erato
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+        - id: grecque-polymnie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.75–103
+      consorts: []
+  - name: Métis
+    slug: metis
+    culture: grecque
+    id: grecque-metis
+    relations:
+      parents: []
+      children:
+        - id: grecque-athena
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.886–900
+      siblings: []
+      consorts:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.886–900
+  - name: Athéna
+    slug: athena
+    culture: grecque
+    id: grecque-athena
+    relations:
+      parents:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.886–900
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.886–900
       children: []
       siblings: []
       consorts: []

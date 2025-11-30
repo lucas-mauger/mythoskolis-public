@@ -1,0 +1,265 @@
+languages:
+  - fr
+  - en
+
+natures:
+  # ====================
+  # DIVINITES
+  # ====================
+  - id: divinite
+    kind: divinite
+    parent: null
+    labels:
+      fr:
+        m: "Dieu"
+        f: "Déesse"
+        x: "Divinité"
+      en:
+        m: "God"
+        f: "Goddess"
+        x: "Deity"
+
+  - id: primordial
+    kind: divinite
+    parent: divinite
+    labels:
+      fr:
+        m: "Primordial"
+        f: "Primordiale"
+        x: "Primordial"
+      en:
+        x: "Primordial"
+
+  - id: titanide
+    kind: divinite
+    parent: divinite
+    labels:
+      fr:
+        m: "Titan"
+        f: "Titanide"
+        x: "Titan/Titanide"
+      en:
+        m: "Titan"
+        f: "Titaness"
+        x: "Titan"
+
+  - id: olympien
+    kind: divinite
+    parent: divinite
+    labels:
+      fr:
+        m: "Olympien"
+        f: "Olympienne"
+        x: "Olympien"
+      en:
+        m: "Olympian"
+        f: "Olympian"
+        x: "Olympian"
+
+  - id: nymphe
+    kind: divinite
+    parent: divinite
+    labels:
+      fr:
+        f: "Nymphe"
+        x: "Nymphe"
+      en:
+        f: "Nymph"
+        x: "Nymph"
+
+  - id: pleiade
+    kind: divinite
+    parent: nymphe
+    labels:
+      fr:
+        f: "Pléiade"
+        x: "Pléiade"
+      en:
+        f: "Pleiad"
+        x: "Pleiad"
+
+  - id: oceanide
+    kind: divinite
+    parent: nymphe
+    labels:
+      fr:
+        f: "Océanide"
+        x: "Océanide"
+      en:
+        f: "Oceanid"
+        x: "Oceanid"
+
+  - id: nereide
+    kind: divinite
+    parent: nymphe
+    labels:
+      fr:
+        f: "Néréide"
+        x: "Néréide"
+      en:
+        f: "Nereid"
+        x: "Nereid"
+
+  - id: personnification_abstraite
+    kind: divinite
+    parent: divinite
+    labels:
+      fr:
+        x: "Personnification"
+      en:
+        x: "Personification"
+
+  - id: chthonien
+    kind: divinite
+    parent: divinite
+    labels:
+      fr:
+        m: "Chthonien"
+        f: "Chthonienne"
+        x: "Chthonien"
+      en:
+        m: "Chthonic"
+        f: "Chthonic"
+        x: "Chthonic"
+
+  - id: groupe_divin
+    kind: divinite
+    parent: divinite
+    labels:
+      fr:
+        x: "Groupe divin"
+      en:
+        x: "Divine group"
+
+  # ====================
+  # DEMI-DIEUX
+  # ====================
+  - id: demi_dieu
+    kind: demi_dieu
+    parent: null
+    labels:
+      fr:
+        m: "Demi-dieu"
+        f: "Demi-déesse"
+        x: "Demi-dieu"
+      en:
+        m: "Demigod"
+        f: "Demigoddess"
+        x: "Demigod"
+
+  - id: heros_demi_dieu
+    kind: demi_dieu
+    parent: demi_dieu
+    labels:
+      fr:
+        m: "Héros demi-dieu"
+        f: "Héroïne demi-déesse"
+        x: "Héros demi-dieu"
+      en:
+        m: "Heroic demigod"
+        f: "Heroic demigoddess"
+        x: "Heroic demigod"
+
+  - id: roi_demi_dieu
+    kind: demi_dieu
+    parent: demi_dieu
+    labels:
+      fr:
+        m: "Roi demi-dieu"
+        f: "Reine demi-déesse"
+        x: "Souverain demi-dieu"
+      en:
+        m: "Demigod king"
+        f: "Demigod queen"
+        x: "Demigod ruler"
+
+  # ====================
+  # MORTELS
+  # ====================
+  - id: mortel
+    kind: mortel
+    parent: null
+    labels:
+      fr:
+        m: "Mortel"
+        f: "Mortelle"
+        x: "Mortel"
+      en:
+        m: "Mortal"
+        f: "Mortal"
+        x: "Mortal"
+
+  - id: heros_mortel
+    kind: mortel
+    parent: mortel
+    labels:
+      fr:
+        m: "Héros"
+        f: "Héroïne"
+        x: "Héros"
+      en:
+        m: "Hero"
+        f: "Heroine"
+        x: "Hero"
+
+  - id: roi_mortel
+    kind: mortel
+    parent: mortel
+    labels:
+      fr:
+        m: "Roi"
+        f: "Reine"
+        x: "Souverain"
+      en:
+        m: "King"
+        f: "Queen"
+        x: "Ruler"
+
+  - id: mortel_simple
+    kind: mortel
+    parent: mortel
+    labels:
+      fr:
+        x: "Humain"
+      en:
+        x: "Human"
+
+  # ====================
+  # CREATURES
+  # ====================
+  - id: creature
+    kind: creature
+    parent: null
+    labels:
+      fr:
+        x: "Créature"
+      en:
+        x: "Creature"
+
+  - id: monstre
+    kind: creature
+    parent: creature
+    labels:
+      fr:
+        x: "Monstre"
+      en:
+        x: "Monster"
+
+  - id: hybride
+    kind: creature
+    parent: creature
+    labels:
+      fr:
+        x: "Hybride"
+      en:
+        x: "Hybrid"
+
+  - id: animal_mythique
+    kind: creature
+    parent: creature
+    labels:
+      fr:
+        x: "Animal mythique"
+      en:
+        x: "Mythical animal"
+

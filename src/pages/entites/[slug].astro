@@ -3,7 +3,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import EgoGraph from '../../components/EgoGraph.astro';
 import { getGraphDisplayData, getEntityById, getEntityBySlug } from '../../lib/genealogie';
 import { getRecitsForEntity } from '../../utils/recits';
@@ -31,7 +31,7 @@ const {
   symbols,
   gender,
 } = entry.data;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
 const entityId = (frontId ?? entry.data.id ?? entry.slug).toString();
 const allEntries = await getCollection('entites');
 const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
@@ -56,7 +56,7 @@ const imageSrc =
 
 const isGrecPantheon = (yamlEntity?.culture ?? entry.data.culture ?? entityCulture) === 'grecque';
 const natureLabel = getNatureLabel(yamlEntity, entry.data);
-const natureBadges = Array.from(
+const natureBadgesRaw = Array.from(
   new Set(
     [
       ...(Array.isArray(entry.data.nature) ? entry.data.nature : entry.data.nature ? [entry.data.nature] : []),
@@ -66,6 +66,32 @@ const natureBadges = Array.from(
       .filter(Boolean),
   ),
 );
+const natureEntry = await getEntry('data', 'natures-entites');
+const natureLabelMap = new Map<string, { fr?: Record<string, string> }>();
+natureEntry?.data?.natures?.forEach((n) => {
+  natureLabelMap.set(n.id, { fr: n.labels?.fr ?? {} });
+});
+natureEntry?.data?.natures?.forEach((n) => {
+  const fr = n.labels?.fr ?? {};
+});
+
+function getNatureLabelFromList(natureId: string, gender?: string): string {
+  const labels = natureLabelMap.get(natureId)?.fr;
+  if (!labels) return natureId;
+  const g = (gender ?? 'x').toLowerCase();
+  return labels[g] ?? labels.x ?? labels.f ?? labels.m ?? natureId;
+}
+
+const natureBadges = natureBadgesRaw.map((n) => ({
+  id: n,
+  label: getNatureLabelFromList(n, gender),
+}));
+
+const tocHeadings = (headings ?? []).filter((h) => h.depth === 2 || h.depth === 3);
+const tocExtras: { slug: string; text: string }[] = [];
+if (genealogie) tocExtras.push({ slug: 'genealogie-detaillee', text: 'Généalogie détaillée' });
+if (recitsAssocies.length > 0) tocExtras.push({ slug: 'recits-associes', text: 'Récits associés' });
+const toc = [...tocHeadings, ...tocExtras];
 
 function buildMediaBases(kind: 'images' | 'videos') {
   const bases: string[] = [];
@@ -223,7 +249,7 @@ function getNatureLabel(
   <main class="flex-1 max-w-4xl mx-auto px-4 py-5">
     <div class="flex flex-wrap gap-3 text-sm mb-9">
       <a href="/entites/" class="badge-link badge-link--neutral badge-link--back">Toutes les entités</a>
-      <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">Voir la généalogie</a>
+      <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">Voir dans l’HoloGraph</a>
     </div>
 
     <div class="text-center">
@@ -231,7 +257,9 @@ function getNatureLabel(
       {natureBadges.length > 0 && (
         <div class="nature-badges">
           {natureBadges.map((n) => (
-            <span class="nature-pill">{n}</span>
+            <a href={`/entites/?q=${encodeURIComponent(n.id)}`} class="nature-pill">
+              {n.label}
+            </a>
           ))}
         </div>
       )}
@@ -268,6 +296,21 @@ function getNatureLabel(
     </div>
 
 
+    {toc.length > 0 && (
+      <nav class="toc bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-700 mt-8">
+        <p class="font-semibold text-gray-900 mb-3">Sommaire</p>
+        <ul class="space-y-2">
+          {toc.map((h) => (
+            <li class={h.depth === 3 ? "pl-4 text-gray-600" : ""}>
+              <a class="hover:text-indigo-600" href={`#${h.slug}`}>
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
     <section class="prose prose-gray max-w-none mt-8">
       <Content />
     </section>
@@ -295,19 +338,15 @@ function getNatureLabel(
     )}
 
     {genealogie ? (
-      <section class="mt-12 space-y-4">
+      <section id="genealogie-detaillee" class="mt-12 space-y-4">
         <div class="flex items-center justify-between gap-3">
           <h2 class="text-2xl font-semibold">Généalogie détaillée</h2>
           <div class="flex items-center gap-2">
-            <a href={`/genealogie/${entityId}/`} class="text-sm text-indigo-600 hover:text-indigo-700 underline">
-              Ouvrir la page dédiée
-            </a>
             <a
-              href="/admin/?collection=genealogie"
-              class="text-sm text-indigo-600 hover:text-indigo-700 underline"
-              aria-label="Éditer les relations familiales dans l'admin"
+              href={`/genealogie/${entityId}/`}
+              class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-sm font-semibold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-50 transition"
             >
-              Éditer les relations
+              Ouvrir l’HoloGraph dédié
             </a>
           </div>
         </div>
@@ -329,7 +368,7 @@ function getNatureLabel(
     )}
 
     {recitsAssocies.length > 0 && (
-      <section class="mt-12">
+      <section id="recits-associes" class="mt-12">
         <div class="recits-card rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-2xl font-semibold text-gray-900">Récits associés</h2>
@@ -424,6 +463,27 @@ function getNatureLabel(
     .media {
       width: 70%;
     }
+  }
+  /* Sommaire */
+  .toc a {
+    text-decoration: none;
+  }
+  .toc a:hover {
+    text-decoration: underline;
+  }
+  :global(.theme-dark .toc) {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .toc p) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .toc a) {
+    color: #c7d6ff;
+  }
+  :global(.theme-dark .toc a:hover) {
+    color: #e5e7eb;
   }
   /* Récits associés */
   .recits-card {

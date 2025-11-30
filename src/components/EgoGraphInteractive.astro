@@ -6,8 +6,6 @@ interface Props {
 
 const { initialSlug, pageIds = [] } = Astro.props as Props;
 const componentId = `ego-graph-${initialSlug}`;
-const clientModule = (await import('./ego-graph-interactive-client.ts?url')) as { default: string };
-const clientScriptSrc = clientModule.default;
 ---
 
 <section class="bg-white border border-gray-200 rounded-2xl shadow-sm p-0 space-y-4 overflow-hidden">
@@ -17,6 +15,8 @@ const clientScriptSrc = clientModule.default;
       class="ego-graph-sky relative"
       aria-live="polite"
       data-ego-graph
+      data-ego-graph-container
+      data-component-id={componentId}
       data-initial-slug={initialSlug}
       data-page-ids={JSON.stringify(pageIds)}
     >
@@ -57,6 +57,8 @@ const clientScriptSrc = clientModule.default;
     </div>
   </div>
 </section>
+
+<script src="/src/scripts/ego-graph-loader.ts"></script>
 
 <style is:global>
   @font-face {
@@ -583,5 +585,3 @@ const clientScriptSrc = clientModule.default;
     }
   }
 </style>
-
-<script type="module" src={clientScriptSrc}></script>

@@ -3,8 +3,8 @@ title: Hestia
 culture: grecque
 id: grecque-hestia
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: f
 role: 'Déesse du foyer, du feu sacré et de l’hospitalité'
 description: >-

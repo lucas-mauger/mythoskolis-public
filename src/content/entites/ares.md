@@ -3,8 +3,8 @@ title: Arès
 culture: grecque
 id: grecque-ares
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: m
 role: 'Dieu de la guerre brutale, de la violence et de la fureur'
 description: >-

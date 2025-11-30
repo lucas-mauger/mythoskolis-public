@@ -3,7 +3,9 @@ title: Hypnos
 culture: grecque
 id: grecque-hypnos
 nature:
-  - primordiale
+  - divinite
+  - personnification_abstraite
+  - chthonien
 gender: m
 role: Divinité primordiale du Sommeil
 description: >

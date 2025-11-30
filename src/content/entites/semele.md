@@ -3,7 +3,7 @@ title: Sémélé
 culture: grecque
 id: grecque-semele
 nature:
-  - heros
+  - mortel
 gender: f
 role: 'Princesse thébaine, mère mortelle de Dionysos'
 description: >-

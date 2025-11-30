@@ -3,8 +3,8 @@ title: Hébé
 culture: grecque
 id: grecque-hebe
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: f
 role: Déesse de la jeunesse éternelle et échanson des dieux
 description: >-

@@ -3,7 +3,9 @@ title: Moros
 culture: grecque
 id: grecque-moros
 nature:
-  - primordiale
+  - divinite
+  - personnification_abstraite
+  - chthonien
 gender: m
 role: Divinité primordiale du Destin fatal et de l’inéluctable
 description: >

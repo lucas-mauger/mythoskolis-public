@@ -3,8 +3,8 @@ title: Héphaïstos
 culture: grecque
 id: grecque-hephaistos
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: m
 role: 'Dieu du feu, des forges, des métaux et de l’artisanat'
 description: >-

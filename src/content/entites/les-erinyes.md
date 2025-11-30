@@ -3,7 +3,9 @@ title: Érinyes
 culture: grecque
 id: grecque-les-erinyes
 nature:
-  - creature
+  - divinite
+  - groupe_divin
+  - chthonien
 gender: f
 role: Divinités vengeresses du sang — Gardiennes de la justice ancestrale
 description: >

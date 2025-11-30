@@ -3,7 +3,8 @@ title: Métis
 culture: grecque
 id: grecque-metis
 nature:
-  - océanide
+  - divinite
+  - titanide
 gender: f
 role: 'Océanide de la sagesse rusée, première épouse de Zeus'
 description: >-

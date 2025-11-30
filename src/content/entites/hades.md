@@ -3,8 +3,9 @@ title: Hadès
 culture: grecque
 id: grecque-hades
 nature:
+  - divinite
+  - olympien
   - chthonien
-  - dieu
 gender: m
 role: Dieu des Enfers — Gardien des morts et souverain du royaume souterrain
 description: >-

@@ -3,8 +3,8 @@ title: Poséidon
 culture: grecque
 id: grecque-poseidon
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: m
 role: 'Dieu des mers, des tremblements de terre et des chevaux'
 description: >-

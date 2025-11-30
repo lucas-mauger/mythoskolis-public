@@ -3,8 +3,8 @@ title: Athéna
 culture: grecque
 id: grecque-athena
 nature:
+  - divinite
   - olympien
-  - dieu
 gender: f
 role: 'Déesse de la sagesse, de la stratégie guerrière et des artisans'
 description: >-
