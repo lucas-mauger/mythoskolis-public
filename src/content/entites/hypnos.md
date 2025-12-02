@@ -31,7 +31,7 @@ Hypnos habite les régions obscures, souvent décrites comme une grotte profonde
 Il agit aussi à travers ses fils, les Oneiroi, les Songes, qui transmettent aux mortels des visions véridiques ou trompeuses.
 
 ## Rôle dans les mythes
-Hypnos intervient rarement mais de manière décisive. Dans l’Iliade, il aide Héra à endormir Zeus pour permettre aux Achéens de reprendre l’avantage — preuve que même le roi des dieux peut être assujetti au Sommeil. Sa capacité à vaincre toute résistance, à envelopper quiconque dans un apaisement irrésistible, fait de lui une puissance subtile mais redoutée.
+Hypnos intervient rarement mais de manière décisive. Dans l’Iliade, il aide Héra à endormir Zeus pour permettre aux Achéens de reprendre l’avantage, preuve que même le roi des dieux peut être assujetti au Sommeil. Sa capacité à vaincre toute résistance, à envelopper quiconque dans un apaisement irrésistible, fait de lui une puissance subtile mais redoutée.
 
 ## Iconographie
 Hypnos est représenté comme un jeune homme délicat, parfois ailé, tenant une fleur de pavot, une corne, ou un bâton symbolique. D’autres représentations le montrent versant un liquide soporifique ou effleurant le front des dormeurs. Sa figure exprime la douceur, la discrétion et la puissance silencieuse du sommeil.

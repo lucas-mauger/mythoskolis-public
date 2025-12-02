@@ -30,7 +30,7 @@ Avec **Nyx**, la Nuit, Érèbe engendre un ensemble de puissances abstraites et 
 
 - **Éther**, la Lumière céleste,
 - **Héméra**, le Jour,
-- et, selon les traditions, d’autres personnifications comme la Discorde, la Mort ou le Sommeil — tous associés à la dynamique entre obscurité et lumière.
+- et, selon les traditions, d’autres personnifications comme la Discorde, la Mort ou le Sommeil, tous associés à la dynamique entre obscurité et lumière.
 
 Cette descendance souligne une idée centrale : de l’obscurité première naît la lumière, et l’ordre provient du contraste entre les forces primordiales.
 

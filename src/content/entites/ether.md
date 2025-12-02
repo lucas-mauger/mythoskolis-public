@@ -35,4 +35,4 @@ Chez les Grecs, cette lumière supérieure est le milieu où évoluent les dieux
 Il ne joue aucun rôle narratif dans les mythes, mais son existence donne au cosmos son architecture lumineuse : la séparation entre obscurité, jour terrestre et lumière divine.
 
 ## Iconographie
-Éther est rarement figuré, et presque jamais dans l’Antiquité. Les représentations modernes le montrent comme une forme lumineuse ou une silhouette masculine baignée de clarté diffuse, évoquant la transparence et l’altitude. Sa nature même — pure lumière — le rend difficile à représenter autrement que de manière symbolique.
+Éther est rarement figuré, et presque jamais dans l’Antiquité. Les représentations modernes le montrent comme une forme lumineuse ou une silhouette masculine baignée de clarté diffuse, évoquant la transparence et l’altitude. Sa nature même - pure lumière - le rend difficile à représenter autrement que de manière symbolique.

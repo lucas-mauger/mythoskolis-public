@@ -6,7 +6,7 @@ nature:
   - divinite
   - olympien
 gender: f
-role: 'Reine des dieux — Déesse du mariage, des femmes et de la famille'
+role: 'Reine des dieux - Déesse du mariage, des femmes et de la famille'
 description: >-
   Épouse de Zeus et protectrice des unions légitimes, Héra incarne l’autorité,
   la fidélité institutionnelle et la souveraineté féminine.
@@ -32,4 +32,4 @@ Héra intervient souvent pour défendre l’institution du mariage, particulièr
 Elle agit aussi comme force politique : elle soutient les Achéens dans l’Iliade, manipule les dieux lorsque l’équilibre cosmique l’exige et œuvre à maintenir l’ordre que Zeus peut parfois perturber par caprice.
 
 ## Iconographie
-Héra est représentée couronnée, majestueuse, tenant parfois un sceptre ou une grenade — symbole de fertilité et de continuité. Le paon, animal sacré, accompagne fréquemment ses images.
+Héra est représentée couronnée, majestueuse, tenant parfois un sceptre ou une grenade, qui est symbole de fertilité et de continuité. Le paon, animal sacré, accompagne fréquemment ses images.

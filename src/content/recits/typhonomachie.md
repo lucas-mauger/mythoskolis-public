@@ -41,7 +41,7 @@ tags:
 sources:
   - author: Hésiode
     work: Théogonie
-    note: "v.820–885 — socle principal du récit"
+    note: "v.820–885 - socle principal du récit"
   - author: Apollodore
     work: Bibliothèque
     note: "Version héroïque du combat"

@@ -7,7 +7,7 @@ nature:
   - monstre
   - chthonien
 gender: m
-role: Monstre primordial — Adversaire suprême de Zeus
+role: Monstre primordial - Adversaire suprême de Zeus
 description: >
   Né de Gaïa et du Tartare, Typhon est le plus redoutable des monstres
   primordiaux. Doté d’une force colossale et d’un corps composite, il incarne la

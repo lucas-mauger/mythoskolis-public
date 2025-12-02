@@ -21,7 +21,7 @@ symbols:
   - Poissons
 ---
 ## Nature et identité
-Océan est l’un des Titans, fils de Gaïa et d’Ouranos. Il n’incarne pas la mer au sens strict — domaine de Pontos ou de Poséidon — mais le **fleuve cosmique** qui encercle le monde, selon la géographie mythologique grecque.  
+Océan est l’un des Titans, fils de Gaïa et d’Ouranos. Il n’incarne pas la mer au sens strict (domaine de Pontos ou de Poséidon) mais le **fleuve cosmique** qui encercle le monde, selon la géographie mythologique grecque.  
 Dans la pensée archaïque, Océan est à la fois une divinité et un élément : la grande ceinture d’eau qui borde les terres et dont procèdent les fleuves, les sources et certains phénomènes aquatiques.
 
 ## Rôle cosmologique

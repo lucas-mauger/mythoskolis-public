@@ -37,9 +37,9 @@ Sans être systématique, beaucoup de récits reposent sur :
 
 ### **3. Des personnages symboliques**
 Les dieux incarnent des forces :
-- Zeus — ordre, justice, souveraineté
-- Hadès — nécessité, mort
-- Athéna — intelligence, stratégie
+- Zeus - ordre, justice, souveraineté
+- Hadès - nécessité, mort
+- Athéna - intelligence, stratégie
 
 Leur rôle dépasse l’individualité : ce sont des principes actifs du monde.
 

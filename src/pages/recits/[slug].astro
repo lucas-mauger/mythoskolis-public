@@ -103,30 +103,54 @@ const opponentEntities = (recit.data.opponents || [])
       {(recit.data.main_entities?.length || recit.data.opponents?.length) && (
         <section class="space-y-4">
           {mainEntities.length > 0 && (
-            <div class="entity-strip">
+            <div class="entity-strip w-full max-w-full box-border border border-gray-200 rounded-2xl bg-white p-4 space-y-3">
               <div class="strip-header">
-                <h2>Protagonistes</h2>
+                <h2 class="text-[1.05rem] font-bold text-gray-900">Protagonistes</h2>
               </div>
-              <div class="chip-row">
+              <div class="chip-row flex flex-wrap gap-3 sm:gap-3.5 py-2 w-full max-w-full box-border">
                 {mainEntities.map((ent) => (
-                  <a href={`/entites/${ent.id}/`} class={`chip ${ent.img ? '' : 'no-img'}`}>
-                    {ent.img && <img src={ent.img} alt={`Portrait de ${ent.title}`} loading="lazy" />}
-                    <span>{ent.title}</span>
+                  <a
+                    href={`/entites/${ent.id}/`}
+                    class={`chip inline-flex items-center gap-2 rounded-full border border-gray-200 bg-slate-50 px-3 py-2 text-[0.95rem] font-semibold text-gray-900 transition hover:border-indigo-200 hover:-translate-y-[1px] hover:shadow-md ${
+                      ent.img ? '' : 'no-img'
+                    }`}
+                  >
+                    {ent.img && (
+                      <img
+                        src={ent.img}
+                        alt={`Portrait de ${ent.title}`}
+                        loading="lazy"
+                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0"
+                      />
+                    )}
+                    <span class="whitespace-nowrap">{ent.title}</span>
                   </a>
                 ))}
               </div>
             </div>
           )}
           {opponentEntities.length > 0 && (
-            <div class="entity-strip">
+            <div class="entity-strip w-full max-w-full box-border border border-gray-200 rounded-2xl bg-white p-4 space-y-3">
               <div class="strip-header">
-                <h2>Antagonistes</h2>
+                <h2 class="text-[1.05rem] font-bold text-gray-900">Antagonistes</h2>
               </div>
-              <div class="chip-row">
+              <div class="chip-row flex flex-wrap gap-3 sm:gap-3.5 py-2 w-full max-w-full box-border">
                 {opponentEntities.map((ent) => (
-                  <a href={`/entites/${ent.id}/`} class={`chip ${ent.img ? '' : 'no-img'}`}>
-                    {ent.img && <img src={ent.img} alt={`Portrait de ${ent.title}`} loading="lazy" />}
-                    <span>{ent.title}</span>
+                  <a
+                    href={`/entites/${ent.id}/`}
+                    class={`chip inline-flex items-center gap-2 rounded-full border border-gray-200 bg-slate-50 px-3 py-2 text-[0.95rem] font-semibold text-gray-900 transition hover:border-indigo-200 hover:-translate-y-[1px] hover:shadow-md ${
+                      ent.img ? '' : 'no-img'
+                    }`}
+                  >
+                    {ent.img && (
+                      <img
+                        src={ent.img}
+                        alt={`Portrait de ${ent.title}`}
+                        loading="lazy"
+                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0"
+                      />
+                    )}
+                    <span class="whitespace-nowrap">{ent.title}</span>
                   </a>
                 ))}
               </div>
@@ -146,11 +170,14 @@ const opponentEntities = (recit.data.opponents || [])
       </article>
 
       {tagList.length > 0 && (
-        <section class="tag-block">
-          <h2 class="tag-title">Thèmes abordés</h2>
-          <div class="tag-grid">
+        <section class="rounded-2xl border border-gray-200 bg-white p-4 space-y-3 dark:border-slate-400/35 dark:bg-slate-900/90">
+          <h2 class="text-[1.05rem] font-bold text-gray-900 dark:text-slate-100">Thèmes abordés</h2>
+          <div class="flex flex-wrap gap-2">
             {tagList.map((tag) => (
-              <a href={`/recits/?tag=${encodeURIComponent(tag.label)}`} class="tag-pill">
+              <a
+                href={`/recits/?tag=${encodeURIComponent(tag.label)}`}
+                class="inline-flex items-center rounded-full border border-gray-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-gray-900 transition hover:border-indigo-200 hover:text-indigo-700 dark:border-slate-400/35 dark:bg-slate-700/70 dark:text-slate-100 dark:hover:border-indigo-300/60"
+              >
                 {tag.label}
               </a>
             ))}
@@ -246,46 +273,6 @@ const opponentEntities = (recit.data.opponents || [])
     overflow-x: hidden;
   }
   /* entity strips */
-  .entity-strip {
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    background: #ffffff;
-    padding: 1rem;
-    max-width: 100%;
-    box-sizing: border-box;
-    width: 100%;
-  }
-  .strip-header h2 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 0.5rem;
-  }
-  .chip-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    padding: 0.35rem 0;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 0.7rem;
-    border-radius: 9999px;
-    border: 1px solid #e5e7eb;
-    background: #f8fafc;
-    transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
-    color: #111827;
-    text-decoration: none;
-  }
-  .chip.no-img {
-    padding-left: 0.9rem;
-    padding-right: 0.9rem;
-  }
   .recit-hero {
     margin: 1rem 0 0.5rem;
   }
@@ -295,66 +282,11 @@ const opponentEntities = (recit.data.opponents || [])
     object-fit: cover;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   }
-  @media (max-width: 640px) {
-    .chip-row {
-      gap: 0.5rem;
-    }
-    .chip {
-      padding: 0.4rem 0.55rem;
-    }
-  }
-  .chip:hover {
-    border-color: #c7d2fe;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-  }
-  .chip img {
-    width: 48px;
-    height: 48px;
-    border-radius: 9999px;
-    object-fit: cover;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    flex-shrink: 0;
-  }
-  .chip span {
-    color: #111827;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  /* tags */
-  .tag-block {
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    background: #ffffff;
-    padding: 1rem;
-  }
-  .tag-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 0.75rem;
-  }
-  .tag-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .tag-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.35rem 0.75rem;
-    border-radius: 9999px;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    color: #111827;
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
   :global(.theme-dark .entity-strip) {
     background: rgba(15, 23, 42, 0.9);
-    border-color: rgba(148, 163, 184, 0.35);
+    border-color: rgba(148, 163, 184, 0.4);
   }
-  :global(.theme-dark .strip-header h2) {
+  :global(.theme-dark .entity-strip h2) {
     color: #e2e8f0;
   }
   :global(.theme-dark a.chip),
@@ -368,30 +300,12 @@ const opponentEntities = (recit.data.opponents || [])
     color: #f8fafc;
     text-decoration: none;
   }
-  :global(.theme-dark .chip.no-img) {
-    color: #f8fafc;
-  }
   :global(.theme-dark .chip:hover) {
     border-color: rgba(226, 232, 240, 0.7);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
   }
-  :global(.theme-dark .chip span) {
-    color: #f8fafc;
-  }
   :global(.theme-dark .chip img) {
     border-color: rgba(226, 232, 240, 0.35);
-  }
-  :global(.theme-dark .tag-block) {
-    background: rgba(15, 23, 42, 0.9);
-    border-color: rgba(148, 163, 184, 0.35);
-  }
-  :global(.theme-dark .tag-title) {
-    color: #f8fafc;
-  }
-  :global(.theme-dark .tag-pill) {
-    background: rgba(30, 41, 59, 0.7);
-    border-color: rgba(148, 163, 184, 0.35);
-    color: #e5e7eb;
   }
   :global(body) {
     overflow-x: hidden;

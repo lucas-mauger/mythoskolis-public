@@ -6,7 +6,7 @@ nature:
   - divinite
   - groupe_divin
 gender: f
-role: Nymphes des frênes — Générées par le sang d’Ouranos
+role: Nymphes des frênes - Générées par le sang d’Ouranos
 description: >
   Nées du sang d’Ouranos tombé sur Gaïa, les Méliades sont des nymphes liées aux
   frênes et à la fécondité primitive. Elles incarnent la vigueur sauvage, la
@@ -21,7 +21,7 @@ symbols:
   - Feuillage dense
 ---
 ## Origine et nature
-Les Méliades — parfois appelées « nymphes des frênes » — sont nées du sang d’Ouranos lorsque Cronos mutila son père. En tombant sur Gaïa, ce sang engendra plusieurs lignées primordiales : les Géants, les Érinyes, et les Méliades.  
+Les Méliades (parfois appelées « nymphes des frênes ») sont nées du sang d’Ouranos lorsque Cronos mutila son père. En tombant sur Gaïa, ce sang engendra plusieurs lignées primordiales : les Géants, les Érinyes, et les Méliades.  
 Elles appartiennent donc à la génération des êtres sauvages issus de la violence fondatrice du cosmos.
 
 Leur nom vient du **melia**, le frêne, arbre robuste associé à la vigueur, à la fécondité et à la croissance rapide.

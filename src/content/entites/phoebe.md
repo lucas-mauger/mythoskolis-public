@@ -8,7 +8,7 @@ nature:
 gender: f
 role: Titanide de la clarté spirituelle et de la prophétie archaïque
 description: >
-  Fille de Gaïa et d’Ouranos, Phoebé — aussi appelée Phoïbé — incarne la clarté
+  Fille de Gaïa et d’Ouranos, Phoebé (aussi appelée Phoïbé) incarne la clarté
   intellectuelle, la puissance prophétique et la lumière spirituelle de l’âge
   des Titans. Grand-mère d’Apollon et d’Artémis, elle occupe une place
   fondamentale dans la transmission des dons oraculaires.

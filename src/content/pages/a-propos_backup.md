@@ -11,11 +11,11 @@ Chaque contenu cherche à éveiller la curiosité sans jamais prétendre à l’
 
 ## L’intelligence artificielle comme atelier, pas comme artiste
 
-Les images, vidéos et animations qui accompagnent les textes ont été créées à l’aide d’outils d’intelligence artificielle. Cela m’a demandé de nombreuses heures de recherche, d’expérimentation et d’ajustement — un vrai travail de conception, mais qui ne relève pas de l’illustration traditionnelle.
+Les images, vidéos et animations qui accompagnent les textes ont été créées à l’aide d’outils d’intelligence artificielle. Cela m’a demandé de nombreuses heures de recherche, d’expérimentation et d’ajustement. Un vrai travail de conception, mais qui ne relève pas de l’illustration traditionnelle.
 
 Je ne me considère pas comme un artiste. Je revendique au contraire le rôle de passeur : utiliser ces outils comme un atelier numérique, une aide à la mise en image de récits que j’aime et que je souhaite partager.
 
-Rien ne remplace la main, la sensibilité et la vision des illustrateurs, peintres ou animateurs dont c’est le métier — et pour lesquels j’ai une profonde admiration.
+Rien ne remplace la main, la sensibilité et la vision des illustrateurs, peintres ou animateurs dont c’est le métier, et pour lesquels j’ai une profonde admiration.
 
 ## Respect des créateurs et transparence
 

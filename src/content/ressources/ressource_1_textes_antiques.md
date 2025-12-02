@@ -49,7 +49,7 @@ Consulter les sources antiques est indispensable pour comprendre la mythologie g
 
 📎 <a href="https://www.perseus.tufts.edu/hopper/searchresults?q=Apollodorus" target="_blank" rel="noopener">Apollodore sur Perseus</a>
 
-### **Hygin — Fables**
+### **Hygin - Fables**
 - Compendium romain mais précieux pour la tradition grecque
 - Disponible sur Wikisource
 

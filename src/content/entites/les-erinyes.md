@@ -7,7 +7,7 @@ nature:
   - groupe_divin
   - chthonien
 gender: f
-role: Divinités vengeresses du sang — Gardiennes de la justice ancestrale
+role: Divinités vengeresses du sang - Gardiennes de la justice ancestrale
 description: >
   Nées du sang d’Ouranos, les Érinyes incarnent la vengeance implacable qui
   s’abat sur ceux qui commettent des crimes contre leur propre famille. Elles
@@ -22,7 +22,7 @@ symbols:
   - Torches
 ---
 ## Origine et nature
-Les Érinyes — souvent appelées « Furies » dans la tradition latine — sont des divinités anciennes, nées du sang d’Ouranos lorsque Cronos mutila son père. Leur origine les rattache directement aux forces primordiales de la terre en colère, à l’instar des Géants et des autres êtres issus de cette violence originelle.
+Les Érinyes (souvent appelées « Furies » dans la tradition latine) sont des divinités anciennes, nées du sang d’Ouranos lorsque Cronos mutila son père. Leur origine les rattache directement aux forces primordiales de la terre en colère, à l’instar des Géants et des autres êtres issus de cette violence originelle.
 
 Elles incarnent la justice antérieure aux Olympiens : une justice fondée sur le sang, la parenté et la réparation inévitable des crimes familiaux.
 

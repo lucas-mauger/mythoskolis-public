@@ -47,7 +47,7 @@ Seule ou selon les traditions, elle donne naissance à une multitude d’entité
 Cette généalogie place Nyx au cœur des forces régissant la condition humaine et les mécanismes du destin.
 
 ## Rôle cosmique
-Nyx n’intervient pas directement dans les récits, mais sa présence structure l’univers. Elle marque la frontière entre lumière et obscurité, veille sur les transitions — du jour à la nuit, de la vie au sommeil, de l’ordre à ses contreparties silencieuses.
+Nyx n’intervient pas directement dans les récits, mais sa présence structure l’univers. Elle marque la frontière entre lumière et obscurité, veille sur les transitions : du jour à la nuit, de la vie au sommeil, de l’ordre à ses contreparties silencieuses.
 
 Son autorité est telle que même les dieux olympiens hésitent à la défier. Hésiode et d’autres poètes évoquent souvent la puissance redoutable de son royaume, situé aux confins du monde, là où les cycles du jour et de la nuit se croisent.
 

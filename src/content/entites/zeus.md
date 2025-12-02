@@ -6,7 +6,7 @@ nature:
   - olympien
   - dieu
 gender: m
-role: 'Roi des dieux — Maître du ciel, du tonnerre et de la foudre'
+role: 'Roi des dieux - Maître du ciel, du tonnerre et de la foudre'
 description: >-
   Souverain de l’Olympe, arbitre des conflits divins et humains, père de
   nombreux héros et divinités.
@@ -24,7 +24,7 @@ Zeus est le **dieu du ciel**, du tonnerre et de l’éclair, mais surtout le **r
 Son autorité ne repose pas sur la tyrannie : il écoute, arbitre, récompense et punit. Il garantit les serments, protège l’hospitalité (la *xenia*) et agit comme ultime recours lorsqu’un conflit menace l’équilibre du monde.
 
 ## Naissance et ascension
-Fils de **Cronos** et **Rhéa**, il échappe au destin tragique de ses frères et sœurs — tous dévorés par leur père.  
+Fils de **Cronos** et **Rhéa**, il échappe au destin tragique de ses frères et sœurs - tous dévorés par leur père.  
 Élevé en secret en Crète, il renverse Cronos, libère les Olympiens, et mène la **Titanomachie** qui scelle son avènement.
 
 Son règne s’impose ensuite lors des affrontements contre les Géants et les monstres primordiaux comme Typhon.

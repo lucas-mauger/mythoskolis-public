@@ -7,7 +7,7 @@ nature:
   - olympien
 gender: m
 role: >-
-  Messager des dieux — Dieu des voyageurs, des échanges, de la ruse et des
+  Messager des dieux - Dieu des voyageurs, des échanges, de la ruse et des
   passages
 description: >-
   Rapide et ingénieux, Hermès sert d’intermédiaire entre les mondes. Protecteur

@@ -6,7 +6,7 @@ nature:
   - divinite
   - primordial
 gender: x
-role: Divinité primordiale — Source indistincte de toute existence
+role: Divinité primordiale - Source indistincte de toute existence
 description: >
   Entité première surgie avant toute autre forme, Chaos représente la béance
   originelle d’où émergent les forces fondatrices du cosmos.
@@ -37,7 +37,7 @@ Chaos ne gouverne rien, n’intervient pas dans les récits, mais sa présence e
 ## Place dans les traditions mythologiques
 Les auteurs anciens utilisent Chaos pour exprimer l’antériorité absolue. Hésiode en fait le premier être à surgir, précédant Gaïa, Tartare et Éros. D’autres traditions voient Chaos non comme un individu mais comme un état cosmique initial.
 
-Cette ambiguïté — entité ou concept — fait partie de sa nature même : Chaos occupe la frontière entre le néant et la création.
+Cette ambiguïté,  entité ou concept, fait partie de sa nature même : Chaos occupe la frontière entre le néant et la création.
 
 ## Iconographie
 Chaos est rarement représenté, car il transcende la forme. Lorsqu’il apparaît visuellement, c’est souvent sous l’aspect d’un gouffre, d’une nuit sans contours, ou d’une silhouette cosmique abstraite évoquant l’immensité indistincte du premier monde.

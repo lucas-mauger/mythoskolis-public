@@ -217,7 +217,19 @@ entities:
     culture: grecque
     id: grecque-leto
     relations:
-      parents: []
+      parents:
+        - id: grecque-coeos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
+        - id: grecque-phoebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
       children:
         - id: grecque-apollon
           consensus: true
@@ -225,7 +237,13 @@ entities:
         - id: grecque-artemis
           consensus: true
           sources: []
-      siblings: []
+      siblings:
+        - id: grecque-asteria
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
       consorts:
         - id: grecque-zeus
           consensus: true
@@ -382,7 +400,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -505,7 +523,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -640,7 +658,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -817,7 +835,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2091,7 +2109,61 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-potamoi
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       siblings:
         - id: grecque-coeos
           consensus: true
@@ -2141,7 +2213,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2159,7 +2231,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
   - name: Coéos
     slug: coeos
     culture: grecque
@@ -2178,7 +2256,19 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-asteria
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
+        - id: grecque-leto
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2228,7 +2318,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2246,7 +2336,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-phoebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
   - name: Hypérion
     slug: hyperion
     culture: grecque
@@ -2265,7 +2361,25 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-helios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-selene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-eos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2315,7 +2429,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2333,7 +2447,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-theia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
   - name: Japet
     slug: japet
     culture: grecque
@@ -2352,7 +2472,31 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-menoitios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-promethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-epimethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2402,7 +2546,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2420,7 +2564,19 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-asia
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
   - name: Théia
     slug: theia
     culture: grecque
@@ -2439,7 +2595,25 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-helios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-selene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-eos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2489,7 +2663,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2507,7 +2681,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-hyperion
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
   - name: Thémis
     slug: themis
     culture: grecque
@@ -2576,7 +2756,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2717,7 +2897,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2742,10 +2922,10 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.75–103
-  - name: Phoïbé
-    slug: phoibe
+  - name: Phoebé
+    slug: phoebe
     culture: grecque
-    id: grecque-phoibe
+    id: grecque-phoebe
     relations:
       parents:
         - id: grecque-ouranos
@@ -2760,7 +2940,19 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-asteria
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
+        - id: grecque-leto
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2828,7 +3020,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-coeos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
   - name: Téthys
     slug: tethys
     culture: grecque
@@ -2847,7 +3045,61 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-potamoi
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2903,7 +3155,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -2915,7 +3167,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
   - name: Brontès
     slug: brontes
     culture: grecque
@@ -3132,7 +3390,25 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-astreos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-pallas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-perses
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -3182,7 +3458,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-        - id: grecque-phoibe
+        - id: grecque-phoebe
           consensus: true
           sources:
             - author: Hésiode
@@ -3200,7 +3476,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-eurybie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
   - name: Nérée
     slug: neree
     culture: grecque
@@ -3819,7 +4101,25 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.233–239
-      children: []
+      children:
+        - id: grecque-astreos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-pallas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-perses
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
       siblings:
         - id: grecque-neree
           consensus: true
@@ -3845,13 +4145,31 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.233–239
-      consorts: []
+      consorts:
+        - id: grecque-crios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
   - name: Doris
     slug: doris
     culture: grecque
     id: grecque-doris
     relations:
-      parents: []
+      parents:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       children:
         - id: grecque-panope
           consensus: true
@@ -4135,7 +4453,49 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v. 240–264
-      siblings: []
+      siblings:
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       consorts:
         - id: grecque-neree
           consensus: true
@@ -18113,7 +18473,19 @@ entities:
     culture: grecque
     id: grecque-electre
     relations:
-      parents: []
+      parents:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       children:
         - id: grecque-iris
           consensus: true
@@ -18133,7 +18505,49 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.265–269
-      siblings: []
+      siblings:
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       consorts:
         - id: grecque-thaumas
           consensus: true
@@ -19459,7 +19873,13 @@ entities:
               work: Description de la Grèce
               passage: VIII, 25, 4–8
       children: []
-      siblings: []
+      siblings:
+        - id: grecque-despoina
+          consensus: true
+          sources:
+            - author: Pausanias
+              work: Description de la Grèce
+              passage: VIII ; 25 ; 4–8
       consorts: []
   - name: Despoina
     slug: despoina
@@ -19480,7 +19900,13 @@ entities:
               work: Description de la Grèce
               passage: VIII, 25, 4–8
       children: []
-      siblings: []
+      siblings:
+        - id: grecque-arion
+          consensus: true
+          sources:
+            - author: Pausanias
+              work: Description de la Grèce
+              passage: VIII ; 25 ; 4–8
       consorts: []
   - name: Maia
     slug: maia
@@ -20234,7 +20660,19 @@ entities:
     culture: grecque
     id: grecque-metis
     relations:
-      parents: []
+      parents:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       children:
         - id: grecque-athena
           consensus: true
@@ -20242,7 +20680,49 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.886–900
-      siblings: []
+      siblings:
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
       consorts:
         - id: grecque-zeus
           consensus: true
@@ -20268,6 +20748,789 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.886–900
+      children: []
+      siblings: []
+      consorts: []
+  - name: Astéria
+    slug: asteria
+    culture: grecque
+    id: grecque-asteria
+    relations:
+      parents:
+        - id: grecque-coeos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
+        - id: grecque-phoebe
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
+      children: []
+      siblings:
+        - id: grecque-leto
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.404–410
+      consorts: []
+  - name: Astréos
+    slug: astreos
+    culture: grecque
+    id: grecque-astreos
+    relations:
+      parents:
+        - id: grecque-crios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-eurybie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+      children: []
+      siblings:
+        - id: grecque-pallas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-perses
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+      consorts: []
+  - name: Pallas
+    slug: pallas
+    culture: grecque
+    id: grecque-pallas
+    relations:
+      parents:
+        - id: grecque-crios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-eurybie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+      children: []
+      siblings:
+        - id: grecque-astreos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-perses
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+      consorts: []
+  - name: Persès
+    slug: perses
+    culture: grecque
+    id: grecque-perses
+    relations:
+      parents:
+        - id: grecque-crios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-eurybie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+      children: []
+      siblings:
+        - id: grecque-astreos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+        - id: grecque-pallas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.375–377
+      consorts: []
+  - name: Hélios
+    slug: helios
+    culture: grecque
+    id: grecque-helios
+    relations:
+      parents:
+        - id: grecque-hyperion
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-theia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+      children: []
+      siblings: []
+      consorts: []
+  - name: Séléné
+    slug: selene
+    culture: grecque
+    id: grecque-selene
+    relations:
+      parents:
+        - id: grecque-hyperion
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-theia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+      children: []
+      siblings: []
+      consorts: []
+  - name: Éos
+    slug: eos
+    culture: grecque
+    id: grecque-eos
+    relations:
+      parents:
+        - id: grecque-hyperion
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-theia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+      children: []
+      siblings: []
+      consorts: []
+  - name: Clymène
+    slug: clymene
+    culture: grecque
+    id: grecque-clymene
+    relations:
+      parents:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      children:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-menoitios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-promethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-epimethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+      siblings:
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      consorts:
+        - id: grecque-japet
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+  - name: Atlas
+    slug: atlas
+    culture: grecque
+    id: grecque-atlas
+    relations:
+      parents:
+        - id: grecque-japet
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-asia
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+      children: []
+      siblings:
+        - id: grecque-menoitios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-promethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-epimethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+      consorts: []
+  - name: Ménoitios
+    slug: menoitios
+    culture: grecque
+    id: grecque-menoitios
+    relations:
+      parents:
+        - id: grecque-japet
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-asia
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+      children: []
+      siblings:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-promethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-epimethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+      consorts: []
+  - name: Prométhée
+    slug: promethee
+    culture: grecque
+    id: grecque-promethee
+    relations:
+      parents:
+        - id: grecque-japet
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-asia
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+      children: []
+      siblings:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-menoitios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-epimethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+      consorts: []
+  - name: Épiméthée
+    slug: epimethee
+    culture: grecque
+    id: grecque-epimethee
+    relations:
+      parents:
+        - id: grecque-japet
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-asia
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+      children: []
+      siblings:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-menoitios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+        - id: grecque-promethee
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.507–511
+      consorts: []
+  - name: Asia
+    slug: asia
+    culture: grecque
+    id: grecque-asia
+    relations:
+      parents:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      children:
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+        - id: grecque-menoitios
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+        - id: grecque-promethee
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+        - id: grecque-epimethee
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+      siblings:
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      consorts:
+        - id: grecque-japet
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2.2
+  - name: Potamoi
+    slug: potamoi
+    culture: grecque
+    id: grecque-potamoi
+    relations:
+      parents:
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      children: []
+      siblings: []
+      consorts: []
+  - name: Autres Océanides (collectif)
+    slug: oceanides
+    culture: grecque
+    id: grecque-oceanides
+    relations:
+      parents:
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      children: []
+      siblings:
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      consorts: []
+  - name: Styx
+    slug: styx
+    culture: grecque
+    id: grecque-styx
+    relations:
+      parents:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      children: []
+      siblings:
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-eurynome
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      consorts: []
+  - name: Eurynomé
+    slug: eurynome
+    culture: grecque
+    id: grecque-eurynome
+    relations:
+      parents:
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-tethys
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      children: []
+      siblings:
+        - id: grecque-styx
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-metis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-doris
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-asia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-clymene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+        - id: grecque-oceanides
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337–370
+      consorts: []
+  - name: Ploutô
+    slug: plouto
+    culture: grecque
+    id: grecque-plouto
+    relations:
+      parents: []
+      children: []
+      siblings: []
+      consorts: []
+  - name: Calypso
+    slug: calypso
+    culture: grecque
+    id: grecque-calypso
+    relations:
+      parents: []
       children: []
       siblings: []
       consorts: []

@@ -7,7 +7,7 @@ nature:
   - olympien
   - chthonien
 gender: f
-role: Reine des Enfers — Déesse du renouveau et des cycles saisonniers
+role: Reine des Enfers - Déesse du renouveau et des cycles saisonniers
 description: >-
   Fille de Déméter et compagne d’Hadès, Perséphone règne sur les Enfers et
   incarne l’alternance entre mort, renaissance et cyclicité du monde naturel.

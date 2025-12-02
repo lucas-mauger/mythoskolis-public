@@ -31,7 +31,7 @@ Fils de Nyx et frère jumeau d’Hypnos, le Sommeil, Thanatos incarne une contin
 Les textes anciens font de lui une force intransigeante, mais dépourvue de cruauté. Ni les dieux ni les mortels ne peuvent l’éviter, mais certains héros peuvent momentanément le repousser, comme Héraclès qui l'écarte pour sauver Alceste.
 
 ## Rôle dans les mythes
-Thanatos apparaît rarement, et uniquement comme conséquence d’un destin déjà fixé. Il n’est pas acteur d’intrigue, mais plutôt manifestation d’une loi supérieure. Sa présence dans les récits souligne le poids de la fatalité — calme, implacable et nécessaire.
+Thanatos apparaît rarement, et uniquement comme conséquence d’un destin déjà fixé. Il n’est pas acteur d’intrigue, mais plutôt manifestation d’une loi supérieure. Sa présence dans les récits souligne le poids de la fatalité : calme, implacable et nécessaire.
 
 Dans la tragédie *Alceste* d’Euripide, il est brièvement opposé à Héraclès, ce qui illustre la rare possibilité de contrarier le cours naturel des choses.
 

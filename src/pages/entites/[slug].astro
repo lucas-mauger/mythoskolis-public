@@ -255,9 +255,12 @@ function getNatureLabel(
     <div class="text-center">
       <h1 class={`entity-name text-5xl md:text-6xl font-bold mb-1 ${isGrecPantheon ? 'grec-name' : ''}`}>{title}</h1>
       {natureBadges.length > 0 && (
-        <div class="nature-badges">
+        <div class="flex flex-wrap justify-center gap-2 mb-3">
           {natureBadges.map((n) => (
-            <a href={`/entites/?q=${encodeURIComponent(n.id)}`} class="nature-pill">
+            <a
+              href={`/entites/?q=${encodeURIComponent(n.id)}`}
+              class="nature-pill inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-800 visited:text-amber-800 hover:text-amber-800 transition hover:border-amber-300 hover:-translate-y-[1px] hover:shadow-sm dark:border-amber-400/70 dark:bg-slate-800/90 dark:text-[#c68a3b] dark:visited:text-[#c68a3b] dark:hover:text-[#e2b15c]"
+            >
               {n.label}
             </a>
           ))}
@@ -297,12 +300,15 @@ function getNatureLabel(
 
 
     {toc.length > 0 && (
-      <nav class="toc bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-700 mt-8">
-        <p class="font-semibold text-gray-900 mb-3">Sommaire</p>
+      <nav class="toc-panel mt-8 rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-800 shadow-sm dark:text-slate-100">
+        <p class="toc-title mb-3 font-semibold text-lg text-gray-900 dark:text-white">Sommaire</p>
         <ul class="space-y-2">
           {toc.map((h) => (
-            <li class={h.depth === 3 ? "pl-4 text-gray-600" : ""}>
-              <a class="hover:text-indigo-600" href={`#${h.slug}`}>
+            <li class={`leading-relaxed ${h.depth === 3 ? "pl-4 text-gray-600 dark:text-slate-300" : ""}`}>
+              <a
+                class="text-gray-700 hover:underline hover:text-gray-900 dark:text-indigo-200 dark:hover:text-indigo-100"
+                href={`#${h.slug}`}
+              >
                 {h.text}
               </a>
             </li>
@@ -422,74 +428,72 @@ function getNatureLabel(
     font-weight: 600;
     border: 1px solid rgba(214, 185, 156, 0.7);
   }
-  .nature-badges {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
+.nature-badges {
+  /* styles migrés en Tailwind */
+}
+.toc-title {
+  color: #1f2937;
+  opacity: 1;
+}
+:global(.theme-dark a.nature-pill),
+:global(.theme-dark a.nature-pill:visited),
+:global(.theme-dark a.nature-pill:hover) {
+  color: #c68a3b !important;
+  border-color: rgba(217, 119, 6, 0.7) !important;
+  background: rgba(30, 41, 59, 0.85) !important;
+  text-decoration: none;
+}
+:global(html:not(.theme-dark) a.nature-pill),
+:global(html:not(.theme-dark) a.nature-pill:visited),
+:global(html:not(.theme-dark) a.nature-pill:hover) {
+  color: #7a4f27;
+  background: #f4e7d0;
+  border-color: rgba(214, 185, 156, 0.7);
+}
+.media-frame {
+  width: min(90vw, 820px);
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: center;
   }
-  .nature-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.7rem;
-    border-radius: 9999px;
-    background: #f4e7d0;
-    color: #7a4f27;
-    border: 1px solid rgba(214, 185, 156, 0.7);
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  :global(.theme-dark .nature-pill) {
-    background: rgba(120, 85, 50, 0.25);
-    border-color: rgba(214, 185, 156, 0.5);
-    color: #f1dec2;
-  }
-  .media-frame {
-    width: min(90vw, 820px);
-    margin: 0 auto 2rem;
-    display: flex;
-    justify-content: center;
-  }
+.media {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  display: block;
+}
+@media (min-width: 768px) {
   .media {
-    width: 100%;
-    height: auto;
-    border-radius: 1rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    display: block;
+    width: 70%;
   }
-  @media (min-width: 768px) {
-    .media {
-      width: 70%;
-    }
-  }
-  /* Sommaire */
-  .toc a {
-    text-decoration: none;
-  }
-  .toc a:hover {
-    text-decoration: underline;
-  }
-  :global(.theme-dark .toc) {
-    background: rgba(15, 23, 42, 0.8);
-    border-color: rgba(148, 163, 184, 0.35);
-    color: #e5e7eb;
-  }
-  :global(.theme-dark .toc p) {
-    color: #e5e7eb;
-  }
-  :global(.theme-dark .toc a) {
-    color: #c7d6ff;
-  }
-  :global(.theme-dark .toc a:hover) {
-    color: #e5e7eb;
-  }
-  /* Récits associés */
-  .recits-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-  }
+}
+:global(.toc-panel a) {
+  color: #374151;
+}
+:global(.toc-panel a:hover) {
+  color: #111827;
+}
+:global(.theme-dark .toc-panel) {
+  background: #0b1224;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+:global(.theme-dark .toc-panel a) {
+  color: #c7d6ff;
+}
+:global(.theme-dark .toc-panel a:hover) {
+  color: #e5e7eb;
+}
+:global(.theme-dark .toc-panel .toc-title) {
+  color: #e5e7eb !important;
+  opacity: 1 !important;
+}
+/* Récits associés */
+.recits-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
   :global(.theme-dark .recits-card) {
     background: rgba(15, 23, 42, 0.9);
     border-color: rgba(148, 163, 184, 0.35);

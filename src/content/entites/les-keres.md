@@ -24,10 +24,10 @@ symbols:
 ## Nature et essence
 Les Kères sont des esprits féminins redoutables, personnifications de la mort violente. Issues de Nyx, la Nuit primordiale, elles représentent l’aspect le plus terrifiant du destin : la mort brutale qui frappe sans avertir, souvent dans la fureur du combat. Elles se distinguent clairement de Thanatos, qui incarne la mort paisible, et des Érinyes, liées à la justice du sang.
 
-Elles n’apportent ni ordre, ni équilibre — elles sont la violence à l’état pur.
+Elles n’apportent ni ordre, ni équilibre : elles sont la violence à l’état pur.
 
 ## Origine
-Selon Hésiode, les Kères sont nées de Nyx seule, au même titre que :
+Selon Hésiode (et lui seul), les Kères sont nées de Nyx seule, au même titre que :
 
 - Moros (fatalité),
 - Hypnos (sommeil),
