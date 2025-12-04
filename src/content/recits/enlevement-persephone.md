@@ -43,9 +43,6 @@ sources:
     work: Théogonie
     note: "Allusions complémentaires"
 ---
-
-# L’enlèvement de Perséphone
-
 ## Le prétexte : une clairière, des fleurs, un destin suspendu
 Perséphone, fille de Déméter et de Zeus, cueille des fleurs en compagnie de nymphes
 sur la plaine de Nysa. Elle se penche vers un narcisse d’une beauté inhabituelle :

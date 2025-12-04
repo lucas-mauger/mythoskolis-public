@@ -8,7 +8,6 @@ main_entities:
   - grecque-semele
   - grecque-zeus
   - grecque-dionysos
-  - grecque-hera
 opponents:
   - grecque-hera
 places:
@@ -44,9 +43,6 @@ sources:
   - author: Hésiode
     work: Fragments (Naissance de Dionysos)
 ---
-
-# La naissance de Dionysos
-
 ## Sémélé, la mortelle qui plait aux dieux
 Sémélé, princesse thébaine et fille de Cadmos, attire le regard de **Zeus**. Le
 maître de l’Olympe, séduit, visite la jeune femme en secret, dissimulant sa

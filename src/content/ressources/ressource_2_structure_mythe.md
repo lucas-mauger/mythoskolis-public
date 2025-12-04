@@ -28,21 +28,21 @@ Récit populaire visant la transmission morale ou culturelle. Dans le monde grec
 - ### Une origine (cosmique, sociale ou naturelle)
 Les mythes expliquent la naissance du monde, des phénomènes ou des institutions.
 
-`-> Exemple : Hésiode raconte la naissance des dieux depuis le Chaos.`
+> Exemple : Hésiode raconte la naissance des dieux depuis le Chaos.
 
 - ### Une structure tripartite fréquente
-`Sans être systématique, beaucoup de récits reposent sur :`
+Sans être systématique, beaucoup de récits reposent sur :
 
-**a.** -> un ***déséquilibre initial***\
-**b.** -> un ***conflit ou une épreuve***\
-**c.** -> un ***retour à l’ordre*** (ou un nouvel ordre).
+> **a.** -> un ***déséquilibre initial***\
+> **b.** -> un ***conflit ou une épreuve***\
+> **c.** -> un ***retour à l’ordre*** (ou un nouvel ordre).
 
 - ### Des personnages symboliques
 Les dieux incarnent des ***forces*** :
 
--> **Zeus** - ordre, justice, souveraineté\
--> **Hadès** - nécessité, mort\
--> **Athéna** - intelligence, stratégie
+> **Zeus** - ordre, justice, souveraineté\
+> **Hadès** - nécessité, mort\
+> **Athéna** - intelligence, stratégie
 
 Leur rôle dépasse l’individualité : ce sont des principes actifs du monde.
 

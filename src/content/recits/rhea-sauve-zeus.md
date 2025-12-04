@@ -47,9 +47,6 @@ sources:
     work: Bibliothèque
     note: "Livre I"
 ---
-
-# Rhéa et la naissance sauvée de Zeus
-
 ## La mère des dieux face au dévoreur
 Rhéa, Titanide de la fertilité et de l’ordre ancien, voit chacun de ses enfants
 plongé dans l’obscurité du ventre de Cronos. Le Titan, effrayé par une prophétie

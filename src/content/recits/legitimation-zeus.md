@@ -48,9 +48,6 @@ sources:
     work: Bibliothèque
     note: "Livre I (passages sur le partage du monde)"
 ---
-
-# La légitimation de Zeus : le jugement des dieux
-
 ## Après la guerre, un trône encore fragile
 La Titanomachie est terminée. Cronos a été renversé et jeté au Tartare.
 Les Titans fidèles sont enchaînés, surveillés par les Hécatonchires.

@@ -39,9 +39,6 @@ sources:
   - author: Apollodore
     work: Bibliothèque
 ---
-
-# La naissance d’Apollon et Artémis
-
 ## La traque : la jalousie d’Héra n’a pas de frontières
 Léto, fille des Titans Coéos et Phoebé, porte les enfants de Zeus. Cela suffit à
 provoquer la fureur d’Héra, qui jure qu’aucune terre éclairée par le Soleil ne

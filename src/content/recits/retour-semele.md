@@ -50,9 +50,6 @@ sources:
   - author: Euripide
     work: Les Bacchantes
 ---
-
-# La catabasis de Dionysos : ramener Sémélé des Enfers
-
 ## La décision de Dionysos
 Dionysos est devenu un dieu reconnu, honoré dans toute la Grèce, initiateur de
 mystères et force de délire sacré. Mais malgré son ascension, un manque persiste :

@@ -49,9 +49,6 @@ sources:
     work: Pythiques
     note: "Allusion à l’ensevelissement sous l’Etna"
 ---
-
-# La Typhonomachie
-
 ## Le dernier enfant de Gaïa : une naissance contre les dieux
 Après la défaite des Titans et l’avènement de Zeus, **Gaïa** demeure inconsolable.
 Ses premiers enfants, les Titans, ont été vaincus et enfermés au Tartare.

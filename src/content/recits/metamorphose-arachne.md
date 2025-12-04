@@ -33,9 +33,6 @@ sources:
     work: Métamorphoses
     note: "Livre VI"
 ---
-
-# La métamorphose d’Arachné
-
 ## Une tisserande que rien n’égale
 En Lydie vivait Arachné, jeune femme d’origine modeste dont le talent pour le
 tissage dépassait celui de toutes les mortelles. Les nymphes elles-mêmes

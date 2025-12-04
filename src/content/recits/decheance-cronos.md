@@ -50,9 +50,6 @@ sources:
   - author: Diodore de Sicile
     work: Bibliothèque historique
 ---
-
-# La déchéance de Cronos
-
 ## La prophétie qui fissure un règne
 Cronos règne sur l’univers après avoir terrassé son père Ouranos à l’aide de la
 serpe forgée par Gaïa. Il croit avoir mis fin à un cycle de domination brutale,

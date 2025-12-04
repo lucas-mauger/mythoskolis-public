@@ -92,7 +92,7 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
             data-entite-card
             data-search={searchText.toLowerCase()}
               href={`/entites/${entite.data.id ?? entite.slug}/`}
-              class="entite-card flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition"
+              class="entite-card flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition"
             >
               <div class="flex-1">
                 <h2 class="entite-card-title text-xl font-semibold text-gray-900">{entite.data.title}</h2>
@@ -111,7 +111,7 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
                 <img
                   src={portrait}
                   alt={entite.data.title}
-                  class="w-20 h-20 rounded-2xl object-cover border border-gray-200 entite-card-image shadow-inner flex-shrink-0 select-none"
+                  class="w-20 h-20 rounded-2xl object-cover border border-gray-200 entite-card-image shadow-inner flex-shrink-0 select-none self-center"
                   draggable="false"
                   loading="lazy"
                 />

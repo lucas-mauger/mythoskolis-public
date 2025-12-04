@@ -19970,7 +19970,19 @@ entities:
     culture: grecque
     id: grecque-semele
     relations:
-      parents: []
+      parents:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
       children:
         - id: grecque-dionysos
           consensus: true
@@ -19978,7 +19990,31 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.940–942
-      siblings: []
+      siblings:
+        - id: grecque-ino
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-agave
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-autonoe_2
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-polydore
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
       consorts:
         - id: grecque-zeus
           consensus: true
@@ -21709,6 +21745,36 @@ entities:
             - author: Apollodore
               work: Bibliothèque
               passage: III.4.2
+        - id: grecque-semele
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-ino
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-agave
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-autonoe_2
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-polydore
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
       siblings:
         - id: grecque-phobos
           consensus: true
@@ -21722,7 +21788,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.933–937
-      consorts: []
+      consorts:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
   - name: Anchise
     slug: anchise
     culture: grecque
@@ -21770,7 +21842,19 @@ entities:
     culture: grecque
     id: grecque-cadmos
     relations:
-      parents: []
+      parents:
+        - id: grecque-agenor
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.1
+        - id: grecque-telephassa
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.1
       children:
         - id: grecque-thyone
           consensus: true
@@ -21778,8 +21862,44 @@ entities:
             - author: Apollodore
               work: Bibliothèque
               passage: III.4.2
+        - id: grecque-semele
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-ino
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-agave
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-autonoe_2
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-polydore
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
       siblings: []
-      consorts: []
+      consorts:
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
   - name: Thyoné
     slug: thyone
     culture: grecque
@@ -21813,3 +21933,225 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.940–942
+  - name: Agénor
+    slug: agenor
+    culture: grecque
+    id: grecque-agenor
+    relations:
+      parents: []
+      children:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.1
+      siblings: []
+      consorts:
+        - id: grecque-telephassa
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.1
+  - name: Téléphassa
+    slug: telephassa
+    culture: grecque
+    id: grecque-telephassa
+    relations:
+      parents: []
+      children:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.1
+      siblings: []
+      consorts:
+        - id: grecque-agenor
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.1
+  - name: Ino
+    slug: ino
+    culture: grecque
+    id: grecque-ino
+    relations:
+      parents:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      children: []
+      siblings:
+        - id: grecque-semele
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-agave
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-autonoe_2
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-polydore
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      consorts: []
+  - name: Agavé
+    slug: agave
+    culture: grecque
+    id: grecque-agave
+    relations:
+      parents:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      children: []
+      siblings:
+        - id: grecque-semele
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-ino
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-autonoe_2
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-polydore
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      consorts: []
+  - name: Autonoé
+    slug: autonoe_2
+    culture: grecque
+    id: grecque-autonoe_2
+    relations:
+      parents:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      children: []
+      siblings:
+        - id: grecque-semele
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-ino
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-agave
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-polydore
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      consorts: []
+  - name: Polydore
+    slug: polydore
+    culture: grecque
+    id: grecque-polydore
+    relations:
+      parents:
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      children: []
+      siblings:
+        - id: grecque-semele
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-ino
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-agave
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-autonoe_2
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      consorts: []

@@ -28,7 +28,7 @@ function getNatureLabel(node: any): string | null {
 
   <div class="grid gap-6 md:grid-cols-2">
     {nonEmptySections.map((section) => (
-      <div class="border border-gray-100 rounded-xl p-4 bg-gray-50/70">
+      <div class="relation-card border border-gray-100 rounded-xl p-4 bg-gray-50/70">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-lg font-semibold text-gray-800">{section.title}</h3>
           <span class="text-xs text-gray-500">{section.nodes.length} entrée(s)</span>
@@ -38,7 +38,7 @@ function getNatureLabel(node: any): string | null {
           {section.nodes.map((node) => {
             const primarySource = node.sources?.[0];
             return (
-              <li class="p-4 bg-white rounded-lg border border-gray-200 shadow-sm text-sm">
+              <li class="relation-node p-4 bg-white rounded-lg border border-gray-200 shadow-sm text-sm">
                 <div class="flex items-start justify-between gap-3">
                   <div>
                     <p class="font-semibold text-gray-900">{node.name}</p>
@@ -92,8 +92,8 @@ function getNatureLabel(node: any): string | null {
   }
 
   :global(.theme-dark .ego-detail-card) {
-    background: #0f172a;
-    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(8, 12, 26, 0.92);
+    border-color: rgba(255, 255, 255, 0.12);
     color: #e2e8f0;
   }
   :global(.theme-dark .ego-detail-card h2),
@@ -108,6 +108,26 @@ function getNatureLabel(node: any): string | null {
   }
   :global(.theme-dark .ego-detail-card li),
   :global(.theme-dark .ego-detail-card p) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .ego-detail-card .relation-card) {
+    background: rgba(17, 24, 39, 0.6);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  }
+  :global(.theme-dark .ego-detail-card .relation-node) {
+    background: rgba(13, 19, 33, 0.95);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
+  }
+  :global(.theme-dark .ego-detail-card .relation-node:hover) {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  :global(.theme-dark .ego-detail-card .relation-node .text-gray-900) {
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .ego-detail-card .relation-node .text-gray-500),
+  :global(.theme-dark .ego-detail-card .relation-node .text-gray-600) {
     color: #cbd5e1;
   }
   :global(.theme-dark .ego-detail-card .nature-badge) {
