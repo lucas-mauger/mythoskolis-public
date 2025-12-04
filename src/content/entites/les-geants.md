@@ -3,10 +3,10 @@ title: Géants
 culture: grecque
 id: grecque-les-geants
 nature:
-  - divinite
-  - groupe_divin
+  - creature
+  - chthonien
 gender: x
-role: Race mythologique née du sang d’Ouranos - Adversaires des dieux de l’Olympe
+role: Race mythologique née du sang d’Ouranos — Adversaires des dieux de l’Olympe
 description: >
   Nés du sang d’Ouranos lors de sa mutilation par Cronos, les Géants sont une
   race primordiale de combattants colossaux, associés à la force brute, à la

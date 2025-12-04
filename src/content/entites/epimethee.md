@@ -4,9 +4,9 @@ culture: grecque
 id: grecque-epimethee
 nature:
   - divinite
-  - titan
+  - titanide
 gender: m
-role: Titan imprévoyant, frère de Prométhée et époux de Pandore
+role: 'Titan imprévoyant, frère de Prométhée et époux de Pandore'
 description: >
   Fils de Japet et de Clymène, Épiméthée incarne l'imprudence et la réflexion
   trop tardive. Son erreur lors de la création des êtres vivants et son
@@ -20,7 +20,6 @@ symbols:
   - Animal mal doté
   - Regard en arrière
 ---
-
 ## Origine et identité
 Épiméthée est un Titan, fils de **Japet** et de **Clymène**.  
 Son nom signifie « celui qui réfléchit après coup », en opposition directe à son frère **Prométhée**, « celui qui prévoit ».  

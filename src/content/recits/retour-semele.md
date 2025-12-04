@@ -8,7 +8,7 @@ main_entities:
   - grecque-dionysos
   - grecque-semele
   - grecque-zeus
-  - grecque-hera
+  - grecque-thyone
   - grecque-hades
   - grecque-persephone
 opponents:

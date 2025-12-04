@@ -25,31 +25,35 @@ Récit populaire visant la transmission morale ou culturelle. Dans le monde grec
 
 ## 2. Les composantes essentielles d’un mythe grec
 
-### **1. Une origine (cosmique, sociale ou naturelle)**
+- ### Une origine (cosmique, sociale ou naturelle)
 Les mythes expliquent la naissance du monde, des phénomènes ou des institutions.
-- Exemple : Hésiode raconte la naissance des dieux depuis le Chaos.
 
-### **2. Une structure tripartite fréquente**
-Sans être systématique, beaucoup de récits reposent sur :
-- un **déséquilibre initial**,
-- un **conflit ou une épreuve**,
-- un **retour à l’ordre** (ou un nouvel ordre).
+`-> Exemple : Hésiode raconte la naissance des dieux depuis le Chaos.`
 
-### **3. Des personnages symboliques**
-Les dieux incarnent des forces :
-- Zeus - ordre, justice, souveraineté
-- Hadès - nécessité, mort
-- Athéna - intelligence, stratégie
+- ### Une structure tripartite fréquente
+`Sans être systématique, beaucoup de récits reposent sur :`
+
+**a.** -> un ***déséquilibre initial***\
+**b.** -> un ***conflit ou une épreuve***\
+**c.** -> un ***retour à l’ordre*** (ou un nouvel ordre).
+
+- ### Des personnages symboliques
+Les dieux incarnent des ***forces*** :
+
+-> **Zeus** - ordre, justice, souveraineté\
+-> **Hadès** - nécessité, mort\
+-> **Athéna** - intelligence, stratégie
 
 Leur rôle dépasse l’individualité : ce sont des principes actifs du monde.
 
-### **4. Une portée explicative**
+- ### Une portée explicative
 Chaque mythe dit *pourquoi* les choses sont comme elles sont :
-- pourquoi il y a des saisons (Perséphone),
-- pourquoi la mer est instable (Poséidon),
-- pourquoi l’humanité connaît la souffrance (Pandore).
 
-## 🔍 3. Exemple synthétique : l’enlèvement de Perséphone
+-> pourquoi il y a des saisons (Perséphone)\
+-> pourquoi la mer est instable (Poséidon)\
+-> pourquoi l’humanité connaît la souffrace (Pandore)
+
+## 3. Exemple synthétique : l’enlèvement de Perséphone
 
 - **Déséquilibre** : Hadès enlève Perséphone, plongeant le monde dans la stérilité.
 - **Conflit** : Déméter se révolte et impose un hiver éternel.

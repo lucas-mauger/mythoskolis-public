@@ -212,6 +212,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.886–900
+        - id: grecque-thyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.940–942
   - name: Léto
     slug: leto
     culture: grecque
@@ -598,12 +604,6 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.176–194 ; v.820–868
-        - id: grecque-ourea
-          consensus: true
-          sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.129
         - id: grecque-ocean
           consensus: true
           sources:
@@ -742,6 +742,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.233–239
+        - id: grecque-ourea
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.129
       siblings: []
       consorts:
         - id: grecque-ouranos
@@ -2479,7 +2485,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.507–511
-        - id: grecque-menoitios
+        - id: grecque-menetios
           consensus: true
           sources:
             - author: Hésiode
@@ -19332,7 +19338,25 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.921–923
-      children: []
+      children:
+        - id: grecque-phobos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-deimos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
       siblings:
         - id: grecque-hebe
           consensus: true
@@ -19346,7 +19370,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.921–923
-      consorts: []
+      consorts:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
   - name: Ilithyie
     slug: ilithyie
     culture: grecque
@@ -19406,7 +19436,13 @@ entities:
               passage: XVIII
       children: []
       siblings: []
-      consorts: []
+      consorts:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Homère
+              work: Odyssée
+              passage: VIII
   - name: Zagreus
     slug: zagreus
     culture: grecque
@@ -20010,6 +20046,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.940–942
+        - id: grecque-thyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.940–942
       children: []
       siblings: []
       consorts: []
@@ -20031,9 +20073,51 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.176–200
-      children: []
+      children:
+        - id: grecque-phobos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-deimos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-enee
+          consensus: true
+          sources:
+            - author: Homère
+              work: Hymne homérique à Aphrodite
+              passage: v.45–290
       siblings: []
-      consorts: []
+      consorts:
+        - id: grecque-ares
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-anchise
+          consensus: true
+          sources:
+            - author: Homère
+              work: Hymne homérique à Aphrodite
+              passage: v.45–290
+        - id: grecque-hephaistos
+          consensus: true
+          sources:
+            - author: Homère
+              work: Odyssée
+              passage: VIII
   - name: Clio
     slug: clio_2
     culture: grecque
@@ -20965,7 +21049,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.507–511
-        - id: grecque-menoitios
+        - id: grecque-menetios
           consensus: true
           sources:
             - author: Hésiode
@@ -21059,7 +21143,7 @@ entities:
               passage: I.2.2
       children: []
       siblings:
-        - id: grecque-menoitios
+        - id: grecque-menetios
           consensus: true
           sources:
             - author: Hésiode
@@ -21078,10 +21162,10 @@ entities:
               work: Théogonie
               passage: v.507–511
       consorts: []
-  - name: Ménoitios
-    slug: menoitios
+  - name: Ménétios
+    slug: menetios
     culture: grecque
-    id: grecque-menoitios
+    id: grecque-menetios
     relations:
       parents:
         - id: grecque-japet
@@ -21155,7 +21239,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.507–511
-        - id: grecque-menoitios
+        - id: grecque-menetios
           consensus: true
           sources:
             - author: Hésiode
@@ -21200,7 +21284,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.507–511
-        - id: grecque-menoitios
+        - id: grecque-menetios
           consensus: true
           sources:
             - author: Hésiode
@@ -21238,7 +21322,7 @@ entities:
             - author: Apollodore
               work: Bibliothèque
               passage: I.2.2
-        - id: grecque-menoitios
+        - id: grecque-menetios
           consensus: false
           sources:
             - author: Apollodore
@@ -21534,3 +21618,198 @@ entities:
       children: []
       siblings: []
       consorts: []
+  - name: Phobos
+    slug: phobos
+    culture: grecque
+    id: grecque-phobos
+    relations:
+      parents:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-ares
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+      children: []
+      siblings:
+        - id: grecque-deimos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+      consorts: []
+  - name: Déimos
+    slug: deimos
+    culture: grecque
+    id: grecque-deimos
+    relations:
+      parents:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-ares
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+      children: []
+      siblings:
+        - id: grecque-phobos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+      consorts: []
+  - name: Harmonie
+    slug: harmonie
+    culture: grecque
+    id: grecque-harmonie
+    relations:
+      parents:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-ares
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+      children:
+        - id: grecque-thyone
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      siblings:
+        - id: grecque-phobos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+        - id: grecque-deimos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.933–937
+      consorts: []
+  - name: Anchise
+    slug: anchise
+    culture: grecque
+    id: grecque-anchise
+    relations:
+      parents: []
+      children:
+        - id: grecque-enee
+          consensus: true
+          sources:
+            - author: Homère
+              work: Hymne homérique à Aphrodite
+              passage: v.45–290
+      siblings: []
+      consorts:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Homère
+              work: Hymne homérique à Aphrodite
+              passage: v.45–290
+  - name: Énée
+    slug: enee
+    culture: grecque
+    id: grecque-enee
+    relations:
+      parents:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Homère
+              work: Hymne homérique à Aphrodite
+              passage: v.45–290
+        - id: grecque-anchise
+          consensus: true
+          sources:
+            - author: Homère
+              work: Hymne homérique à Aphrodite
+              passage: v.45–290
+      children: []
+      siblings: []
+      consorts: []
+  - name: Cadmos
+    slug: cadmos
+    culture: grecque
+    id: grecque-cadmos
+    relations:
+      parents: []
+      children:
+        - id: grecque-thyone
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      siblings: []
+      consorts: []
+  - name: Thyoné
+    slug: thyone
+    culture: grecque
+    id: grecque-thyone
+    relations:
+      parents:
+        - id: grecque-harmonie
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+        - id: grecque-cadmos
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.4.2
+      children:
+        - id: grecque-dionysos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.940–942
+      siblings: []
+      consorts:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.940–942

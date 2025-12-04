@@ -4,13 +4,13 @@ culture: grecque
 id: grecque-promethee
 nature:
   - divinite
-  - titan
+  - titanide
 gender: m
 role: Bienfaiteur des humains et voleur du feu
 description: >
-  Fils de Japet et de Clymène, Prométhée est le défenseur des mortels. Il façonne
-  l'humanité, lui offre le feu et subit une punition éternelle pour sa ruse face
-  à Zeus.
+  Fils de Japet et de Clymène, Prométhée est le défenseur des mortels. Il
+  façonne l'humanité, lui offre le feu et subit une punition éternelle pour sa
+  ruse face à Zeus.
 domains:
   - Feu
   - Intelligence rusée
@@ -21,7 +21,6 @@ symbols:
   - Argile
   - Chaine
 ---
-
 ## Origine et identité
 Prométhée est un Titan, fils de **Japet** et de l'Océanide **Clymène**.  
 Son nom signifie « le Prévoyant ». Il incarne l'intelligence rusée, la capacité d'anticiper et de tromper pour parvenir à un but.  

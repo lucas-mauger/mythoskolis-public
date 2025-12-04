@@ -23,7 +23,7 @@ symbols:
 
 ## Origine et nature
 Atlas est le fils du Titan **Japet** et de l'Océanide **Clymène**.  
-Il appartient à une lignée associée à la condition mortelle et aux tensions entre dieux et humains. Parmi ses frères se trouvent Prométhée, Épiméthée et Ménoétios, chacun incarnant une facette de la fragilité humaine ou de la transgression.
+Il appartient à une lignée associée à la condition mortelle et aux tensions entre dieux et humains. Parmi ses frères se trouvent Prométhée, Épiméthée et Ménétios, chacun incarnant une facette de la fragilité humaine ou de la transgression.
 
 Atlas, lui, est la force brute, la stabilité qui sépare le ciel de la terre, un rôle qui s'impose à lui après la défaite des Titans.
 

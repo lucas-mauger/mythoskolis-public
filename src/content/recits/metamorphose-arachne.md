@@ -5,7 +5,6 @@ id: "metamorphose-arachne"
 type: "recit"
 
 main_entities:
-  - grecque-athena
   - grecque-arachne
 opponents:
   - grecque-athena

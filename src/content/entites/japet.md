@@ -4,7 +4,7 @@ culture: grecque
 id: grecque-japet
 nature:
   - divinite
-  - titan
+  - titanide
 gender: m
 role: Titan des lignées mortelles et de la condition humaine
 description: >
@@ -20,7 +20,6 @@ symbols:
   - Chaine
   - Éclat brisé
 ---
-
 ## Origine et identité
 Japet est l’un des Titans originels, né de **Gaïa** et d’**Ouranos**.  
 Moins lié aux forces cosmiques que ses frères Hypérion, Coéos ou Criôs, Japet occupe un domaine particulier : il est associé aux **limites**, aux **failles** et à la **fragilité** de l’existence.  

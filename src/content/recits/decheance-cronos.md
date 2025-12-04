@@ -5,7 +5,6 @@ id: "decheance-cronos"
 type: "recit"
 
 main_entities:
-  - grecque-cronos
   - grecque-rhea
   - grecque-zeus
   - grecque-hestia
