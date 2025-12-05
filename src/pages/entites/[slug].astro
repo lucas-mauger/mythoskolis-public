@@ -298,6 +298,28 @@ function getNatureLabel(
       )}
     </div>
 
+    {(domains || symbols) && (
+      <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        {domains && (
+          <div class="toc-panel rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm text-gray-800">
+            <h3 class="font-semibold mb-2 text-gray-900 dark:text-white">Domaines</h3>
+            <ul class="list-disc ml-4 space-y-1 text-gray-700 dark:text-slate-100">
+              {domains.map((d) => <li>{d}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {symbols && (
+          <div class="toc-panel rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm text-gray-800">
+            <h3 class="font-semibold mb-2 text-gray-900 dark:text-white">Symboles</h3>
+            <ul class="list-disc ml-4 space-y-1 text-gray-700 dark:text-slate-100">
+              {symbols.map((s) => <li>{s}</li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    )}
+
 
     {toc.length > 0 && (
       <nav class="toc-panel mt-8 rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-800 shadow-sm dark:text-slate-100">
@@ -320,28 +342,6 @@ function getNatureLabel(
     <section class="prose prose-gray max-w-none mt-8">
       <Content />
     </section>
-
-    {(domains || symbols) && (
-      <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
-        {domains && (
-          <div>
-            <h3 class="font-semibold mb-2">Domaines</h3>
-            <ul class="list-disc ml-4">
-              {domains.map((d) => <li>{d}</li>)}
-            </ul>
-          </div>
-        )}
-
-        {symbols && (
-          <div>
-            <h3 class="font-semibold mb-2">Symboles</h3>
-            <ul class="list-disc ml-4">
-              {symbols.map((s) => <li>{s}</li>)}
-            </ul>
-          </div>
-        )}
-      </div>
-    )}
 
     {genealogie ? (
       <section id="genealogie-detaillee" class="mt-12 space-y-4">
@@ -488,6 +488,9 @@ function getNatureLabel(
 :global(.theme-dark .toc-panel .toc-title) {
   color: #e5e7eb !important;
   opacity: 1 !important;
+}
+:global(.theme-dark .toc-panel h3) {
+  color: #e5e7eb !important;
 }
 /* Récits associés */
 .recits-card {
