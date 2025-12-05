@@ -4,13 +4,13 @@ culture: grecque
 id: grecque-atlas
 nature:
   - divinite
-  - titan
+  - titanide
 gender: m
 role: Titan qui porte la voûte céleste
 description: >
   Fils de Japet et de Clymène, Atlas incarne la force cosmique condamnée à
-  soutenir la voûte du ciel. Il représente le poids du monde, la résistance
-  et la permanence.
+  soutenir la voûte du ciel. Il représente le poids du monde, la résistance et
+  la permanence.
 domains:
   - Ciel
   - Endurance
@@ -20,7 +20,6 @@ symbols:
   - Pilier
   - Montagnes
 ---
-
 ## Origine et nature
 Atlas est le fils du Titan **Japet** et de l'Océanide **Clymène**.  
 Il appartient à une lignée associée à la condition mortelle et aux tensions entre dieux et humains. Parmi ses frères se trouvent Prométhée, Épiméthée et Ménétios, chacun incarnant une facette de la fragilité humaine ou de la transgression.

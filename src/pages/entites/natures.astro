@@ -1,0 +1,192 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
+import '../../styles/global.css';
+import { getEntry, getCollection } from 'astro:content';
+
+const natureEntry = await getEntry('data', 'natures-entites');
+const entites = await getCollection('entites');
+
+const usedNatures = new Set<string>();
+const natureCounts = new Map<string, number>();
+entites.forEach((entite) => {
+  const list = Array.isArray(entite?.data?.nature) ? entite.data.nature : [];
+  list.forEach((id) => {
+    usedNatures.add(id);
+    natureCounts.set(id, (natureCounts.get(id) ?? 0) + 1);
+  });
+});
+
+const natures = (natureEntry?.data?.natures ?? []).filter((n) => usedNatures.has(n.id));
+
+const kindLabels: Record<string, string> = {
+  divinite: 'Divinités',
+  demi_dieu: 'Demi-dieux',
+  mortel: 'Mortels',
+  creature: 'Créatures',
+};
+
+function getDisplayLabel(nature: any): string {
+  const fr = nature?.labels?.fr ?? {};
+  return fr.x ?? fr.m ?? fr.f ?? Object.values(fr)[0] ?? nature.id;
+}
+
+const categories: Array<{ id: string; label: string; items: Array<{ id: string; label: string; count: number }> }> = [];
+const map = new Map<string, { id: string; label: string; items: Array<{ id: string; label: string; count: number }> }>();
+
+natures.forEach((nature) => {
+  const kind = nature.kind ?? 'autre';
+  if (!map.has(kind)) {
+    const cat = { id: kind, label: kindLabels[kind] ?? kind, items: [] };
+    map.set(kind, cat);
+    categories.push(cat);
+  }
+  map.get(kind)?.items.push({
+    id: nature.id,
+    label: getDisplayLabel(nature),
+    count: natureCounts.get(nature.id) ?? 0,
+  });
+});
+
+const filteredCategories = categories
+  .map((c) => ({ ...c, items: c.items.filter((i) => (natureCounts.get(i.id) ?? 0) > 0) }))
+  .filter((c) => c.items.length > 0);
+
+const pageTitle = 'Natures des entités | Mythoskolis';
+const pageDescription = "Parcourez les natures d'entités (divinités, demi-dieux, mortels, créatures) pour filtrer rapidement.";
+---
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={pageTitle}
+    description={pageDescription}
+    canonical="/entites/natures/"
+    type="website"
+  />
+</head>
+
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+  <Header />
+
+  <main class="flex-1 max-w-4xl mx-auto px-4 py-12 space-y-8">
+    <header class="space-y-2">
+      <p class="text-sm uppercase tracking-wide text-gray-500">Entités</p>
+      <h1 class="text-3xl font-bold text-gray-900">Natures des entités</h1>
+      <p class="text-base text-gray-700">
+        Catégories utilisées pour filtrer les entités (divinités, demi-dieux, mortels et créatures).
+      </p>
+    </header>
+
+    <section class="space-y-6">
+      {filteredCategories.map((cat) => (
+        <div class="cat-card">
+          <div class="cat-header">
+            <h2 class="cat-title">{cat.label}</h2>
+          </div>
+          <div class="tag-list">
+            {cat.items.map((item) => (
+              <a class="tag-pill" href={`/entites/?q=${encodeURIComponent(item.id)}`}>
+                {item.label}
+                <span class="count-pill">{item.count}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  </main>
+
+  <Footer />
+</body>
+</html>
+
+<style>
+  .cat-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    background: #ffffff;
+    padding: 1rem;
+  }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .cat-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    background: #f3f4f6;
+    color: #374151;
+    font-size: 0.9rem;
+    border: 1px solid #e5e7eb;
+    text-decoration: none;
+    transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  }
+  .tag-pill:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+  }
+  .count-pill {
+    margin-left: 0.45rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.6rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 9999px;
+    background: #e5e7eb;
+    color: #374151;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  :global(.theme-dark body) {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+  :global(.theme-dark h1) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark p) {
+    color: #cbd5e1;
+  }
+  :global(.theme-dark .cat-card) {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(148, 163, 184, 0.35);
+  }
+  :global(.theme-dark .cat-title) {
+    color: #f8fafc;
+  }
+  :global(.theme-dark .tag-pill) {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .tag-pill:hover) {
+    border-color: rgba(226, 232, 240, 0.6);
+  }
+  :global(.theme-dark .count-pill) {
+    background: rgba(148, 163, 184, 0.25);
+    color: #e5e7eb;
+  }
+</style>

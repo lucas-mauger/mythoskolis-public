@@ -67,14 +67,20 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
 <main class="flex-1 max-w-5xl mx-auto px-4 py-12">
       <div class="mb-6 space-y-3">
         <h1 class="text-4xl font-bold">Les entités de la mythologie grecque</h1>
-        <div class="flex items-center gap-3">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
           <input
             id="entite-filter"
             type="search"
-            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 outline-none transition"
+            class="w-full sm:flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 outline-none transition"
             placeholder="🔍 Rechercher par nom ou nature (ex : olympien, primordiale...)"
             aria-label="Filtrer les entités"
           />
+          <a
+            href="/entites/natures/"
+            class="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-amber-800 shadow-sm transition hover:border-gray-300 hover:-translate-y-[1px] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-amber-200/70 self-start sm:self-auto"
+          >
+            Voir les natures
+          </a>
         </div>
       </div>
 
@@ -87,22 +93,30 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
           const natureLabels = natures.map((nature) => getNatureLabel(nature, entite.data.gender));
           const searchText = `${entite.data.title} ${entite.data.id ?? entite.slug} ${natures.join(' ')} ${natureLabels.join(' ')}`;
 
+          const entityUrl = `/entites/${entite.data.id ?? entite.slug}/`;
+
           return (
-            <a
-            data-entite-card
-            data-search={searchText.toLowerCase()}
-              href={`/entites/${entite.data.id ?? entite.slug}/`}
-              class="entite-card flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition"
+            <article
+              data-entite-card
+              data-search={searchText.toLowerCase()}
+              data-entity-url={entityUrl}
+              class="entite-card flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              tabindex="0"
             >
               <div class="flex-1">
-                <h2 class="entite-card-title text-xl font-semibold text-gray-900">{entite.data.title}</h2>
+                <a href={entityUrl} class="entite-card-title text-xl font-semibold text-gray-900 hover:underline">
+                  {entite.data.title}
+                </a>
                 {entite.data.role && <p class="entite-card-role text-gray-500 text-sm mt-1">{entite.data.role}</p>}
                 {natures.length > 0 && (
                   <div class="mt-2 flex flex-wrap gap-2">
                     {natures.map((nature) => (
-                      <span class="nature-pill inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800 transition hover:border-amber-300 hover:-translate-y-[1px] hover:shadow-sm dark:border-slate-200/70 dark:bg-slate-800/90 dark:text-[#c68a3b] dark:hover:border-amber-300/70">
+                      <a
+                        href={`/entites/?q=${encodeURIComponent(nature)}`}
+                        class="nature-pill inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800 visited:text-amber-800 transition hover:border-amber-300 hover:-translate-y-[1px] hover:shadow-sm dark:border-slate-200/70 dark:bg-slate-800/90 dark:text-[#c68a3b] dark:visited:text-[#c68a3b] dark:hover:border-amber-300/70"
+                      >
                         {getNatureLabel(nature, entite.data.gender)}
-                      </span>
+                      </a>
                     ))}
                   </div>
                 )}
@@ -116,7 +130,7 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
                   loading="lazy"
                 />
               )}
-            </a>
+            </article>
           );
         })}
 </section>
@@ -190,4 +204,17 @@ function findFirstExistingFace(slug: string, id?: string, culture?: string): str
     input.value = display;
     filterCards(initial);
   }
+
+  cards.forEach((card) => {
+    const url = card.dataset.entityUrl;
+    if (!url) return;
+    const go = () => (window.location.href = url);
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        go();
+      }
+    });
+  });
 </script>

@@ -69,12 +69,12 @@ npm run lint      # Analyse le code avec ESLint
 
 ---
 
-## 🧰 5bis. Inspecteurs locaux (maintenance sans Decap)
+## 🧰 5bis. Inspecteurs locaux (maintenance sans CMS)
 
 - `npm run yaml:tool:new` ouvre l’inspecteur YAML (nouvelle structure) pour créer/éditer entités et relations, avec gestion bilatérale des liens et validation consensus.
 - `npm run md:tool` ouvre l’inspecteur Markdown pour lister/filtrer/éditer les fiches (`frontmatter` + contenu brut).
 
-> V1 se maintient directement dans les fichiers YAML/MD ; l’ancien Decap n’est plus utilisé.
+> V1 se maintient directement dans les fichiers YAML/MD ; aucun CMS externe n’est utilisé.
 
 ---
 

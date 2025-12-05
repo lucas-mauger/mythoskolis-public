@@ -4,6 +4,7 @@ culture: grecque
 id: grecque-stheno
 nature:
   - creature
+  - gorgone
   - chthonien
 gender: f
 role: Gorgone immortelle
@@ -20,7 +21,6 @@ symbols:
   - Ailes
   - Force destructrice
 ---
-
 ## Origine et identité
 Sthéno fait partie de la triade des Gorgones, filles des divinités marines
 archaïques Phorcys et Céto. Avec sa sœur Euryale, elle est immortelle, contrairement

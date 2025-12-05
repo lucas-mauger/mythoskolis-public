@@ -3,12 +3,23 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
-import { getEntry } from 'astro:content';
+import { getEntry, getCollection } from 'astro:content';
 import { normalizeTagForSearch } from '../../utils/tags';
 
 const tagEntry = await getEntry('data', 'tags-recits');
-const categories = tagEntry?.data?.categories || [];
-const pageTitle = "Tags des récits | Mythoskolis";
+const recits = await getCollection('recits');
+
+const tagCounts = new Map<string, number>();
+recits.forEach((recit) => {
+  const tags = Array.isArray(recit?.data?.tags) ? recit.data.tags : [];
+  tags.forEach((id) => tagCounts.set(id, (tagCounts.get(id) ?? 0) + 1));
+});
+
+const categories = (tagEntry?.data?.categories || []).map((cat) => ({
+  ...cat,
+  tags: (cat.tags || []).filter((t) => (tagCounts.get(t.id) ?? 0) > 0),
+})).filter((cat) => cat.tags.length > 0);
+const pageTitle = "Thématiques des récits | Mythoskolis";
 const pageDescription = "Liste des thèmes utilisés pour classifier les récits mythologiques.";
 ---
 
@@ -30,7 +41,7 @@ const pageDescription = "Liste des thèmes utilisés pour classifier les récits
   <main class="flex-1 max-w-4xl mx-auto px-4 py-12 space-y-8">
     <header class="space-y-2">
       <p class="text-sm uppercase tracking-wide text-gray-500">Récits</p>
-      <h1 class="text-3xl font-bold text-gray-900">Tags des récits</h1>
+      <h1 class="text-3xl font-bold text-gray-900">Thématiques des récits</h1>
       <p class="text-base text-gray-700">Thèmes et motifs utilisés pour filtrer les récits.</p>
     </header>
 
@@ -42,6 +53,7 @@ const pageDescription = "Liste des thèmes utilisés pour classifier les récits
             {cat.tags.map((t) => (
               <a class="tag-pill" href={`/recits/?tag=${encodeURIComponent(normalizeTagForSearch(t.label))}`}>
                 {t.label}
+                <span class="count-pill">{tagCounts.get(t.id) ?? 0}</span>
               </a>
             ))}
           </div>
@@ -83,6 +95,20 @@ const pageDescription = "Liste des thèmes utilisés pour classifier les récits
     border: 1px solid #e5e7eb;
     text-decoration: none;
   }
+  .count-pill {
+    margin-left: 0.45rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.6rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 9999px;
+    background: #e5e7eb;
+    color: #374151;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
   :global(.theme-dark body) {
     background: #0f172a;
     color: #e5e7eb;
@@ -103,6 +129,10 @@ const pageDescription = "Liste des thèmes utilisés pour classifier les récits
   :global(.theme-dark .tag-pill) {
     background: rgba(30, 41, 59, 0.8);
     border-color: rgba(148, 163, 184, 0.35);
+    color: #e5e7eb;
+  }
+  :global(.theme-dark .count-pill) {
+    background: rgba(148, 163, 184, 0.25);
     color: #e5e7eb;
   }
 </style>

@@ -4,7 +4,9 @@ culture: grecque
 id: grecque-meduse
 nature:
   - creature
+  - gorgone
   - chthonien
+  - mortel
 gender: f
 role: Gorgone mortelle - Victime sacrée et mère de Pégase
 description: >
@@ -20,7 +22,6 @@ symbols:
   - Regard pétrifiant
   - Ailes
 ---
-
 ## Origine et identité
 Méduse est l’une des **trois Gorgones**, filles de **Phorcys** et **Céto**, divinités
 marines archaïques liées aux profondeurs et aux forces chthoniennes.  

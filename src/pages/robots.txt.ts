@@ -1,8 +1,12 @@
 export function GET() {
+  const SITE =
+    (import.meta.env.SITE as string | undefined) ||
+    (import.meta.env.SITE_URL as string | undefined) ||
+    'https://mythoskolis.com';
   const lines = [
     'User-agent: *',
     'Allow: /',
-    'Sitemap: https://mythoskolis.netlify.app/sitemap.xml', // à ajuster si domaine final différent
+    `Sitemap: ${SITE}/sitemap.xml`,
     '',
   ].join('\n');
 

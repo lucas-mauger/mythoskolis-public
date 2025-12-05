@@ -8,7 +8,10 @@ const root = resolve(new URL("..", import.meta.url).pathname);
 const yamlPath = resolve(root, "data/genealogie_new_structure.yaml");
 const htmlPath = resolve(root, "tools", "yaml-inspector-new.html");
 const mdInspectorPath = resolve(root, "tools", "md-inspector.html");
-const mdDir = resolve(root, "src/content/entites");
+const mdDirs = {
+  entity: resolve(root, "src/content/entites"),
+  recit: resolve(root, "src/content/recits"),
+};
 const port = process.env.PORT || 4323;
 
 async function readYaml() {
@@ -152,11 +155,17 @@ function hasSources(src) {
 }
 
 // MD helpers
-const FM_ORDER = ["title", "culture", "id", "nature", "gender", "role", "description", "domains", "symbols"];
+const FM_ORDER = {
+  entity: ["title", "culture", "id", "nature", "gender", "role", "description", "domains", "symbols"],
+  recit: ["title", "slug", "id", "type", "era", "importance", "summary", "tags", "main_entities", "opponents", "places", "artifacts", "sources"],
+};
 
-function formatFrontmatter(data) {
+const getMdDir = (type = "entity") => (type === "recit" ? mdDirs.recit : mdDirs.entity);
+
+function formatFrontmatter(data, type = "entity") {
   const ordered = {};
-  FM_ORDER.forEach((key) => {
+  const order = FM_ORDER[type] || [];
+  order.forEach((key) => {
     if (data[key] !== undefined) ordered[key] = data[key];
   });
   Object.keys(data).forEach((key) => {
@@ -165,12 +174,13 @@ function formatFrontmatter(data) {
   return ordered;
 }
 
-async function listMdEntities() {
-  const files = await readdir(mdDir);
+async function listMdEntities(type = "entity") {
+  const dir = getMdDir(type);
+  const files = await readdir(dir);
   const mdFiles = files.filter((f) => f.endsWith(".md"));
   const result = [];
   for (const file of mdFiles) {
-    const raw = await readFile(resolve(mdDir, file), "utf8");
+    const raw = await readFile(resolve(dir, file), "utf8");
     const parsed = matter(raw);
     result.push({
       file,
@@ -187,34 +197,73 @@ function ensureMdFilename(name) {
   return `${base}.md`;
 }
 
-async function updateMdEntity({ file, frontmatter, content }) {
-  const path = resolve(mdDir, ensureMdFilename(file));
+async function updateMdEntity({ file, frontmatter, content, type = "entity" }) {
+  const dir = getMdDir(type);
+  const path = resolve(dir, ensureMdFilename(file));
   const cleanFm = { ...(frontmatter || {}) };
-  // on ne persiste plus le slug pour éviter les champs vides
-  delete cleanFm.slug;
-  const formatted = formatFrontmatter(cleanFm);
+  if (type === "entity") {
+    // on ne persiste plus le slug pour éviter les champs vides
+    delete cleanFm.slug;
+  } else if (type === "recit" && !cleanFm.type) {
+    cleanFm.type = "recit";
+  }
+  const formatted = formatFrontmatter(cleanFm, type);
   const next = matter.stringify(content || "", formatted, { lineWidth: 0 });
   await writeFile(path, next, "utf8");
 }
 
 async function createMdEntity(payload) {
+  const { type = "entity" } = payload;
+  if (type === "recit") {
+    const { title, slug, id } = payload;
+    if (!title || !slug || !id) {
+      throw new Error("title, slug, id requis");
+    }
+    const file = ensureMdFilename(slug);
+    const path = resolve(getMdDir("recit"), file);
+    const fm = formatFrontmatter(
+      {
+        title,
+        slug,
+        id,
+        type: "recit",
+        era: payload.era,
+        importance: payload.importance,
+        tags: payload.tags,
+        main_entities: payload.main_entities,
+        opponents: payload.opponents,
+        places: payload.places,
+        artifacts: payload.artifacts,
+        summary: payload.summary,
+        sources: payload.sources,
+      },
+      "recit",
+    );
+    const next = matter.stringify("\n", fm, { lineWidth: 0 });
+    await writeFile(path, next, "utf8");
+    return file;
+  }
+
   const { title, culture, slug, id, role, description, domains, symbols, gender, nature } = payload;
   if (!title || !slug || !culture || !id) {
     throw new Error("title, slug, culture, id requis");
   }
   const file = ensureMdFilename(slug);
-  const path = resolve(mdDir, file);
-  const fm = formatFrontmatter({
-    title,
-    culture,
-    id,
-    nature,
-    gender,
-    role,
-    description,
-    domains,
-    symbols,
-  });
+  const path = resolve(getMdDir("entity"), file);
+  const fm = formatFrontmatter(
+    {
+      title,
+      culture,
+      id,
+      nature,
+      gender,
+      role,
+      description,
+      domains,
+      symbols,
+    },
+    "entity",
+  );
   const next = matter.stringify("\n", fm, { lineWidth: 0 });
   await writeFile(path, next, "utf8");
   return file;
@@ -560,6 +609,8 @@ const server = http.createServer((req, res) => {
     res.writeHead(400);
     return res.end();
   }
+  const parsedUrl = new URL(req.url, "http://localhost");
+  const typeParam = parsedUrl.searchParams.get("type") || "entity";
   if (req.method === "GET" && req.url.startsWith("/data")) {
     return serveYaml(res);
   }
@@ -586,7 +637,7 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
   if (req.method === "GET" && req.url.startsWith("/md/list")) {
-    listMdEntities()
+    listMdEntities(typeParam)
       .then((list) => {
         res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
         res.end(JSON.stringify({ files: list }));
@@ -602,9 +653,9 @@ const server = http.createServer((req, res) => {
       try {
         let body = "";
         for await (const chunk of req) body += chunk.toString();
-        const payload = JSON.parse(body || "{}");
+        const payload = { ...(JSON.parse(body || "{}") || {}) };
         if (!payload.file || !payload.frontmatter) throw new Error("file et frontmatter requis");
-        await updateMdEntity(payload);
+        await updateMdEntity({ ...payload, type: payload.type || typeParam });
         res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
         res.end(JSON.stringify({ ok: true }));
       } catch (err) {
@@ -620,7 +671,7 @@ const server = http.createServer((req, res) => {
         let body = "";
         for await (const chunk of req) body += chunk.toString();
         const payload = JSON.parse(body || "{}");
-        const file = await createMdEntity(payload);
+        const file = await createMdEntity({ ...payload, type: payload.type || typeParam });
         res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
         res.end(JSON.stringify({ ok: true, file }));
       } catch (err) {

@@ -56,7 +56,7 @@ const pageDescription =
           </div>
         </div>
         <div class="actions-row">
-          <a href="/recits/tags/" class="tag-link">Voir les tags</a>
+          <a href="/recits/tags/" class="tag-link">Voir les thématiques</a>
         </div>
       </div>
 
@@ -193,21 +193,26 @@ const pageDescription =
   .tag-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    justify-content: center;
     font-size: 0.95rem;
-    color: #4338ca;
+    color: #92400e;
     font-weight: 600;
     text-decoration: none;
-    padding: 0.4rem 0.75rem;
+    padding: 0.5rem 0.9rem;
     border-radius: 9999px;
-    background: #eef2ff;
-    border: 1px solid #c7d2fe;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
   }
   .tag-link:hover {
-    border-color: #a5b4fc;
-    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.18);
+    border-color: #d1d5db;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     transform: translateY(-1px);
+  }
+  .tag-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.35), 0 8px 20px rgba(0, 0, 0, 0.08);
   }
   :global(.theme-dark body) {
     background: #0f172a;
@@ -238,13 +243,16 @@ const pageDescription =
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   }
   :global(.theme-dark .tag-link) {
-    background: rgba(79, 70, 229, 0.15);
-    border-color: rgba(129, 140, 248, 0.5);
-    color: #c7d2fe;
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(148, 163, 184, 0.45);
+    color: #fbbf24;
   }
   :global(.theme-dark .tag-link:hover) {
-    border-color: rgba(129, 140, 248, 0.8);
+    border-color: rgba(226, 232, 240, 0.65);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  :global(.theme-dark .tag-link:focus) {
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.35), 0 8px 20px rgba(0, 0, 0, 0.35);
   }
   :global(.theme-dark .filter-input) {
     background: rgba(30, 41, 59, 0.8);

@@ -21,6 +21,27 @@
         flex-wrap: wrap;
         margin-bottom: 16px;
       }
+      .segmented {
+        display: inline-flex;
+        background: #e2e8f0;
+        border-radius: 10px;
+        padding: 4px;
+        gap: 4px;
+      }
+      .seg-btn {
+        border: 0;
+        background: transparent;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #475569;
+      }
+      .seg-btn.active {
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+        color: #0f172a;
+      }
       h1 {
         margin: 0;
         font-size: 1.4rem;
@@ -154,6 +175,10 @@
   <body>
     <header>
       <h1>MD Inspector</h1>
+      <div class="segmented">
+        <button class="seg-btn active" data-type-btn="entity">Entités</button>
+        <button class="seg-btn" data-type-btn="recit">Récits</button>
+      </div>
       <label>
         Rechercher par slug/nom
         <input type="text" id="search" placeholder="ex: zeus" />
@@ -207,16 +232,23 @@
 
     <div class="layout">
       <div class="card">
-        <h2>Fiches entités</h2>
+        <h2 id="entries-title">Fiches entités</h2>
         <div id="entities"></div>
       </div>
     </div>
 
     <script>
+      const TYPE_ENTITY = "entity";
+      const TYPE_RECIT = "recit";
+
       const bySlug = new Map();
       let entries = [];
-      let suggestionSets = { nature: new Set(), domains: new Set(), symbols: new Set() };
+      let suggestionSets = { nature: new Set(), domains: new Set(), symbols: new Set(), tags: new Set(), entities: new Set() };
       let toastTimer = null;
+      let activeType = TYPE_ENTITY;
+
+      const searchInput = document.getElementById("search");
+      const entriesTitle = document.getElementById("entries-title");
 
       function showToast(message, isError = false) {
         let toast = document.getElementById("toast");
@@ -231,6 +263,8 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
       }
+
+      const escapeHtml = (str = "") => str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
       function attachAutocomplete(input, mode = "slug") {
         if (!input) return;
@@ -288,7 +322,7 @@
       }
 
       async function loadEntries() {
-        const res = await fetch("/md/list");
+        const res = await fetch(`/md/list?type=${activeType}`);
         if (!res.ok) throw new Error("Impossible de charger les fiches md");
         const data = await res.json();
         entries = data.files || [];
@@ -298,7 +332,7 @@
       }
 
       function buildSuggestions() {
-        suggestionSets = { nature: new Set(), domains: new Set(), symbols: new Set() };
+        suggestionSets = { nature: new Set(), domains: new Set(), symbols: new Set(), tags: new Set(), entities: new Set() };
         entries.forEach((e) => {
           const fm = e.frontmatter || {};
           const pushVals = (val, key) => {
@@ -309,9 +343,15 @@
               suggestionSets[key].add(val);
             }
           };
-          pushVals(fm.nature, "nature");
-          pushVals(fm.domains, "domains");
-          pushVals(fm.symbols, "symbols");
+          if (activeType === TYPE_ENTITY) {
+            pushVals(fm.nature, "nature");
+            pushVals(fm.domains, "domains");
+            pushVals(fm.symbols, "symbols");
+          } else {
+            pushVals(fm.tags, "tags");
+            pushVals(fm.main_entities, "entities");
+            pushVals(fm.opponents, "entities");
+          }
         });
       }
 
@@ -363,6 +403,255 @@
         input.addEventListener("blur", () => {
           setTimeout(() => (box.style.display = "none"), 150);
         });
+      }
+
+      function renderEditorFormEntity(fm, content = "") {
+        return `
+          <div class="form-grid">
+            <label>Titre
+              <input type="text" name="title" value="${escapeHtml(fm.title ?? "")}" />
+            </label>
+            <label>Culture
+              <input type="text" name="culture" value="${escapeHtml(fm.culture ?? "")}" />
+            </label>
+            <label>ID
+              <input type="text" name="id" value="${escapeHtml(fm.id ?? "")}" disabled />
+            </label>
+            <label>Nature
+              <input type="text" name="nature" data-suggest="nature" value="${escapeHtml(Array.isArray(fm.nature) ? fm.nature.join(", ") : fm.nature ?? "")}" />
+            </label>
+            <label>Genre
+              <input type="text" name="gender" value="${escapeHtml(fm.gender ?? "")}" />
+            </label>
+            <label>Rôle
+              <input type="text" name="role" value="${escapeHtml(fm.role ?? "")}" />
+            </label>
+            <label>Description
+              <textarea name="description">${fm.description ?? ""}</textarea>
+            </label>
+            <label>Domaines (CSV)
+              <input type="text" name="domains" data-suggest="domains" value="${escapeHtml((fm.domains || []).join(", "))}" />
+            </label>
+            <label>Symboles (CSV)
+              <input type="text" name="symbols" data-suggest="symbols" value="${escapeHtml((fm.symbols || []).join(", "))}" />
+            </label>
+            <label style="grid-column: 1 / -1;">Contenu (Markdown)
+              <textarea name="content" rows="8">${content ?? ""}</textarea>
+            </label>
+          </div>
+        `;
+      }
+
+      function renderEditorFormRecit(fm, content = "") {
+        return `
+          <div class="form-grid">
+            <label>Titre
+              <input type="text" name="title" value="${escapeHtml(fm.title ?? "")}" />
+            </label>
+            <label>Slug (fichier)
+              <input type="text" name="slug" value="${escapeHtml(fm.slug ?? fm.id ?? "")}" disabled />
+            </label>
+            <label>ID
+              <input type="text" name="id" value="${escapeHtml(fm.id ?? "")}" disabled />
+            </label>
+            <label>Ère / cycle
+              <input type="text" name="era" value="${escapeHtml(fm.era ?? "")}" />
+            </label>
+            <label>Importance
+              <input type="text" name="importance" value="${escapeHtml(fm.importance ?? "")}" />
+            </label>
+            <label>Tags (CSV)
+              <input type="text" name="tags" data-suggest="tags" value="${escapeHtml((fm.tags || []).join(", "))}" />
+            </label>
+            <label>Entités principales (CSV, id)
+              <input type="text" name="main_entities" data-suggest="entities" value="${escapeHtml((fm.main_entities || []).join(", "))}" />
+            </label>
+            <label>Opposants (CSV, id)
+              <input type="text" name="opponents" data-suggest="entities" value="${escapeHtml((fm.opponents || []).join(", "))}" />
+            </label>
+            <label>Lieux (CSV)
+              <input type="text" name="places" value="${escapeHtml((fm.places || []).join(", "))}" />
+            </label>
+            <label>Artefacts (CSV)
+              <input type="text" name="artifacts" value="${escapeHtml((fm.artifacts || []).join(", "))}" />
+            </label>
+            <label style="grid-column: 1 / -1;">Résumé
+              <textarea name="summary" rows="4">${fm.summary ?? ""}</textarea>
+            </label>
+            <label style="grid-column: 1 / -1;">Sources (JSON)
+              <textarea name="sources" rows="6">${escapeHtml(JSON.stringify(fm.sources || [], null, 2))}</textarea>
+            </label>
+            <label style="grid-column: 1 / -1;">Contenu (Markdown)
+              <textarea name="content" rows="8">${content ?? ""}</textarea>
+            </label>
+          </div>
+        `;
+      }
+
+      function renderEditorForm(fm, content = "") {
+        return activeType === TYPE_RECIT ? renderEditorFormRecit(fm, content) : renderEditorFormEntity(fm, content);
+      }
+
+      function extractForm(form) {
+        const getVal = (selector) => form.querySelector(selector)?.value.trim() || "";
+        const csv = (selector) =>
+          form
+            .querySelector(selector)
+            ?.value.split(",")
+            .map((s) => s.trim())
+            .filter(Boolean) || [];
+
+        if (activeType === TYPE_RECIT) {
+          const sourcesRaw = form.querySelector('textarea[name="sources"]')?.value || "";
+          let sources = [];
+          if (sourcesRaw.trim()) {
+            try {
+              sources = JSON.parse(sourcesRaw);
+            } catch (err) {
+              console.warn("Sources JSON invalide, vide utilisé", err);
+            }
+          }
+          return {
+            title: getVal('input[name="title"]'),
+            slug: getVal('input[name="slug"]'),
+            id: getVal('input[name="id"]'),
+            era: getVal('input[name="era"]'),
+            importance: getVal('input[name="importance"]'),
+            tags: csv('input[name="tags"]'),
+            main_entities: csv('input[name="main_entities"]'),
+            opponents: csv('input[name="opponents"]'),
+            places: csv('input[name="places"]'),
+            artifacts: csv('input[name="artifacts"]'),
+            summary: form.querySelector('textarea[name="summary"]')?.value ?? "",
+            sources,
+            type: "recit",
+            content: form.querySelector('textarea[name="content"]')?.value ?? "",
+          };
+        }
+
+        const natureRaw = getVal('input[name="nature"]');
+        return {
+          title: getVal('input[name="title"]'),
+          culture: getVal('input[name="culture"]'),
+          id: getVal('input[name="id"]'),
+          nature: natureRaw ? natureRaw.split(",").map((s) => s.trim()) : undefined,
+          gender: getVal('input[name="gender"]'),
+          role: getVal('input[name="role"]'),
+          description: form.querySelector('textarea[name="description"]')?.value ?? "",
+          domains: csv('input[name="domains"]'),
+          symbols: csv('input[name="symbols"]'),
+          content: form.querySelector('textarea[name="content"]')?.value ?? "",
+          type: "entity",
+        };
+      }
+
+      async function saveMd(slug, frontmatter) {
+        const cleanSlug = (slug || "").replace(/\.md$/i, "");
+        const file = `${cleanSlug}.md`;
+        const body = { file, frontmatter, content: frontmatter.content, type: activeType };
+        delete body.frontmatter.content;
+        const res = await fetch("/md/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const out = await res.json();
+        if (!res.ok) throw new Error(out.error || "Erreur sauvegarde md");
+      }
+
+      function setupCreate() {
+        const card = document.getElementById("create-card");
+        const openBtn = document.getElementById("open-create");
+        const closeBtn = document.getElementById("cancel-create");
+        const resetBtn = document.getElementById("reset-create");
+        const saveBtn = document.getElementById("save-create");
+        const status = document.getElementById("create-status");
+        const titleInput = document.getElementById("c-title");
+        const slugInput = document.getElementById("c-slug");
+        const cultureInput = document.getElementById("c-culture");
+        const idInput = document.getElementById("c-id");
+
+        function recompute() {
+          const rawSlug = titleInput.value ? slugify(titleInput.value) : slugInput.value;
+          const cleanSlug = (rawSlug || "").replace(/\.md$/i, "");
+          if (titleInput.value) slugInput.value = cleanSlug;
+          const culture = cultureInput.value.trim();
+          idInput.value = cleanSlug && culture ? `${culture}-${cleanSlug}` : "";
+        }
+
+        function resetForm() {
+          ["c-title", "c-slug", "c-culture", "c-id", "c-nature", "c-gender", "c-role", "c-description", "c-domains", "c-symbols", "c-content"].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.value = "";
+          });
+          status.textContent = "";
+          status.className = "status";
+        }
+
+        function toggleVisibility() {
+          const show = activeType === TYPE_ENTITY;
+          if (openBtn) openBtn.style.display = show ? "inline-flex" : "none";
+          if (card && !show) card.style.display = "none";
+        }
+
+        openBtn?.addEventListener("click", () => {
+          resetForm();
+          card.style.display = "block";
+        });
+        closeBtn?.addEventListener("click", () => {
+          card.style.display = "none";
+        });
+        resetBtn?.addEventListener("click", resetForm);
+        titleInput?.addEventListener("input", recompute);
+        slugInput?.addEventListener("input", recompute);
+        cultureInput?.addEventListener("input", recompute);
+
+        saveBtn?.addEventListener("click", async () => {
+          status.textContent = "";
+          status.className = "status";
+          const title = titleInput.value.trim();
+          const slug = slugInput.value.trim().replace(/\.md$/i, "");
+          const culture = cultureInput.value.trim();
+          const id = idInput.value.trim();
+          if (!title || !slug || !culture || !id) {
+            status.textContent = "Titre, slug, culture et id requis";
+            status.className = "status err";
+            return;
+          }
+          const payload = {
+            title,
+            culture,
+            id,
+            nature: document.getElementById("c-nature").value.split(",").map((s) => s.trim()).filter(Boolean),
+            gender: document.getElementById("c-gender").value.trim(),
+            role: document.getElementById("c-role").value.trim(),
+            description: document.getElementById("c-description").value,
+            domains: document.getElementById("c-domains").value.split(",").map((s) => s.trim()).filter(Boolean),
+            symbols: document.getElementById("c-symbols").value.split(",").map((s) => s.trim()).filter(Boolean),
+            content: document.getElementById("c-content")?.value || "",
+            slug, // utilisé uniquement pour le nom de fichier
+            type: TYPE_ENTITY,
+          };
+          try {
+            const res = await fetch("/md/create", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const out = await res.json();
+            if (!res.ok) throw new Error(out.error || "Erreur création md");
+            showToast("Fiche créée");
+            await loadEntries();
+            renderEntries(document.getElementById("search").value);
+            card.style.display = "none";
+          } catch (err) {
+            status.textContent = err.message;
+            status.className = "status err";
+          }
+        });
+
+        toggleVisibility();
+        return { toggleVisibility };
       }
 
       function renderEntries(filter) {
@@ -472,182 +761,44 @@
         });
       }
 
-      function renderEditorForm(fm, content = "") {
-        return `
-          <div class="form-grid">
-            <label>Titre
-              <input type="text" name="title" value="${fm.title ?? ""}" />
-            </label>
-        <label>Culture
-          <input type="text" name="culture" value="${fm.culture ?? ""}" />
-        </label>
-        <label>ID
-          <input type="text" name="id" value="${fm.id ?? ""}" disabled />
-        </label>
-        <label>Nature
-          <input type="text" name="nature" data-suggest="nature" value="${Array.isArray(fm.nature) ? fm.nature.join(", ") : fm.nature ?? ""}" />
-        </label>
-        <label>Genre
-          <input type="text" name="gender" value="${fm.gender ?? ""}" />
-        </label>
-        <label>Rôle
-          <input type="text" name="role" value="${fm.role ?? ""}" />
-        </label>
-        <label>Description
-          <textarea name="description">${fm.description ?? ""}</textarea>
-        </label>
-        <label>Domaines (CSV)
-          <input type="text" name="domains" data-suggest="domains" value="${(fm.domains || []).join(", ")}" />
-        </label>
-            <label>Symboles (CSV)
-              <input type="text" name="symbols" data-suggest="symbols" value="${(fm.symbols || []).join(", ")}" />
-            </label>
-            <label style="grid-column: 1 / -1;">Contenu (Markdown)
-              <textarea name="content" rows="8">${content ?? ""}</textarea>
-            </label>
-          </div>
-        `;
-      }
-
-      function extractForm(form) {
-        const getVal = (selector) => form.querySelector(selector)?.value.trim() || "";
-        const csv = (selector) =>
-          form
-            .querySelector(selector)
-            ?.value.split(",")
-            .map((s) => s.trim())
-            .filter(Boolean) || [];
-        const natureRaw = getVal('input[name="nature"]');
-        return {
-          title: getVal('input[name="title"]'),
-          culture: getVal('input[name="culture"]'),
-          id: getVal('input[name="id"]'),
-          nature: natureRaw ? natureRaw.split(",").map((s) => s.trim()) : undefined,
-          gender: getVal('input[name="gender"]'),
-          role: getVal('input[name="role"]'),
-          description: form.querySelector('textarea[name="description"]')?.value ?? "",
-          domains: csv('input[name="domains"]'),
-          symbols: csv('input[name="symbols"]'),
-          content: form.querySelector('textarea[name="content"]')?.value ?? "",
-        };
-      }
-
-      async function saveMd(slug, frontmatter) {
-        const cleanSlug = (slug || "").replace(/\.md$/i, "");
-        const file = `${cleanSlug}.md`;
-        const body = { file, frontmatter, content: frontmatter.content };
-        delete body.frontmatter.content;
-        const res = await fetch("/md/update", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        const out = await res.json();
-        if (!res.ok) throw new Error(out.error || "Erreur sauvegarde md");
-      }
-
-      function setupCreate() {
-        const card = document.getElementById("create-card");
-        const openBtn = document.getElementById("open-create");
-        const closeBtn = document.getElementById("cancel-create");
-        const resetBtn = document.getElementById("reset-create");
-        const saveBtn = document.getElementById("save-create");
-        const status = document.getElementById("create-status");
-        const titleInput = document.getElementById("c-title");
-        const slugInput = document.getElementById("c-slug");
-        const cultureInput = document.getElementById("c-culture");
-        const idInput = document.getElementById("c-id");
-
-        function recompute() {
-          const rawSlug = titleInput.value ? slugify(titleInput.value) : slugInput.value;
-          const cleanSlug = (rawSlug || "").replace(/\.md$/i, "");
-          if (titleInput.value) slugInput.value = cleanSlug;
-          const culture = cultureInput.value.trim();
-          idInput.value = cleanSlug && culture ? `${culture}-${cleanSlug}` : "";
-        }
-
-        function resetForm() {
-          ["c-title", "c-slug", "c-culture", "c-id", "c-nature", "c-gender", "c-role", "c-description", "c-domains", "c-symbols", "c-content"].forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) el.value = "";
-          });
-          status.textContent = "";
-          status.className = "status";
-        }
-
-        openBtn?.addEventListener("click", () => {
-          resetForm();
-          card.style.display = "block";
-        });
-        closeBtn?.addEventListener("click", () => {
-          card.style.display = "none";
-        });
-        resetBtn?.addEventListener("click", resetForm);
-        titleInput?.addEventListener("input", recompute);
-        slugInput?.addEventListener("input", recompute);
-        cultureInput?.addEventListener("input", recompute);
-
-        saveBtn?.addEventListener("click", async () => {
-          status.textContent = "";
-          status.className = "status";
-          const title = titleInput.value.trim();
-          const slug = slugInput.value.trim().replace(/\.md$/i, "");
-          const culture = cultureInput.value.trim();
-          const id = idInput.value.trim();
-          if (!title || !slug || !culture || !id) {
-            status.textContent = "Titre, slug, culture et id requis";
-            status.className = "status err";
-            return;
-          }
-          const payload = {
-            title,
-            culture,
-            id,
-            nature: document.getElementById("c-nature").value.split(",").map((s) => s.trim()).filter(Boolean),
-            gender: document.getElementById("c-gender").value.trim(),
-            role: document.getElementById("c-role").value.trim(),
-            description: document.getElementById("c-description").value,
-            domains: document.getElementById("c-domains").value.split(",").map((s) => s.trim()).filter(Boolean),
-            symbols: document.getElementById("c-symbols").value.split(",").map((s) => s.trim()).filter(Boolean),
-            content: document.getElementById("c-content")?.value || "",
-            slug, // utilisé uniquement pour le nom de fichier
-          };
-          try {
-            const res = await fetch("/md/create", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            const out = await res.json();
-            if (!res.ok) throw new Error(out.error || "Erreur création md");
-            showToast("Fiche créée");
-            await loadEntries();
-            renderEntries(document.getElementById("search").value);
-            card.style.display = "none";
-          } catch (err) {
-            status.textContent = err.message;
-            status.className = "status err";
-          }
-        });
-      }
-
       function wireAutocomplete() {
         document.querySelectorAll('input[data-suggest]').forEach((input) => {
           const key = input.getAttribute('data-suggest');
-          if (key === 'nature' || key === 'domains' || key === 'symbols') {
-            attachCsvAutocomplete(input, key);
-          }
+          if (!key) return;
+          attachCsvAutocomplete(input, key);
         });
       }
 
-      async function init() {
+      function setActiveType(type) {
+        activeType = type;
+        document.querySelectorAll("[data-type-btn]").forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-type-btn") === type);
+        });
+        if (entriesTitle) entriesTitle.textContent = type === TYPE_RECIT ? "Récits" : "Fiches entités";
+      }
+
+      async function refresh() {
         await loadEntries();
-        setupCreate();
-        renderEntries("");
+        renderEntries(searchInput?.value || "");
         wireAutocomplete();
-        const search = document.getElementById("search");
-        search.addEventListener("input", () => renderEntries(search.value));
-        attachAutocomplete(search, "slug");
+      }
+
+      async function init() {
+        const createCtl = setupCreate();
+        document.querySelectorAll("[data-type-btn]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const t = btn.getAttribute("data-type-btn");
+            if (t && t !== activeType) {
+              setActiveType(t);
+              createCtl?.toggleVisibility();
+              await refresh();
+            }
+          });
+        });
+
+        await refresh();
+        attachAutocomplete(searchInput, "slug");
+        searchInput?.addEventListener("input", () => renderEntries(searchInput.value));
       }
 
       init().catch((err) => {

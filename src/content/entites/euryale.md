@@ -4,6 +4,7 @@ culture: grecque
 id: grecque-euryale
 nature:
   - creature
+  - gorgone
   - chthonien
 gender: f
 role: Gorgone immortelle - Sœur de Méduse et gardienne terrifiante
@@ -20,7 +21,6 @@ symbols:
   - Cris perçants
   - Ailes
 ---
-
 # Euryale
 
 ## Origine et identité

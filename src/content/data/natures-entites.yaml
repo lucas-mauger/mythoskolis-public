@@ -254,6 +254,15 @@ natures:
       en:
         x: "Hybrid"
 
+  - id: gorgone
+    kind: creature
+    parent: creature
+    labels:
+      fr:
+        x: "Gorgone"
+      en:
+        x: "Gorgon"
+
   - id: animal_mythique
     kind: creature
     parent: creature
