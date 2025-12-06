@@ -16,38 +16,34 @@ Mythoskolis est créé et développé par une seule personne, précédemment pro
 
 Le site n’a aucun objectif commercial. Il s’agit d’un espace d’étude et de partage, construit avec le plus grand soin possible.
 
-Il a aussi une vocation de vitrine technique pour la mise en valeur des données, la mythologie grecque étant un terrain de jeu fertile pour ce type de projets.
+Il a aussi une vocation de vitrine technique. Le projet sert de terrain d’expérimentation pour la structuration de données complexes, la modélisation relationnelle, la visualisation interactive et la conception d’outils narratifs. Le développement progresse de manière itérative, ce qui permet d’améliorer continuellement l’architecture, l’ergonomie et les fonctionnalités du site.
 
 ---
 
 ## Représentations visuelles et usage de l’IA
-Les illustrations présentes dans la version actuelle du site sont réalisées par l’auteur à l’aide d’outils d’intelligence artificielle : ChatGPT ou nano-banana pour les images fixes et Grok pour les animations. Il ne s’agit pas d’un travail d’illustration au sens traditionnel, mais d’un travail de conception, de sélection, d’ajustement et de cohérence visuelle.
+Les images et animations présentes sur le site sont réalisées par l’auteur à l’aide d’outils d’intelligence artificielle. Elles constituent un accompagnement visuel conçu pour soutenir la compréhension et offrir une atmosphère cohérente, sans prétention à l’illustration traditionnelle.
 
-**L’objectif n’est pas de revendiquer un statut d’artiste** : le projet demande déjà de multiples compétences (recherche, rédaction, développement, modélisation, ergonomie), et le temps disponible n’est pas illimité. L’usage de l’IA permet de créer un ensemble visuel homogène en attendant qu’un travail plus large et collaboratif devienne possible.
+L’IA est utilisée ici comme un atelier permettant de concevoir rapidement des compositions, des ambiances et des variations visuelles. Elle ne remplace pas la vision artistique humaine et n’a pas vocation à définir un style unique et figé.
 
-Cette cohérence est centrale. Elle demande du soin, de la rigueur et un réel investissement : choix des couleurs, constance des motifs, atmosphère générale, respect de l’esprit des personnages. Pour les contributeurs futurs, en particulier ceux qui utiliseraient également l’IA, une exigence minimale sera attendue : pas de génération aléatoire sans direction, pas d’écarts stylistiques extrêmes d’un personnage à l’autre, pas de ruptures arbitraires de ton.
+À l’avenir, Mythoskolis accueillera des contributions extérieures, qu’elles soient réalisées à la main, en numérique ou via l’IA. Chaque créateur pourra proposer sa propre esthétique. L’important n’est pas d’imiter le style existant, mais de proposer une démarche visuelle cohérente et identifiable. Les modalités précises de participation et de sélection seront définies dans une charte dédiée lorsque l’espace contributif sera ouvert.
 
-Une fratrie, un groupe thématique, des divinités liées entre elles doivent pouvoir être représentés dans un ensemble visuel compatible. Des écarts volontaires de style peuvent exister, mais un ensemble censé être cohérent (fratrie, groupe thématique, divinités associées) ne doit pas présenter de ruptures visuelles arbitraires ou incompatibles entre elles. Une contribution doit conserver une unité esthétique minimale pour pouvoir être intégrée au site.
-Les images, portraits et animations qui accompagnent les contenus sont réalisés grâce à des outils numériques, dont des solutions d’intelligence artificielle. Ils sont utilisés comme un atelier : un moyen de concevoir rapidement des atmosphères, des styles ou des compositions qui servent la compréhension et l’immersion.
-
-L’objectif n’est pas de se substituer aux illustrateurs. Rien ne remplace leur vision, leur maîtrise et leur sensibilité. L’usage de l’IA est assumé, expliqué, transparent et limité à ce que permet un projet personnel de cette ampleur.
+Enfin, même dans un cadre ouvert à la contribution, la sélection finale des illustrations reste à la discrétion de l’auteur du site afin de préserver la cohérence éditoriale et visuelle de l’ensemble.
 
 ---
 
 ## Transparence
-Une mise à jour ultérieure concernant la gestion des médias visuels fera l'objet d'un exercice de transparence quant à leur conception.
-La technique utilisée pour la création d'un média visuel sera explicitement spécifiée : IA uniquement, approche hybride (approche manuelle et utilisation ponctuelle d'IA) ou créé entièrement à la main (via technique traditionnelle ou outils numériques sans IA).
+Une mise à jour ultérieure concernant la gestion des médias visuels précisera, pour chaque image ou animation, s’il s’agit d’une création manuelle, hybride ou issue de l’IA. Cette transparence est un engagement constant du projet.
 
-Mythoskolis valorise les artistes humains et la création graphique. Les outils numériques ne masquent pas ce qu’ils doivent à l’histoire de l’art ou à l’imaginaire collectif.
+Mythoskolis valorise les artistes humains et la création graphique. Les outils numériques ne masquent pas ce qu’ils doivent à l’histoire de l’art et à l’imaginaire collectif.
 
 ---
 
 ## Vers un espace contributif
 Si la version actuelle du site repose sur un travail entièrement individuel, l’ambition future de Mythoskolis est d’ouvrir l’espace à des contributeurs volontaires : illustrateurs, artistes numériques, créateurs ou passionnés souhaitant proposer des visions complémentaires.
 
-Cette ouverture permettra d’enrichir le site à un rythme plus soutenu et d’apporter une diversité de sensibilités que l’auteur ne pourrait produire seul. Les contributions retenues auront fait l'objet d'un audit de l'auteur au sujet de l'approche adoptée, dans un espace dédié - probablement externe au site - encore à définir.
+Cette ouverture permettra d’enrichir le site à un rythme plus soutenu et d’apporter une diversité de sensibilités que l’auteur ne pourrait produire seul. Les contributions retenues auront fait l’objet d’un examen concernant leur cohérence, leur intention et leur compatibilité générale avec l’univers du site.
 
-La direction éditoriale restera centralisée afin de préserver l’unité visuelle et la qualité du projet.
+La direction éditoriale restera centralisée afin de préserver l’unité visuelle, la qualité des contenus et la clarté de l’ensemble.
 
 ---
 
@@ -60,3 +56,4 @@ L’objectif reste le même : proposer un lieu où l’on peut comprendre, appre
 
 ## Contact
 Une page de contact sera mise en place pour les questions, suggestions et propositions futures.
+

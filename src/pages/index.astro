@@ -9,9 +9,6 @@ import path from 'node:path';
 
 const entites = await getCollection('entites');
 const publicDir = path.resolve(process.cwd(), 'public');
-const fallbackFace =
-  "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180' viewBox='0 0 320 180' fill='none'%3E%3Crect width='320' height='180' rx='16' fill='%23E2E8F0'/%3E%3Ctext x='50%25' y='52%25' dominant-baseline='middle' text-anchor='middle' fill='%23475569' font-family='Arial, sans-serif' font-size='48'%3E?%3C/text%3E%3C/svg%3E";
-import homeEntitiesCarouselUrl from '../scripts/home-entities-carousel.ts?url';
 
 function findFirstExistingFace(slug: string, id?: string, culture?: string): string | null {
   const normalizedCulture = culture?.toString().toLowerCase();
@@ -43,21 +40,17 @@ const entitesAvecPortrait = entites
   .map((item) => {
     const face = findFirstExistingFace(item.slug, item.data.id?.toString(), item.data.culture);
     if (!face) return null;
-    return { item, face };
+    return {
+      id: item.data.id ?? item.slug,
+      slug: item.slug,
+      title: item.data.title,
+      role: item.data.role ?? '',
+      faceSrc: face,
+    };
   })
   .filter(Boolean);
 
-const candidates = entitesAvecPortrait.map(({ item, face }) => ({
-  id: item.data.id ?? item.slug,
-  slug: item.slug,
-  title: item.data.title,
-  role: item.data.role ?? '',
-  faceSrc: face,
-}));
-
-console.log("[home-entities] candidates.length =", candidates.length);
-console.log("[home-entities] candidates slugs =", candidates.map((c) => c.slug));
-const fallbackFeatured = candidates.slice(0, 6);
+const serializedEntites = JSON.stringify(entitesAvecPortrait);
 ---
 
 <html lang="fr">
@@ -77,12 +70,18 @@ const fallbackFeatured = candidates.slice(0, 6);
 
     <main class="flex-1 max-w-5xl mx-auto px-4 py-12 space-y-12">
       <section class="home-hero rounded-3xl bg-white border border-gray-200 shadow-sm p-8 flex flex-col gap-4">
-        <p class="text-sm font-semibold tracking-[0.2em] text-indigo-600 uppercase">Mythologie vivante</p>
-        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-gray-900">
-          Mythoskolis<br />
-          La Mythologie accessible à tous
-        </h1>
-        <p class="text-lg text-gray-700 max-w-3xl">
+        <div class="relative isolate overflow-hidden -mx-8 -mt-8 rounded-2xl">
+          <div
+            aria-hidden="true"
+            class="absolute inset-0 -z-20 bg-[url('/medias/mythoskolis_front.webp')] bg-cover bg-top opacity-80"
+          />
+          <div aria-hidden="true" class="absolute inset-0 -z-10 bg-white/10" />
+          <h1 class="relative z-10 px-8 py-6 text-center font-extrabold leading-tight text-white">
+            <span class="block text-4xl md:text-5xl">Mythoskolis</span>
+            <span class="block text-2xl md:text-4xl">Rendre la mythologie grecque facile à comprendre</span>
+          </h1>
+        </div>
+        <p class="mt-2 text-lg text-gray-700 max-w-3xl">
           Parcourez les fiches d'entités mythologiques, les récits fondateurs, et comprenez intuitivement les liens de filiation entre les personnages via l'HoloGraph, un arbre généalogique interactif original et inédit.
         </p>
         <div class="flex flex-wrap gap-3">
@@ -103,7 +102,7 @@ const fallbackFeatured = candidates.slice(0, 6);
 
       <section class="space-y-4 rounded-3xl bg-white border border-gray-200 shadow-sm p-8">
         <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-semibold">HoloGraph — généalogie interactive</h2>
+          <h2 class="text-2xl font-semibold">HoloGraph - généalogie interactive</h2>
           <a
             href="/genealogie/grecque-zeus/"
             class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 transition"
@@ -112,7 +111,7 @@ const fallbackFeatured = candidates.slice(0, 6);
           </a>
         </div>
         <p class="text-gray-700">
-          Visualise parents, fratries, consorts et enfants avec l’HoloGraph, le graphe interactif de Mythoskolis.
+          Naviguez intuitivement dans les complexes relations généalogiques de la mythologie grecque.
         </p>
         <div class="flex justify-center">
           <video
@@ -131,42 +130,21 @@ const fallbackFeatured = candidates.slice(0, 6);
         </div>
       </section>
 
-      <section class="space-y-6">
-        <h2 class="text-2xl font-semibold">Quelques entités à découvrir</h2>
-        <div id="home-entities-grid" data-home-entities-grid class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {fallbackFeatured.map((ent) => (
-            <a
-              class="home-entity-card group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition"
-              href={`/entites/${ent.id}/`}
-            >
-              <img
-                src={ent.faceSrc}
-                alt={`Portrait de ${ent.title}`}
-                class="h-40 w-full object-cover bg-gray-100"
-                loading="lazy"
-                onerror={`this.onerror=null;this.src='${fallbackFace}';`}
-                draggable="false"
-              />
-              <div class="p-4 flex items-center justify-between">
-                <div>
-                  <p class="home-entity-title text-lg font-semibold text-gray-900 group-hover:text-indigo-700 transition">
-                    {ent.title}
-                  </p>
-                  <p class="home-entity-sub text-xs text-gray-500">Fiche détaillée</p>
-                </div>
-                <span class="text-indigo-600 font-semibold group-hover:translate-x-1 transition">→</span>
-              </div>
-            </a>
-          ))}
+      <section class="space-y-4 rounded-3xl bg-white border border-gray-200 shadow-sm p-8">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-semibold">Quelques entités à découvrir</h2>
+        </div>
+        <div data-home-random-entities class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <p class="text-gray-500">Chargement des entités...</p>
         </div>
       </section>
 
       <section class="space-y-4 rounded-3xl bg-white border border-gray-200 shadow-sm p-8">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
           <h2 class="text-2xl font-semibold">Ressources</h2>
           <a
             href="/ressources/"
-            class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 transition"
+            class="ml-auto inline-flex items-center justify-center whitespace-nowrap rounded-full border border-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 transition text-center"
           >
             Voir toutes les ressources
           </a>
@@ -177,15 +155,14 @@ const fallbackFeatured = candidates.slice(0, 6);
       <section class="space-y-3 rounded-3xl bg-white border border-gray-200 shadow-sm p-8">
         <h2 class="text-2xl font-semibold">À propos</h2>
         <p class="text-gray-700">
-          Mythoskolis est un projet personnel en Astro/Netlify, pensé comme une vitrine culturelle et technique
-          autour des mythes. Tout le contenu est versionné, sourcé, et l’HoloGraph s'appuie sur des données YAML.
+          Mythoskolis est un projet personnel conçu avec Astro et Tailwind.
+          Il sert de vitrine culturelle et surtout de démonstration technique : modélisation de données complexes, structuration YAML, et visualisation dynamique via l’HoloGraph.
+          Toutes les fiches et relations sont versionnées, sourcées, et générées à partir de données organisées.
         </p>
         <div class="flex flex-wrap gap-3 text-sm">
           <a href="/a-propos/" class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 hover:border-gray-300">
             En savoir plus
           </a>
-      <a href="/entites/" class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 hover:border-gray-300">
-        Consulter les fiches
       </a>
     </div>
   </section>
@@ -193,11 +170,87 @@ const fallbackFeatured = candidates.slice(0, 6);
 
 <Footer />
 
-<script type="application/json" id="home-entities-data">
-  {JSON.stringify(candidates)}
-</script>
+<script type="application/json" id="home-random-entities-data" set:html={serializedEntites}></script>
 
-<script type="module" src={homeEntitiesCarouselUrl}></script>
+<script>
+  (() => {
+    const renderRandomEntities = () => {
+      const container = document.querySelector('[data-home-random-entities]');
+      const dataEl = document.getElementById('home-random-entities-data');
+      if (!container || !dataEl) return;
+
+      try {
+        const parsed = JSON.parse(dataEl.textContent || '[]');
+        console.debug('[home-entities] parsed length', Array.isArray(parsed) ? parsed.length : 'non-array');
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          container.innerHTML = '<p class="text-gray-500">Aucune entité illustrée pour le moment.</p>';
+          return;
+        }
+
+        const selection = parsed
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .slice(0, 3)
+          .map(({ value }) => value);
+
+        const fragment = document.createDocumentFragment();
+
+        selection.forEach((ent) => {
+          const card = document.createElement('a');
+          card.href = `/entites/${ent.id}/`;
+          card.className =
+            'home-entity-card group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition';
+
+          const img = document.createElement('img');
+          img.src = ent.faceSrc;
+          img.alt = `Portrait de ${ent.title}`;
+          img.className = 'h-40 w-full object-cover bg-gray-100';
+          img.loading = 'lazy';
+          img.draggable = false;
+          card.appendChild(img);
+
+          const info = document.createElement('div');
+          info.className = 'p-4 flex items-center justify-between';
+
+          const texts = document.createElement('div');
+          const title = document.createElement('p');
+          title.className = 'home-entity-title text-lg font-semibold text-gray-900 group-hover:text-indigo-700 transition';
+          title.textContent = ent.title;
+
+          const role = document.createElement('p');
+          role.className = 'home-entity-sub text-xs text-gray-500';
+          role.textContent = ent.role || 'Fiche détaillée';
+
+          texts.appendChild(title);
+          texts.appendChild(role);
+
+          const arrow = document.createElement('span');
+          arrow.className = 'text-indigo-600 font-semibold group-hover:translate-x-1 transition';
+          arrow.textContent = '→';
+
+          info.appendChild(texts);
+          info.appendChild(arrow);
+
+          card.appendChild(info);
+          fragment.appendChild(card);
+        });
+
+        if (fragment.childNodes.length > 0) {
+          container.innerHTML = '';
+          container.appendChild(fragment);
+        }
+      } catch (error) {
+        console.error('[home-entities] rendu aléatoire impossible', error);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', renderRandomEntities, { once: true });
+    } else {
+      renderRandomEntities();
+    }
+  })();
+</script>
 
 <style>
   :global(.theme-dark .home-entity-card) {
@@ -220,7 +273,7 @@ const fallbackFeatured = candidates.slice(0, 6);
     box-shadow: 0 18px 60px rgba(0, 0, 0, 0.38);
   }
   :global(.theme-dark .home-hero h1) {
-    color: #e5e7eb;
+    color: #ffffff;
   }
   :global(.theme-dark .home-hero p:not(.text-indigo-600)) {
     color: #cbd5e1;
