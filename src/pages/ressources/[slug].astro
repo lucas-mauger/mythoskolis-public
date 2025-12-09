@@ -31,51 +31,13 @@ const pageDescription = ressource.data.description ?? ressource.data.title;
   />
 </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
     <Header />
 
     <main class="flex-1 max-w-4xl mx-auto px-4 py-12">
-      <article class="prose prose-gray prose-lg max-w-none"><Content /></article>
+      <article class="mk-prose-card p-6 md:p-8"><Content /></article>
     </main>
 
     <Footer />
   </body>
 </html>
-
-<style>
-  :global(.theme-dark body) {
-    background: #0f172a;
-    color: #e5e7eb;
-  }
-  :global(.theme-dark h1) {
-    color: #f8fafc;
-  }
-  :global(.theme-dark p),
-  :global(.theme-dark li) {
-    color: #cbd5e1;
-  }
-  :global(.theme-dark .prose a) {
-    color: #c7d2fe;
-  }
-  :global(.theme-dark .prose a:hover) {
-    color: #e0e7ff;
-  }
-  :global(.theme-dark .prose) {
-    --tw-prose-body: #cbd5e1;
-    --tw-prose-headings: #e2e8f0;
-    --tw-prose-links: #c7d2fe;
-    --tw-prose-bullets: #cbd5e1;
-    --tw-prose-counters: #cbd5e1;
-    --tw-prose-quotes: #e2e8f0;
-    --tw-prose-hr: rgba(148, 163, 184, 0.4);
-  }
-  :global(.theme-dark .text-gray-500) {
-    color: #94a3b8;
-  }
-  :global(.theme-dark .text-gray-700) {
-    color: #cbd5e1;
-  }
-  :global(.theme-dark .text-gray-900) {
-    color: #e5e7eb;
-  }
-</style>

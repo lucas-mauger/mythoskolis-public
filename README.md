@@ -1,150 +1,79 @@
-# 🏛️ Mythoskolis — Site de médiation autour des mythologies
+# 🏛️ Mythoskolis — mythologie grecque, fiches et généalogie interactive
 
-Mythoskolis est un site web moderne dédié à la découverte des mythologies à travers des fiches synthétiques, des illustrations originales et un système dynamique de filiations entre entités d'un décorum mythologique donné, exclusivement grec dans un premier temps.
-
-Le projet a pour objectifs :
-- de proposer un accès **simple, clair et gratuit** à des contenus culturels de qualité ;
-- de rendre les mythes **visuels, vivants et accessibles** ;
-- d’offrir à tous les amateurs de vulgarisation mythologique, aux curieux, aux enseignants, aux élèves, ou quiconque en aurait l'utilité un outil propre et sans distraction ;
-- d’expérimenter une **modélisation de données** (généalogies, relations, sources) intégrée à une interface Web moderne.
-
-Le site est construit avec **Astro**, **TailwindCSS**, une structuration des contenus en **Markdown + frontmatter**, et des outils maison pour piloter les données (inspecteurs YAML/MD).
+Mythoskolis est un site de médiation culturelle qui rend la mythologie grecque lisible : fiches synthétiques, récits structurés et un HoloGraph interactif pour visualiser les filiations.
 
 ---
 
-## 🚀 1. Prérequis
+🔗 Démo : https://mythoskolis.com
 
-Avant de lancer le projet, assurez-vous d’avoir :
+## 1. Fonctionnalités principales
+- Fiches entités (dieux, titans, héros, créatures) en Markdown + frontmatter.
+- Récits narratifs avec métadonnées (YAML) et filtre de recherche (titres + thématiques, insensible à la casse/accents).
+- HoloGraph interactif : graphe généalogique généré depuis `data/genealogie.yaml` → JSON statique.
+- Thème clair/sombre avec toggle persistant.
+- Pages éditoriales (ressources, à propos).
 
-- **Node.js ≥ 20**  
-  (Recommandé : installation via NVM)
+## 2. Stack technique
+- Astro (site statique)
+- Tailwind CSS (design system `mk-*`)
+- Markdown + frontmatter YAML (collections Astro)
+- Scripts de génération JSON (généalogie)
+- Déploiement Cloudflare Pages (build Astro)
 
-```bash
-node -v
-npm -v
-```
+## 3. Modélisation des données
+- `data/genealogie.yaml` = source de vérité des relations ; export JSON auto via `scripts/generate-genealogie-json-new.mjs` (hooké sur `predev` / `prebuild`).
+- Collections éditoriales dans `src/content/` (entités, récits, ressources) avec IDs stables ; l’ego-graph et les fiches partagent les mêmes IDs.
+- Médias préfixés par culture/ID (`public/faces/grecque-*.webp`, `public/images/`, `public/videos/`) avec fallback vidéo > image > placeholder.
+- Encarts/boutons HoloGraph affichés uniquement si l’ID existe dans le YAML ; HoloGraph isolé (CSS/JS d’origine, sans Tailwind).
 
-- **npm** installé (fourni avec Node).
-
----
-
-## 📦 2. Installation
-
-Clonez le dépôt :
-
-```bash
-git clone <URL_DU_REPO>
-cd mythoskolis
-```
-
-Installez les dépendances :
-
+## 4. Installation locale
 ```bash
 npm install
-```
-
----
-
-## 🧪 3. Lancement du projet (développement)
-
-Pour démarrer le serveur local :
-
-```bash
 npm run dev
+# ou pour expliciter l’hôte/port :
+# npm run dev -- --host --port XXXX dans le cas de tests -même distants- sur mobile via Tailscale
 ```
 
-Le site sera accessible à l’adresse indiquée dans le terminal (généralement `http://localhost:4321`).
-
----
-
-## 🛠️ 4. Scripts disponibles
-
-```bash
-npm run dev       # Lance le serveur de développement
-npm run build     # Génère le site statique dans /dist
-npm run preview   # Prévisualise le build
-npm run format    # Formate le code avec Prettier
-npm run lint      # Analyse le code avec ESLint
-```
-
----
-
-## 🧰 5bis. Inspecteurs locaux (maintenance sans CMS)
-
-- `npm run yaml:tool:new` ouvre l’inspecteur YAML (nouvelle structure) pour créer/éditer entités et relations, avec gestion bilatérale des liens et validation consensus.
-- `npm run md:tool` ouvre l’inspecteur Markdown pour lister/filtrer/éditer les fiches (`frontmatter` + contenu brut).
-
-> V1 se maintient directement dans les fichiers YAML/MD ; aucun CMS externe n’est utilisé.
-
----
-
-## 🧱 5. Structure du projet
-
+## 5. Organisation du projet
 ```
 mythoskolis/
-│
-├── public/                 # Fichiers statiques (images, vidéos, assets)
-│
-├── data/
-│   └── genealogie.yaml     # Source unique des relations familiales (nouveau format)
-│
+├── data/                 # YAML généalogie (source unique)
+├── public/               # Médias statiques (faces/, images/, videos/)
 ├── src/
-│   ├── components/         # Composants Astro réutilisables (EgoGraph, Header, …)
-│   ├── content/            # Fiches (dieux, ressources...) en Markdown (frontmatter + corps)
-│   ├── lib/                # Utilitaires (lecture du YAML généalogique)
-│   ├── pages/              # Pages Astro => routes du site
-│   └── styles/             # Styles globaux (Tailwind)
-│
-├── tools/
-│   ├── yaml-inspector-new.html  # Inspecteur/générateur relations YAML (nouveau format)
-│   └── md-inspector.html        # Inspecteur/éditeur de frontmatters + corps Markdown
-│
-├── .astro/                 # Types générés automatiquement par Astro
-├── astro.config.mjs        # Configuration Astro
-├── tailwind.config.mjs     # Configuration Tailwind CSS
-├── package.json            # Dépendances et scripts
-└── README.md               # Ce fichier
+│   ├── components/       # Header, Footer, EgoGraph, etc.
+│   ├── content/          # Fiches entités/récits/ressources (MD + FM)
+│   ├── lib/              # Lecture/transformations généalogie
+│   ├── pages/            # Pages Astro
+│   └── styles/           # Styles globaux (Tailwind, mk-*)
+├── scripts/              # Génération JSON généalogie
+└── tools/                # Inspecteurs YAML/MD (maintenance locale)
 ```
 
----
+## 6. Scripts utiles
+```bash
+npm run dev        # serveur de dev
+npm run build      # build statique (dist/)
+npm run preview    # prévisualiser le build
+npm run format     # Prettier
+npm run yaml:tool:new  # inspecteur YAML (relations, nouvelles structures)
+npm run md:tool    # inspecteur Markdown (frontmatter + corps)
+```
 
-## 🖼️ 6. Médias & données
+## 7. Roadmap (extrait)
+- ✔️ Graphe généalogique interactif + encarts/boutons conditionnels sur les fiches.
+- ✔️ Filtre récits sur titres + thématiques (case/accents insensibles).
+- ✔️ HoloGraph isolé (CSS/JS d’origine, pas de Tailwind/design system).
+- ✔️ Accessibilité/SEO (alts, aria, contrastes AA).
+- ✔️ Filtres/badges nature/panthéon sur la liste des entités.
+- ✔️ Enrichir `source_texts` / variantes ; médias préfixés (ancienne arbo à trancher).
+- ✔️ QA/CI : lint/format auto, tests YAML, visuels ego-graph, CI build PR ; ☐ section portfolio à ajouter.
+- ☐ V2 : navigation ego-graph avec variantes, multi-cultures, packaging du module.
 
-- **Vidéos** : placées dans `public/videos/` et référencées via `video: "/videos/xxx.mp4"` dans les frontmatter des fiches.
-- **Images** : `public/images/` pour les visuels génériques, `public/faces/slug.webp` pour les portraits utilisés dans l’ego-graph.
-- **Généalogie** : éditer uniquement `data/genealogie.yaml`. Le JSON consommé par le composant interactif est régénéré automatiquement via `node scripts/generate-genealogie-json.mjs` (hooké sur `predev` / `prebuild`).
+## 8. Valeur pour recruteurs/lecteurs
+- Stack moderne Astro + Tailwind v4, design system maison (`mk-*`).
+- Modélisation et pipelines : YAML → JSON → Astro, fallback médias, IDs partagés entre front et graphe.
+- UX mobile avec thème clair/sombre, filtres, cartes cohérentes.
+- Maintenance sans CMS : inspecteurs YAML/MD, scripts de génération intégrés au build.
 
----
-
-## 🪢 7. Branching model
-
-Le projet suit une organisation simple :
-
-- `main` = branche stable et protégée  
-  (pas de commit direct → PR obligatoire)
-- `feature/*` = une branche par brique / fonctionnalité
-- Merge via Pull Request uniquement
-
----
-
-## 📌 8. État actuel du projet
-
-- Base Astro + Tailwind opérationnelle (pages d’accueil, dieux, ressources, à propos).
-- Données généalogiques centralisées dans `data/genealogie.yaml` (nouveau format), lues via `src/lib/genealogie.ts` puis exportées en JSON statique pour l’ego-graph.
-- Inspecteurs custom (YAML + MD) pour maintenir relations et fiches sans CMS externe.
-- Ego-graph interactif `/genealogie/[slug]` : colonnes Parents / Fratrie / Consorts / Enfants (desktop + mobile), portraits tirés de `public/faces/`.
-- Workflow Git : travail sur branches `feature/*` + PR vers `main`.
-
-## 🧭 Parcours du site
-
-- **Accueil** : introduction, mise en avant aléatoire de fiches et accès rapide à la généalogie interactive.
-- **Entités** (`/entites/`) : liste filtrable (nom/slug/nature) + fiches détaillées (`/entites/<id>/`) avec portrait, résumé, domaines/symboles, vidéo/image et encart “Généalogie détaillée”.
-- **Généalogie** (`/genealogie/<id>/`) : graphe interactif parents/fratrie/consorts/enfants, avec navigation entre entités et liens vers les fiches.
-- **Ressources** (`/ressources/`) : contenu éditorial/notes annexes (à compléter).
-- **À propos** : contexte du projet.
-
----
-
-## ✨ 9. Licence
-
-Projet personnel — licence à définir selon les besoins futurs.
+## 9. Licence
+Unlicensed / All rights reserved

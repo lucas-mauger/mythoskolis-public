@@ -35,25 +35,30 @@ const pageDescription = "Liste des thèmes utilisés pour classifier les récits
   />
 </head>
 
-<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
   <Header />
 
   <main class="flex-1 max-w-4xl mx-auto px-4 py-12 space-y-8">
     <header class="space-y-2">
-      <p class="text-sm uppercase tracking-wide text-gray-500">Récits</p>
-      <h1 class="text-3xl font-bold text-gray-900">Thématiques des récits</h1>
-      <p class="text-base text-gray-700">Thèmes et motifs utilisés pour filtrer les récits.</p>
+      <p class="mk-kicker">Récits</p>
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-50">Thématiques des récits</h1>
+      <p class="text-base text-slate-700 dark:text-slate-200">Thèmes et motifs utilisés pour filtrer les récits.</p>
     </header>
 
     <section class="space-y-6">
       {categories.map((cat) => (
-        <div class="cat-card">
-          <h2 class="cat-title">{cat.label}</h2>
-          <div class="tag-list">
+        <div class="mk-card space-y-3 p-4 md:p-5">
+          <h2 class="mk-card-title mb-1">{cat.label}</h2>
+          <div class="flex flex-wrap gap-2">
             {cat.tags.map((t) => (
-              <a class="tag-pill" href={`/recits/?tag=${encodeURIComponent(normalizeTagForSearch(t.label))}`}>
+              <a
+                class="mk-pill text-sm hover:-translate-y-[1px] hover:shadow-sm"
+                href={`/recits/?tag=${encodeURIComponent(normalizeTagForSearch(t.label))}`}
+              >
                 {t.label}
-                <span class="count-pill">{tagCounts.get(t.id) ?? 0}</span>
+                <span class="ml-2 inline-flex min-w-[1.6rem] items-center justify-center rounded-full bg-slate-200 px-2 py-0.5 text-xs font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-100">
+                  {tagCounts.get(t.id) ?? 0}
+                </span>
               </a>
             ))}
           </div>
@@ -65,74 +70,3 @@ const pageDescription = "Liste des thèmes utilisés pour classifier les récits
   <Footer />
 </body>
 </html>
-
-<style>
-  .cat-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    background: #ffffff;
-    padding: 1rem;
-  }
-  .cat-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 0.75rem;
-  }
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .tag-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.35rem 0.75rem;
-    border-radius: 9999px;
-    background: #f3f4f6;
-    color: #374151;
-    font-size: 0.85rem;
-    border: 1px solid #e5e7eb;
-    text-decoration: none;
-  }
-  .count-pill {
-    margin-left: 0.45rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.6rem;
-    padding: 0.15rem 0.45rem;
-    border-radius: 9999px;
-    background: #e5e7eb;
-    color: #374151;
-    font-size: 0.75rem;
-    font-weight: 700;
-    line-height: 1;
-  }
-  :global(.theme-dark body) {
-    background: #0f172a;
-    color: #e5e7eb;
-  }
-  :global(.theme-dark h1) {
-    color: #f8fafc;
-  }
-  :global(.theme-dark p) {
-    color: #cbd5e1;
-  }
-  :global(.theme-dark .cat-card) {
-    background: rgba(15, 23, 42, 0.9);
-    border-color: rgba(148, 163, 184, 0.35);
-  }
-  :global(.theme-dark .cat-title) {
-    color: #f8fafc;
-  }
-  :global(.theme-dark .tag-pill) {
-    background: rgba(30, 41, 59, 0.8);
-    border-color: rgba(148, 163, 184, 0.35);
-    color: #e5e7eb;
-  }
-  :global(.theme-dark .count-pill) {
-    background: rgba(148, 163, 184, 0.25);
-    color: #e5e7eb;
-  }
-</style>

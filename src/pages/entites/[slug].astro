@@ -37,6 +37,7 @@ const allEntries = await getCollection('entites');
 const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 const yamlEntity = getEntityById(entityId) ?? getEntityBySlug(entityId) ?? getEntityBySlug(entry.slug);
 const genealogie = getGraphDisplayData(entityId);
+const hasGenealogie = Boolean(genealogie?.central?.id);
 const entityCulture = (frontCulture ?? yamlEntity?.culture ?? 'grecque').toString();
 const recitsAssocies = await getRecitsForEntity(entityId);
 
@@ -89,7 +90,7 @@ const natureBadges = natureBadgesRaw.map((n) => ({
 
 const tocHeadings = (headings ?? []).filter((h) => h.depth === 2 || h.depth === 3);
 const tocExtras: { slug: string; text: string }[] = [];
-if (genealogie) tocExtras.push({ slug: 'genealogie-detaillee', text: 'Généalogie détaillée' });
+if (hasGenealogie) tocExtras.push({ slug: 'genealogie-detaillee', text: 'Généalogie détaillée' });
 if (recitsAssocies.length > 0) tocExtras.push({ slug: 'recits-associes', text: 'Récits associés' });
 const toc = [...tocHeadings, ...tocExtras];
 
@@ -243,37 +244,45 @@ function getNatureLabel(
   />
 </head>
 
-<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
   <Header />
 
   <main class="flex-1 max-w-4xl mx-auto px-4 py-5">
     <div class="flex flex-wrap gap-3 text-sm mb-9">
       <a href="/entites/" class="badge-link badge-link--neutral badge-link--back">Toutes les entités</a>
-      <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">Voir dans l’HoloGraph</a>
+      {hasGenealogie ? (
+        <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">Voir dans l’HoloGraph</a>
+      ) : null}
     </div>
 
     <div class="text-center">
-      <h1 class={`entity-name text-5xl md:text-6xl font-bold mb-1 ${isGrecPantheon ? 'grec-name' : ''}`}>{title}</h1>
+      <h1
+        class={`text-5xl md:text-6xl font-bold mb-1 text-[#8b5a2b] dark:text-[#a86b32] ${
+          isGrecPantheon ? "font-[Dalek] tracking-[0.01em]" : ""
+        }`}
+      >
+        {title}
+      </h1>
       {natureBadges.length > 0 && (
         <div class="flex flex-wrap justify-center gap-2 mb-3">
           {natureBadges.map((n) => (
             <a
               href={`/entites/?q=${encodeURIComponent(n.id)}`}
-              class="nature-pill inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-800 visited:text-amber-800 hover:text-amber-800 transition hover:border-amber-300 hover:-translate-y-[1px] hover:shadow-sm dark:border-amber-400/70 dark:bg-slate-800/90 dark:text-[#c68a3b] dark:visited:text-[#c68a3b] dark:hover:text-[#e2b15c]"
+              class="mk-pill mk-pill-amber text-sm font-semibold px-3 py-1.5 hover:-translate-y-[1px] hover:shadow-sm"
             >
               {n.label}
             </a>
           ))}
         </div>
       )}
-      {natureLabel && <span class="nature-badge">{natureLabel}</span>}
-      {role && <p class="text-xl text-gray-600 mb-6">{role}</p>}
+      {natureLabel && <span class="mk-pill mk-pill-amber text-sm font-semibold px-3 py-1.5 inline-flex items-center justify-center mt-1">{natureLabel}</span>}
+      {role && <p class="text-xl text-slate-600 mb-6 dark:text-slate-300">{role}</p>}
     </div>
 
-    <div class="media-frame">
+    <div class="mx-auto mb-8 flex justify-center">
       {videoSrc ? (
         <video 
-          class="media"
+          class="w-full md:w-4/6 rounded-2xl border border-slate-200 shadow-lg dark:border-slate-700"
           autoplay 
           muted 
           loop
@@ -290,7 +299,7 @@ function getNatureLabel(
         <img 
           src={imageSrc} 
           alt={`Portrait de ${title}`} 
-          class="media select-none"
+          class="w-full md:w-4/6 rounded-2xl border border-slate-200 shadow-lg select-none dark:border-slate-700"
           draggable="false"
           oncontextmenu="event.preventDefault()"
         />
@@ -299,21 +308,21 @@ function getNatureLabel(
     </div>
 
     {(domains || symbols) && (
-      <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+      <div class={`mt-8 grid gap-4 text-sm ${domains && symbols ? "grid-cols-2" : "grid-cols-1"}`}>
         {domains && (
-          <div class="toc-panel rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm text-gray-800">
-            <h3 class="font-semibold mb-2 text-gray-900 dark:text-white">Domaines</h3>
-            <ul class="list-disc ml-4 space-y-1 text-gray-700 dark:text-slate-100">
-              {domains.map((d) => <li>{d}</li>)}
+          <div class="mk-card p-4 text-slate-900">
+            <h3 class="mb-2 text-base font-semibold text-slate-900 dark:text-slate-50">Domaines</h3>
+            <ul class="ml-4 list-disc space-y-1">
+              {domains.map((d) => <li class="text-gray-800 dark:text-slate-100">{d}</li>)}
             </ul>
           </div>
         )}
 
         {symbols && (
-          <div class="toc-panel rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm text-gray-800">
-            <h3 class="font-semibold mb-2 text-gray-900 dark:text-white">Symboles</h3>
-            <ul class="list-disc ml-4 space-y-1 text-gray-700 dark:text-slate-100">
-              {symbols.map((s) => <li>{s}</li>)}
+          <div class="mk-card p-4 text-slate-900">
+            <h3 class="mb-2 text-base font-semibold text-slate-900 dark:text-slate-50">Symboles</h3>
+            <ul class="ml-4 list-disc space-y-1">
+              {symbols.map((s) => <li class="text-gray-800 dark:text-slate-100">{s}</li>)}
             </ul>
           </div>
         )}
@@ -322,13 +331,13 @@ function getNatureLabel(
 
 
     {toc.length > 0 && (
-      <nav class="toc-panel mt-8 rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-800 shadow-sm dark:text-slate-100">
-        <p class="toc-title mb-3 font-semibold text-lg text-gray-900 dark:text-white">Sommaire</p>
+      <nav class="mk-card-strong mt-8 p-4 text-sm text-slate-900 dark:text-slate-100">
+        <p class="mb-3 text-lg font-semibold text-slate-900 dark:text-slate-50">Sommaire</p>
         <ul class="space-y-2">
           {toc.map((h) => (
             <li class={`leading-relaxed ${h.depth === 3 ? "pl-4 text-gray-600 dark:text-slate-300" : ""}`}>
               <a
-                class="text-gray-700 hover:underline hover:text-gray-900 dark:text-indigo-200 dark:hover:text-indigo-100"
+                class="text-slate-700 hover:underline hover:text-slate-900 dark:text-indigo-200 dark:hover:text-indigo-100"
                 href={`#${h.slug}`}
               >
                 {h.text}
@@ -339,56 +348,43 @@ function getNatureLabel(
       </nav>
     )}
 
-    <section class="prose prose-gray max-w-none mt-8">
+    <section class="mk-prose-card max-w-none mt-8 p-2">
       <Content />
     </section>
 
-    {genealogie ? (
+    {hasGenealogie ? (
       <section id="genealogie-detaillee" class="mt-12 space-y-4">
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-2xl font-semibold">Généalogie détaillée</h2>
+        <div class="flex items-center rounded-xl justify-between gap-3">
+          <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-50">Généalogie détaillée</h2>
           <div class="flex items-center gap-2">
             <a
               href={`/genealogie/${entityId}/`}
-              class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-sm font-semibold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-50 transition"
+              class="badge-link badge-link--primary text-sm font-semibold normal-case"
             >
               Ouvrir l’HoloGraph dédié
             </a>
           </div>
         </div>
-        <EgoGraph {...genealogie} pageIds={pageIds} />
+        <EgoGraph {...genealogie!} pageIds={pageIds} />
       </section>
-    ) : (
-      <section class="mt-12 rounded-2xl border border-dashed border-indigo-200 bg-white p-6 text-sm text-gray-700 space-y-3">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-semibold">Généalogie en préparation</h2>
-          <a href={`/genealogie/${entityId}/`} class="text-sm text-indigo-600 hover:text-indigo-700 underline">
-            Page de suivi
-          </a>
-        </div>
-        <p>
-          Les liens familiaux de {title} sont en train d’être documentés (sources antiques, variantes, etc.).
-          La section sera active dès que la fiche sera complète.
-        </p>
-      </section>
-    )}
+    ) : null}
 
     {recitsAssocies.length > 0 && (
       <section id="recits-associes" class="mt-12">
-        <div class="recits-card rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-3">
+        <div class="mk-card p-6 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-semibold text-gray-900">Récits associés</h2>
-            <span class="text-xs text-gray-500">{recitsAssocies.length} récit(s)</span>
+            <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-50">Récits associés</h2>
+            <span class="text-xs text-slate-500 dark:text-slate-300">{recitsAssocies.length} récit(s)</span>
           </div>
           <ul class="space-y-3 text-sm">
             {recitsAssocies.map((recit) => (
               <li>
                 <a
                   href={`/recits/${recit.slug}/`}
-                  class="recit-link-card block p-3 rounded-xl border border-gray-100 bg-gray-50 hover:border-gray-200 transition"
+                  class="mk-card-ghost block p-3 rounded-xl border border-slate-100 bg-slate-50 hover:-translate-y-[1px] transition dark:border-slate-700 dark:bg-slate-900/60"
                 >
-                  <span class="text-gray-900 font-semibold block">{recit.data.title}</span>
-                  {recit.data.summary && <p class="text-gray-600 text-xs mt-1">{recit.data.summary}</p>}
+                  <span class="text-slate-900 font-semibold block dark:text-slate-50">{recit.data.title}</span>
+                  {recit.data.summary && <p class="text-slate-600 text-xs mt-1 dark:text-slate-300">{recit.data.summary}</p>}
                 </a>
               </li>
             ))}
@@ -401,137 +397,3 @@ function getNatureLabel(
   <Footer />
 </body>
 </html>
-
-<style>
-  @font-face {
-    font-family: 'Dalek';
-    src: url('/fonts/dalek.ttf') format('truetype');
-    font-display: swap;
-  }
-  .grec-name {
-    font-family: 'Dalek', 'Inter', system-ui, sans-serif;
-    letter-spacing: 0.01em;
-  }
-  .entity-name {
-    color: #8b5a2b;
-  }
-  .nature-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 0.35rem;
-    padding: 0.3rem 0.75rem;
-    border-radius: 9999px;
-    background: #f4e7d0;
-    color: #7a4f27;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid rgba(214, 185, 156, 0.7);
-  }
-.nature-badges {
-  /* styles migrés en Tailwind */
-}
-.toc-title {
-  color: #1f2937;
-  opacity: 1;
-}
-:global(.theme-dark a.nature-pill),
-:global(.theme-dark a.nature-pill:visited),
-:global(.theme-dark a.nature-pill:hover) {
-  color: #c68a3b !important;
-  border-color: rgba(217, 119, 6, 0.7) !important;
-  background: rgba(30, 41, 59, 0.85) !important;
-  text-decoration: none;
-}
-:global(html:not(.theme-dark) a.nature-pill),
-:global(html:not(.theme-dark) a.nature-pill:visited),
-:global(html:not(.theme-dark) a.nature-pill:hover) {
-  color: #7a4f27;
-  background: #f4e7d0;
-  border-color: rgba(214, 185, 156, 0.7);
-}
-.media-frame {
-  width: min(90vw, 820px);
-  margin: 0 auto 2rem;
-  display: flex;
-  justify-content: center;
-  }
-.media {
-  width: 100%;
-  height: auto;
-  border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  display: block;
-}
-@media (min-width: 768px) {
-  .media {
-    width: 70%;
-  }
-}
-:global(.toc-panel a) {
-  color: #374151;
-}
-:global(.toc-panel a:hover) {
-  color: #111827;
-}
-:global(.theme-dark .toc-panel) {
-  background: #0b1224;
-  border-color: #1f2937;
-  color: #e5e7eb;
-}
-:global(.theme-dark .toc-panel a) {
-  color: #c7d6ff;
-}
-:global(.theme-dark .toc-panel a:hover) {
-  color: #e5e7eb;
-}
-:global(.theme-dark .toc-panel .toc-title) {
-  color: #e5e7eb !important;
-  opacity: 1 !important;
-}
-:global(.theme-dark .toc-panel h3) {
-  color: #e5e7eb !important;
-}
-/* Récits associés */
-.recits-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-}
-  :global(.theme-dark .recits-card) {
-    background: rgba(15, 23, 42, 0.9);
-    border-color: rgba(148, 163, 184, 0.35);
-  }
-  :global(.theme-dark .recits-card h2),
-  :global(.theme-dark .recits-card a) {
-    color: #e5e7eb;
-  }
-  :global(.theme-dark .recits-card span),
-  :global(.theme-dark .recits-card p) {
-    color: #cbd5e1;
-  }
-  :global(.theme-dark .recits-card li) {
-    background: rgba(30, 41, 59, 0.65);
-    border-color: rgba(148, 163, 184, 0.35);
-  }
-  :global(.theme-dark .recits-card li:hover) {
-    border-color: rgba(226, 232, 240, 0.6);
-    background: rgba(37, 47, 66, 0.75);
-  }
-  :global(.recit-link-card:hover .text-gray-900) {
-    color: #111827;
-  }
-  :global(.theme-dark .recit-link-card) {
-    background: rgba(30, 41, 59, 0.65);
-    border-color: rgba(148, 163, 184, 0.35);
-  }
-  :global(.theme-dark .recit-link-card:hover) {
-    border-color: rgba(226, 232, 240, 0.6);
-    background: rgba(37, 47, 66, 0.75);
-  }
-  :global(.theme-dark .recit-link-card .text-gray-900) {
-    color: #e5e7eb;
-  }
-  :global(.theme-dark .recit-link-card .text-gray-600) {
-    color: #cbd5e1;
-  }
-</style>

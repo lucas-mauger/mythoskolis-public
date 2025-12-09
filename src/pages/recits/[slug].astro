@@ -75,7 +75,7 @@ const opponentEntities = (recit.data.opponents || [])
   />
 </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
     <Header />
 
     <main class="flex-1 max-w-4xl mx-auto px-4 py-12 space-y-8">
@@ -84,15 +84,15 @@ const opponentEntities = (recit.data.opponents || [])
       </div>
 
       <header class="space-y-2">
-        <p class="text-sm uppercase tracking-wide text-gray-500">Récit</p>
-        <h1 class="text-4xl font-bold">{recit.data.title}</h1>
-        {recit.data.summary && <p class="text-base text-gray-700">{recit.data.summary}</p>}
+        <p class="mk-kicker">Récit</p>
+        <h1 class="text-4xl font-bold text-slate-900 dark:text-slate-50">{recit.data.title}</h1>
+        {recit.data.summary && <p class="mk-lead">{recit.data.summary}</p>}
 
         {(recit.data.era || recit.data.importance) && (
-          <div class="chip-row flex flex-wrap gap-2 sm:gap-2.5 py-1 w-full max-w-full box-border text-xs text-gray-600 mt-2">
-            {recit.data.era && <span class="px-2 py-1 rounded-full border border-gray-300 bg-gray-100">{recit.data.era}</span>}
+          <div class="chip-row flex flex-wrap gap-2 sm:gap-2.5 py-1 w-full max-w-full box-border text-xs text-slate-600 dark:text-slate-200 mt-2">
+            {recit.data.era && <span class="px-2 py-1 rounded-full border border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-800/80">{recit.data.era}</span>}
             {recit.data.importance && (
-              <span class="px-2 py-1 rounded-full border border-indigo-200 bg-indigo-50 uppercase tracking-wide text-indigo-700">
+              <span class="px-2 py-1 rounded-full border border-indigo-200 bg-indigo-50 uppercase tracking-wide text-indigo-700 dark:border-indigo-300/60 dark:bg-indigo-900/40 dark:text-indigo-100">
                 {recit.data.importance}
               </span>
             )}
@@ -103,16 +103,16 @@ const opponentEntities = (recit.data.opponents || [])
       {(recit.data.main_entities?.length || recit.data.opponents?.length) && (
         <section class="space-y-4">
           {mainEntities.length > 0 && (
-            <div class="entity-strip w-full max-w-full box-border border border-gray-200 rounded-2xl bg-white p-4 space-y-3">
+            <div class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3">
               <div class="strip-header">
-                <h2 class="text-[1.05rem] font-bold text-gray-900">Protagonistes</h2>
+                <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Protagonistes</h2>
               </div>
               <div class="chip-row flex flex-wrap gap-3 sm:gap-3.5 py-2 w-full max-w-full box-border">
                 {mainEntities.map((ent) => (
                   <a
                     href={`/entites/${ent.id}/`}
-                    class={`chip inline-flex items-center gap-2 rounded-full border border-gray-200 bg-slate-50 px-3 py-2 text-[0.95rem] font-semibold text-gray-900 transition hover:border-indigo-200 hover:-translate-y-[1px] hover:shadow-md ${
-                      ent.img ? '' : 'no-img'
+                    class={`chip mk-chip inline-flex items-center gap-2 rounded-full px-3 py-2 text-[0.95rem] font-semibold transition hover:-translate-y-[1px] ${
+                      ent.img ? '' : ''
                     }`}
                   >
                     {ent.img && (
@@ -120,7 +120,7 @@ const opponentEntities = (recit.data.opponents || [])
                         src={ent.img}
                         alt={`Portrait de ${ent.title}`}
                         loading="lazy"
-                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0"
+                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0 dark:border-slate-600"
                       />
                     )}
                     <span class="whitespace-nowrap">{ent.title}</span>
@@ -130,16 +130,16 @@ const opponentEntities = (recit.data.opponents || [])
             </div>
           )}
           {opponentEntities.length > 0 && (
-            <div class="entity-strip w-full max-w-full box-border border border-gray-200 rounded-2xl bg-white p-4 space-y-3">
+            <div class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3">
               <div class="strip-header">
-                <h2 class="text-[1.05rem] font-bold text-gray-900">Antagonistes</h2>
+                <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Antagonistes</h2>
               </div>
               <div class="chip-row flex flex-wrap gap-3 sm:gap-3.5 py-2 w-full max-w-full box-border">
                 {opponentEntities.map((ent) => (
                   <a
                     href={`/entites/${ent.id}/`}
-                    class={`chip inline-flex items-center gap-2 rounded-full border border-gray-200 bg-slate-50 px-3 py-2 text-[0.95rem] font-semibold text-gray-900 transition hover:border-indigo-200 hover:-translate-y-[1px] hover:shadow-md ${
-                      ent.img ? '' : 'no-img'
+                    class={`chip mk-chip inline-flex items-center gap-2 rounded-full px-3 py-2 text-[0.95rem] font-semibold transition hover:-translate-y-[1px] ${
+                      ent.img ? '' : ''
                     }`}
                   >
                     {ent.img && (
@@ -147,7 +147,7 @@ const opponentEntities = (recit.data.opponents || [])
                         src={ent.img}
                         alt={`Portrait de ${ent.title}`}
                         loading="lazy"
-                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0"
+                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0 dark:border-slate-600"
                       />
                     )}
                     <span class="whitespace-nowrap">{ent.title}</span>
@@ -160,23 +160,28 @@ const opponentEntities = (recit.data.opponents || [])
       )}
 
       {recitImageUrl && (
-        <div class="recit-hero">
-          <img src={recitImageUrl} alt={`Illustration du récit ${recit.data.title}`} loading="lazy" />
+        <div class="recit-hero my-4">
+          <img
+            src={recitImageUrl}
+            alt={`Illustration du récit ${recit.data.title}`}
+            loading="lazy"
+            class="w-full rounded-xl object-cover shadow-lg border border-slate-200 dark:border-slate-700"
+          />
         </div>
       )}
 
-      <article class="prose prose-gray max-w-none">
+      <article class="mk-prose-card max-w-none p-2">
         <Content />
       </article>
 
       {tagList.length > 0 && (
-        <section class="entity-strip w-full max-w-full box-border border border-gray-200 rounded-2xl bg-white p-4 space-y-3 shadow-sm">
-          <h2 class="text-[1.05rem] font-bold text-gray-900">Thèmes abordés</h2>
+        <section class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3 shadow-sm">
+          <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Thèmes abordés</h2>
           <div class="flex flex-wrap gap-2">
             {tagList.map((tag) => (
               <a
                 href={`/recits/?tag=${encodeURIComponent(tag.label)}`}
-                class="chip inline-flex items-center gap-2 rounded-full border border-gray-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-gray-900 transition hover:border-indigo-200 hover:text-indigo-700 hover:shadow-sm"
+                class="chip mk-chip inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-900 transition hover:-translate-y-[1px]"
               >
                 {tag.label}
               </a>
@@ -189,125 +194,3 @@ const opponentEntities = (recit.data.opponents || [])
     <Footer />
   </body>
 </html>
-
-<style>
-  :global(.theme-dark body) {
-    background: #0f172a;
-    color: #e5e7eb;
-  }
-  :global(.theme-dark h1),
-  :global(.theme-dark h2),
-  :global(.theme-dark h3) {
-    color: #f8fafc;
-  }
-  :global(.theme-dark p),
-  :global(.theme-dark li) {
-    color: #cbd5e1;
-  }
-  :global(.theme-dark .prose a) {
-    color: #c7d2fe;
-  }
-  :global(.theme-dark .prose a:hover) {
-    color: #e0e7ff;
-  }
-  :global(.theme-dark .prose) {
-    --tw-prose-body: #cbd5e1;
-    --tw-prose-headings: #e2e8f0;
-    --tw-prose-links: #c7d2fe;
-    --tw-prose-bullets: #cbd5e1;
-    --tw-prose-counters: #cbd5e1;
-    --tw-prose-quotes: #e2e8f0;
-    --tw-prose-hr: rgba(148, 163, 184, 0.4);
-  }
-  :global(.theme-dark .border-gray-200) {
-    border-color: rgba(148, 163, 184, 0.35);
-  }
-  :global(.theme-dark .bg-white) {
-    background: rgba(15, 23, 42, 0.85);
-  }
-  :global(.theme-dark .bg-gray-50) {
-    background: rgba(30, 41, 59, 0.6);
-  }
-  :global(.theme-dark .text-gray-900) {
-    color: #e5e7eb;
-  }
-  :global(.theme-dark .text-gray-700) {
-    color: #cbd5e1;
-  }
-  :global(.theme-dark .text-gray-500) {
-    color: #94a3b8;
-  }
-  :global(.theme-dark .border-gray-300) {
-    border-color: rgba(148, 163, 184, 0.5);
-  }
-  :global(.theme-dark .bg-gray-100) {
-    background: rgba(30, 41, 59, 0.6);
-  }
-  :global(.theme-dark .bg-indigo-50) {
-    background: rgba(79, 70, 229, 0.15);
-  }
-  :global(.theme-dark .text-indigo-700) {
-    color: #c7d2fe;
-  }
-  :global(.theme-dark .hover\\:border-indigo-300:hover) {
-    border-color: rgba(129, 140, 248, 0.5);
-  }
-  :global(.theme-dark .hover\\:text-indigo-700:hover) {
-    color: #e0e7ff;
-  }
-  :global(.theme-dark .bg-rose-50) {
-    background: rgba(225, 29, 72, 0.12);
-  }
-  :global(.theme-dark .text-rose-700) {
-    color: #fecdd3;
-  }
-  :global(.theme-dark .hover\\:border-rose-300:hover) {
-    border-color: rgba(248, 113, 113, 0.6);
-  }
-  :global(.theme-dark .hover\\:text-rose-700:hover) {
-    color: #ffe4e6;
-  }
-  :global(html),
-  :global(body) {
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
-  /* entity strips */
-  .recit-hero {
-    margin: 1rem 0 0.5rem;
-  }
-  .recit-hero img {
-    width: 100%;
-    border-radius: 1rem;
-    object-fit: cover;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  }
-  :global(.theme-dark .entity-strip) {
-    background: rgba(15, 23, 42, 0.9);
-    border-color: rgba(148, 163, 184, 0.4);
-  }
-  :global(.theme-dark .entity-strip h2) {
-    color: #e2e8f0;
-  }
-  :global(.theme-dark a.chip),
-  :global(.theme-dark a.chip:visited) {
-    color: #f8fafc;
-    text-decoration: none;
-  }
-  :global(.theme-dark .chip) {
-    background: rgba(30, 41, 59, 0.92);
-    border-color: rgba(226, 232, 240, 0.55);
-    color: #f8fafc;
-    text-decoration: none;
-  }
-  :global(.theme-dark .chip:hover) {
-    border-color: rgba(226, 232, 240, 0.7);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
-  }
-  :global(.theme-dark .chip img) {
-    border-color: rgba(226, 232, 240, 0.35);
-  }
-  :global(body) {
-    overflow-x: hidden;
-  }
-</style>

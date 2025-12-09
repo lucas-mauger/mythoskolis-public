@@ -19,6 +19,7 @@ symbols:
   - Étoiles
   - Bélier
   - Lance
+type: entity
 ---
 ## Variantes du nom
 Criôs est parfois nommé **Krios** ou **Crios** dans certaines translittérations.  
@@ -33,7 +34,7 @@ Le rapprochement traditionnel entre son nom et le *bélier* a également nourri 
 ## Union et descendance
 Unis à **Eurybie**, force marine liée aux courants et aux vents originels, Criôs engendre :
 
-- **Astiéros**, associé aux profondeurs stellaires,  
+- **Astréos**, associé aux profondeurs stellaires,  
 - **Persès**, ancêtre d’Hécate selon certaines généalogies,  
 - **Pallas**, lié à l’aspect martial des forces titanesques.
 

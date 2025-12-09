@@ -1,5 +1,6 @@
 /** Config minimale Tailwind pour aligner les tokens et polices avec la doc. */
 export default {
+  darkMode: ['class', '.theme-dark'],
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx,vue}',
     './public/**/*.html',
