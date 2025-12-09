@@ -8,7 +8,7 @@ const { initialSlug, pageIds = [] } = Astro.props as Props;
 const componentId = `ego-graph-${initialSlug}`;
 ---
 
-<section class="bg-white border border-gray-200 rounded-2xl shadow-sm p-0 space-y-4 overflow-hidden">
+<section class="bg-white border border-gray-200 rounded-2xl shadow-sm p-0 space-y-4 overflow-hidden dark:bg-slate-900 dark:border-slate-700">
   <div class="relative border border-dashed border-indigo-100 rounded-2xl bg-indigo-50/50 overflow-hidden flex justify-center">
     <div
       id={componentId}
@@ -77,6 +77,14 @@ const componentId = `ego-graph-${initialSlug}`;
     overflow: visible;
     padding: 0;
     background: transparent;
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+  }
+
+  .dark .ego-graph-sky {
+    background: rgba(2, 6, 23, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
   }
 
   .ego-graph-sky::before,
@@ -116,6 +124,12 @@ const componentId = `ego-graph-${initialSlug}`;
     background: rgba(255, 255, 255, 0.75);
     box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
     overflow: visible;
+  }
+
+  .dark .ego-quadrant {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.12);
   }
 
   .ego-quadrant-label {
@@ -219,6 +233,13 @@ const componentId = `ego-graph-${initialSlug}`;
   .ego-quadrant-content::after {
     bottom: 0;
     background: linear-gradient(0deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+  }
+
+  .dark .ego-quadrant-content::before {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0));
+  }
+  .dark .ego-quadrant-content::after {
+    background: linear-gradient(0deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0));
   }
   .ego-quadrant-content.has-more-top::before {
     opacity: 1;
@@ -454,6 +475,10 @@ const componentId = `ego-graph-${initialSlug}`;
     padding: 0.5rem 0.25rem 0;
   }
 
+  .dark .ego-legend {
+    color: rgb(226 232 240);
+  }
+
   .ego-legend-item {
     display: inline-flex;
     align-items: center;
@@ -462,6 +487,11 @@ const componentId = `ego-graph-${initialSlug}`;
     border: 1px solid rgba(148, 163, 184, 0.35);
     border-radius: 9999px;
     background: rgba(255, 255, 255, 0.85);
+  }
+
+  .dark .ego-legend-item {
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: rgba(15, 23, 42, 0.9);
   }
 
   .legend-dot {

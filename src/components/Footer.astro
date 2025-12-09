@@ -1,3 +1,32 @@
 <footer class="w-full border-t border-gray-200 mt-16 py-4 text-center text-gray-500">
   © 2025 — Mythoskolis. Tous droits réservés.
 </footer>
+
+<button
+  id="mk-back-to-top"
+  type="button"
+  aria-label="Revenir en haut"
+  class="hidden fixed bottom-6 right-6 z-40 mk-chip px-4 py-3 shadow-lg bg-slate-900 text-slate-50 dark:bg-slate-100 dark:text-slate-900 border border-slate-900/10 dark:border-slate-200/50 transition hover:-translate-y-[1px] rounded-full text-xl font-extrabold leading-none"
+>
+  ↑
+</button>
+
+<script>
+  const MIN_SCROLL = 1000;
+  const btn = document.getElementById('mk-back-to-top');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const toggleBtn = (show) => {
+    if (!btn) return;
+    btn.classList[show ? 'remove' : 'add']('hidden');
+  };
+
+  const updateVisibility = () => toggleBtn(window.scrollY > MIN_SCROLL);
+
+  window.addEventListener('scroll', updateVisibility, { passive: true });
+  updateVisibility();
+
+  btn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  });
+</script>

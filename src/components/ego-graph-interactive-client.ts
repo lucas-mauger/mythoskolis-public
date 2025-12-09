@@ -40,6 +40,66 @@ const SECTION_ROLE: Record<RelationSection, NodeRole> = {
 
 const RELATION_SECTIONS: RelationSection[] = ["parents", "siblings", "consorts", "children"];
 
+function isScrollable(el: HTMLElement) {
+  const style = getComputedStyle(el);
+  const overflowY = style.overflowY;
+  const overflowX = style.overflowX;
+  const canScrollY = (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") && el.scrollHeight > el.clientHeight;
+  const canScrollX = (overflowX === "auto" || overflowX === "scroll" || overflowX === "overlay") && el.scrollWidth > el.clientWidth;
+  return canScrollY || canScrollX;
+}
+
+function getScrollContainer(el: HTMLElement): HTMLElement | Document {
+  let current: HTMLElement | null = el;
+  while (current) {
+    if (isScrollable(current)) {
+      return current;
+    }
+    current = current.parentElement;
+  }
+  return document;
+}
+
+export function centerNodeInContainer(
+  container: HTMLElement | Document,
+  node: HTMLElement,
+  behavior: ScrollBehavior = "instant",
+) {
+  const nodeRect = node.getBoundingClientRect();
+
+  if (container instanceof HTMLElement) {
+    const containerRect = container.getBoundingClientRect();
+    const offsetX = nodeRect.left - containerRect.left - (containerRect.width / 2 - nodeRect.width / 2);
+    const offsetY = nodeRect.top - containerRect.top - (containerRect.height / 2 - nodeRect.height / 2);
+    container.scrollTo({
+      left: container.scrollLeft + offsetX,
+      top: container.scrollTop + offsetY,
+      behavior,
+    });
+    return;
+  }
+
+  const targetLeft = window.scrollX + nodeRect.left - (window.innerWidth / 2 - nodeRect.width / 2);
+  const header = document.querySelector("header");
+  const headerHeight = header ? header.getBoundingClientRect().height : 0;
+  const nodeCenterY = nodeRect.top + nodeRect.height / 2;
+  const desiredCenterY = headerHeight + (window.innerHeight - headerHeight) / 2;
+  const targetTop = window.scrollY + nodeCenterY - desiredCenterY;
+  window.scrollTo({ left: targetLeft, top: targetTop, behavior });
+}
+
+function centerElementInViewport(el: HTMLElement, behavior: ScrollBehavior = "smooth") {
+  const rect = el.getBoundingClientRect();
+  const header = document.querySelector("header");
+  const headerHeight = header ? header.getBoundingClientRect().height : 0;
+  const elementCenterY = rect.top + rect.height / 2;
+  const desiredCenterY = headerHeight + (window.innerHeight - headerHeight) / 2;
+  const deltaY = elementCenterY - desiredCenterY;
+  const targetTop = window.scrollY + deltaY;
+  const targetLeft = window.scrollX + rect.left - (window.innerWidth / 2 - rect.width / 2);
+  window.scrollTo({ left: targetLeft, top: targetTop, behavior });
+}
+
 export async function initEgoGraphInteractive(containerId: string, initialSlug: string) {
   const root = document.getElementById(containerId);
   if (!root) {
@@ -265,6 +325,8 @@ class EgoGraphController {
     if (this.activeNodeKey) {
       this.setActiveNode(this.activeNodeKey);
     }
+
+    this.centerOnCentralNode("smooth");
   }
 
   private clearNodes() {
@@ -286,6 +348,9 @@ class EgoGraphController {
     wrapper.className = "ego-node";
     wrapper.dataset.role = node.role;
     wrapper.dataset.slug = node.slug;
+    if (node.role === "central") {
+      wrapper.dataset.centralNode = "true";
+    }
     if (node.isMuted) {
       wrapper.classList.add("is-muted");
     }
@@ -429,6 +494,23 @@ class EgoGraphController {
     if (key === null) {
       return;
     }
+  }
+
+  private centerOnCentralNode(behavior: ScrollBehavior = "smooth") {
+    const center = () => {
+      // On mobile, c'est la page qui scrolle : on recentre le conteneur complet du graphe
+      centerElementInViewport(this.root, behavior);
+    };
+
+    // Triple raf pour garantir le layout final (images/polices) avant centrage
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(center);
+      });
+    });
+
+    // Fallback si le layout continue d'évoluer (polices/images tardives)
+    window.setTimeout(center, 250);
   }
 
   private clearActiveNode() {
