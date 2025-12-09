@@ -126,6 +126,42 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.886–900
+        - id: grecque-eunomie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-dike
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-irene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-clotho
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-lachesis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-atropos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
       siblings:
         - id: grecque-hestia
           consensus: true
@@ -218,6 +254,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.940–942
+        - id: grecque-themis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
   - name: Léto
     slug: leto
     culture: grecque
@@ -2712,7 +2754,43 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-      children: []
+      children:
+        - id: grecque-eunomie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-dike
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-irene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-clotho
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-lachesis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-atropos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -2780,7 +2858,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–138
-      consorts: []
+      consorts:
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
   - name: Mnémosyne
     slug: mnemosyne
     culture: grecque
@@ -21016,7 +21100,19 @@ entities:
               work: Théogonie
               passage: v.371–374
       children: []
-      siblings: []
+      siblings:
+        - id: grecque-eos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-selene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
       consorts: []
   - name: Séléné
     slug: selene
@@ -21037,7 +21133,19 @@ entities:
               work: Théogonie
               passage: v.371–374
       children: []
-      siblings: []
+      siblings:
+        - id: grecque-eos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-helios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
       consorts: []
   - name: Éos
     slug: eos
@@ -21058,7 +21166,19 @@ entities:
               work: Théogonie
               passage: v.371–374
       children: []
-      siblings: []
+      siblings:
+        - id: grecque-helios
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
+        - id: grecque-selene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.371–374
       consorts: []
   - name: Clymène
     slug: clymene
@@ -22154,4 +22274,202 @@ entities:
             - author: Apollodore
               work: Bibliothèque
               passage: III.4.2
+      consorts: []
+  - name: Eunomie
+    slug: eunomie
+    culture: grecque
+    id: grecque-eunomie
+    relations:
+      parents:
+        - id: grecque-themis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      children: []
+      siblings:
+        - id: grecque-dike
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-irene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      consorts: []
+  - name: Diké
+    slug: dike
+    culture: grecque
+    id: grecque-dike
+    relations:
+      parents:
+        - id: grecque-themis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      children: []
+      siblings:
+        - id: grecque-eunomie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-irene
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      consorts: []
+  - name: Iréné
+    slug: irene
+    culture: grecque
+    id: grecque-irene
+    relations:
+      parents:
+        - id: grecque-themis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      children: []
+      siblings:
+        - id: grecque-eunomie
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-dike
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      consorts: []
+  - name: Clotho
+    slug: clotho
+    culture: grecque
+    id: grecque-clotho
+    relations:
+      parents:
+        - id: grecque-themis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      children: []
+      siblings:
+        - id: grecque-lachesis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-atropos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      consorts: []
+  - name: Lachésis
+    slug: lachesis
+    culture: grecque
+    id: grecque-lachesis
+    relations:
+      parents:
+        - id: grecque-themis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      children: []
+      siblings:
+        - id: grecque-clotho
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-atropos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      consorts: []
+  - name: Atropos
+    slug: atropos
+    culture: grecque
+    id: grecque-atropos
+    relations:
+      parents:
+        - id: grecque-themis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+      children: []
+      siblings:
+        - id: grecque-clotho
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
+        - id: grecque-lachesis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.901–906
       consorts: []
