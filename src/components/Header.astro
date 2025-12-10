@@ -2,7 +2,10 @@
   (function () {
     const THEME_KEY = "mythos-theme";
     const saved = (localStorage.getItem(THEME_KEY) || "").toLowerCase().trim();
-    const isDark = saved === "dark";
+    const hasManualChoice = saved === "dark" || saved === "light";
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
+    const initialTheme = hasManualChoice ? saved : prefersDark ? "dark" : "light";
+    const isDark = initialTheme === "dark";
     const root = document.documentElement;
     const body = document.body;
     const reset = (el) => {
@@ -128,6 +131,7 @@
   const root = document.documentElement;
   const btn = document.getElementById("theme-toggle");
   const iconSpan = btn?.querySelector(".toggle-icon");
+  const mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 
   const applyTheme = (theme) => {
     const isDark = theme === "dark";
@@ -150,14 +154,22 @@
   };
 
   const saved = (localStorage.getItem(THEME_KEY) || "").toLowerCase().trim();
-  const initialTheme = saved === "dark" ? "dark" : "light";
-  localStorage.setItem(THEME_KEY, initialTheme);
+  let hasManualChoice = saved === "dark" || saved === "light";
+  const getSystemTheme = () => (mql?.matches ? "dark" : "light");
+  const initialTheme = hasManualChoice ? saved : getSystemTheme();
   applyTheme(initialTheme);
 
   btn?.addEventListener("click", () => {
     const next = root.classList.contains("theme-dark") ? "light" : "dark";
+    hasManualChoice = true;
     localStorage.setItem(THEME_KEY, next);
     applyTheme(next);
+  });
+
+  mql?.addEventListener?.("change", (event) => {
+    if (hasManualChoice) return;
+    const systemTheme = event.matches ? "dark" : "light";
+    applyTheme(systemTheme);
   });
 
   const mobileMenu = document.querySelector("[data-mobile-menu]");
