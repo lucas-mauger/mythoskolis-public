@@ -9,6 +9,17 @@ const componentId = `ego-graph-${initialSlug}`;
 ---
 
 <section class="bg-white border border-gray-200 rounded-2xl shadow-sm p-0 space-y-4 overflow-hidden dark:bg-slate-900 dark:border-slate-700">
+  <div class="flex justify-end px-4 pt-4">
+    <button
+      type="button"
+      data-ego-demo-toggle
+      aria-pressed="false"
+      class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-white dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus:ring-offset-slate-900"
+    >
+      Comment faire
+    </button>
+  </div>
+
   <div class="relative border border-dashed border-indigo-100 rounded-2xl bg-indigo-50/50 overflow-hidden flex justify-center">
     <div
       id={componentId}
@@ -20,6 +31,16 @@ const componentId = `ego-graph-${initialSlug}`;
       data-initial-slug={initialSlug}
       data-page-ids={JSON.stringify(pageIds)}
     >
+      <div class="ego-demo-overlay" data-ego-demo-overlay aria-hidden="true"></div>
+      <div class="ego-demo-controls" data-ego-demo-controls aria-hidden="true">
+        <div class="ego-demo-panel">
+          <p class="ego-demo-text" data-ego-demo-text>Hello world</p>
+          <div class="ego-demo-actions">
+            <button type="button" data-ego-demo-prev class="demo-nav demo-nav--prev" aria-disabled="true">Précédent</button>
+            <button type="button" data-ego-demo-next class="demo-nav demo-nav--next" aria-disabled="false">Suivant</button>
+          </div>
+        </div>
+      </div>
       <div class="ego-graph-grid" aria-hidden="true">
         <div class="ego-quadrant" data-quadrant="parents">
           <span class="ego-quadrant-label">Parents</span>
@@ -59,6 +80,538 @@ const componentId = `ego-graph-${initialSlug}`;
 </section>
 
 <script src="/src/scripts/ego-graph-loader.ts"></script>
+<script>
+  (() => {
+    const toggle = document.querySelector<HTMLButtonElement>('[data-ego-demo-toggle]');
+    const scope = toggle?.closest("section");
+    const graph = scope?.querySelector<HTMLElement>('[data-ego-graph-container]');
+    const overlay = scope?.querySelector<HTMLElement>('[data-ego-demo-overlay]');
+    const controls = scope?.querySelector<HTMLElement>('[data-ego-demo-controls]');
+    const textEl = scope?.querySelector<HTMLElement>('[data-ego-demo-text]');
+    const prevBtn = scope?.querySelector<HTMLButtonElement>('[data-ego-demo-prev]');
+    const nextBtn = scope?.querySelector<HTMLButtonElement>('[data-ego-demo-next]');
+
+    if (!toggle || !graph || !overlay || !controls || !textEl || !prevBtn || !nextBtn) return;
+
+    let active = false;
+    const steps = [
+      "Voici l’HoloGraph : une vision vivante des liens familiaux de la mythologie grecque.",
+      'Cliquez sur un personnage pour le mettre en <span class="demo-pill demo-orange">focus</span>. Rien ne bouge encore : vous préparez l’exploration.',
+      'Après un <span class="demo-pill demo-orange">second clic</span> sur un portrait lié, il devient le centre du graphe et ses propres relations apparaissent.',
+      'Avec un <span class="demo-pill demo-orange">focus</span> sur le portrait central, un bouton « Aller à la fiche » apparaît si une fiche existe.',
+      'Un focus sur un consort révèle sa descendance avec le personnage central. Ici, l’enfant de <span class="demo-pill demo-orange">Déméter</span> et Zeus est <span class="demo-pill demo-blue">Perséphone</span>.',
+      'Un focus sur un enfant montre ses parents et sa fratrie réelle. Ici, les parents d’<span class="demo-pill demo-orange">Apollon</span> sont <span class="demo-pill demo-blue">Zeus</span> et <span class="demo-pill demo-blue">Léto</span>, et sa sœur est <span class="demo-pill demo-green">Artémis</span>.',
+      "L’HoloGraph n’affiche que les fratries RECONNUES par les récits. Observons le cas de Gaïa et Ouranos.",
+      "Voici Gaïa. Avec Ouranos, elle a eu de nombreux enfants… mais ils ne forment pas une seule grande fratrie.",
+      "Les trois Cyclopes – <span class=\"demo-pill demo-green\">Argès</span>, <span class=\"demo-pill demo-green\">Stéropès</span> et <span class=\"demo-pill demo-green\">Brontès</span> – sont frères entre eux, mais pas avec les autres enfants du couple divin.",
+      "Les <span class=\"demo-pill demo-green\">premiers Titans</span>, aussi enfants de <span class=\"demo-pill demo-blue\">Gaïa</span> et <span class=\"demo-pill demo-blue\">Ouranos</span>, constituent ainsi une fratrie indépendante des Cyclopes et des Hécatonchires.",
+      "L'Olympe, les Titans et les Enfers n'attendent que vous. Découvrirez-vous les liens qui unissent ces divinités ?"
+    ];
+    let stepIndex = 0;
+    let previousSlug: string | null = null;
+    let controller = (graph as any).__egoController;
+    let focusSequenceTimer: number | null = null;
+    let focusAbort = false;
+    let centralFocusTimer: number | null = null;
+    let stepTwoAbort = false;
+    let stepTwoTimer: number | null = null;
+
+    const getController = (): Promise<any> => {
+      if (controller) return Promise.resolve(controller);
+      return new Promise((resolve) => {
+        const check = () => {
+          controller = (graph as any).__egoController;
+          if (controller) {
+            resolve(controller);
+            return true;
+          }
+          return false;
+        };
+        if (check()) return;
+        const handler = (event: Event) => {
+          controller = (event as CustomEvent).detail?.controller ?? (graph as any).__egoController;
+          if (!controller) return;
+          graph.removeEventListener("ego-graph-ready", handler);
+          resolve(controller);
+        };
+        graph.addEventListener("ego-graph-ready", handler);
+        // Fallback polling in cas l'événement est déjà passé
+        const poll = window.setInterval(() => {
+          if (check()) {
+            window.clearInterval(poll);
+            graph.removeEventListener("ego-graph-ready", handler);
+          }
+        }, 50);
+      });
+    };
+
+    const clearFocusSequence = () => {
+      focusAbort = true;
+      if (focusSequenceTimer !== null) {
+        window.clearTimeout(focusSequenceTimer);
+        focusSequenceTimer = null;
+      }
+    };
+
+    const focusSlugReal = async (variants: string[]) => {
+      // On simule un seul clic utilisateur sur le premier bouton trouvé.
+      for (const slug of variants) {
+        const btn = graph.querySelector<HTMLButtonElement>(`.ego-node[data-slug="${slug}"] button`);
+        if (btn) {
+          btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+          return true;
+        }
+      }
+      // Si aucun bouton trouvé, on tente setActiveSlug à défaut (sans double interaction)
+      const ctrl = await getController();
+      if (ctrl?.setActiveSlug) {
+        for (const slug of variants) {
+          const ok = ctrl.setActiveSlug(slug);
+          if (ok) return true;
+        }
+      }
+      return false;
+    };
+
+    const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+    const delayStepTwo = (ms: number) =>
+      new Promise<void>((resolve) => {
+        stepTwoTimer = window.setTimeout(() => {
+          stepTwoTimer = null;
+          resolve();
+        }, ms);
+      });
+
+    const clearDemoFocus = () => {
+      graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
+      graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => {
+        n.classList.remove("is-demo-focus-central");
+        (n as HTMLElement).style.boxShadow = "";
+        (n as HTMLElement).style.outline = "";
+        (n as HTMLElement).style.outlineOffset = "";
+        (n as HTMLElement).style.border = "";
+        n.querySelectorAll<HTMLElement>("button").forEach((btn) => {
+          btn.style.boxShadow = "";
+          btn.style.outline = "";
+          btn.style.outlineOffset = "";
+        });
+      });
+      if (centralFocusTimer !== null) {
+        window.clearInterval(centralFocusTimer);
+        centralFocusTimer = null;
+      }
+    };
+
+    const applyCentralDemoFocus = (_central: HTMLElement | null) => {
+      // Conservé pour compat : ne fait plus rien (halo standard suffisant).
+    };
+
+    const applyDemoFocusNode = (_node: HTMLElement | null) => {
+      // Conservé pour compat : ne fait plus rien (le focus réel suffit).
+    };
+
+    const renderStep = () => {
+      textEl.innerHTML = steps[stepIndex] ?? "";
+      prevBtn.setAttribute("aria-disabled", stepIndex === 0 ? "true" : "false");
+      nextBtn.textContent = stepIndex === steps.length - 1 ? "Terminer la démo" : "Suivant";
+      nextBtn.setAttribute("aria-disabled", "false");
+      const central =
+        graph.querySelector<HTMLElement>('.ego-node[data-role="central"]') ||
+        graph.querySelector<HTMLElement>('[data-central-node="true"]');
+      graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
+      graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => n.classList.remove("is-demo-focus-central"));
+      controls.classList.toggle("is-top", active && stepIndex >= 4);
+      controls.classList.toggle("is-bottom", active && stepIndex <= 3);
+      if (active) {
+        overlay.style.opacity = stepIndex === 0 ? "1" : "0";
+      } else {
+        overlay.style.opacity = "";
+      }
+      if (active && stepIndex === 3 && central) {
+        const setCentralOnce = async () => {
+          const ctrl = await getController();
+          try {
+            await ctrl?.setCurrentSlug?.("grecque-zeus");
+          } catch {
+            await focusSlugReal(["grecque-zeus", "zeus"]);
+          }
+          await focusSlugReal(["grecque-zeus", "zeus"]);
+          const freshCentral =
+            graph.querySelector<HTMLElement>('.ego-node[data-role="central"]') ||
+            graph.querySelector<HTMLElement>('[data-central-node="true"]');
+          applyCentralDemoFocus(freshCentral);
+        };
+        requestAnimationFrame(setCentralOnce);
+        if (centralFocusTimer !== null) {
+          window.clearInterval(centralFocusTimer);
+          centralFocusTimer = null;
+        }
+      }
+      // Désaturer/re-saturer les quadrants selon l'étape (uniquement en mode démo)
+      const topQuadrants = graph.querySelectorAll<HTMLElement>('.ego-quadrant[data-quadrant="parents"], .ego-quadrant[data-quadrant="siblings"]');
+      const bottomQuadrants = graph.querySelectorAll<HTMLElement>('.ego-quadrant[data-quadrant="consorts"], .ego-quadrant[data-quadrant="children"]');
+      topQuadrants.forEach((quad) => {
+        if (active && stepIndex === 0) {
+          quad.style.filter = "saturate(0.3) brightness(0.9)";
+          quad.style.opacity = "0.85";
+        } else if (active && stepIndex === 1) {
+          quad.style.filter = "none";
+          quad.style.opacity = "1";
+        } else if (active && stepIndex === 2) {
+          quad.style.filter = "none";
+          quad.style.opacity = "1";
+        } else if (active && stepIndex === 3) {
+          quad.style.filter = "saturate(0.3) brightness(0.9)";
+          quad.style.opacity = "0.85";
+        } else if (active && stepIndex === 4) {
+          quad.style.filter = "none";
+          quad.style.opacity = "1";
+        } else if (active && stepIndex === 5) {
+          quad.style.filter = "none";
+          quad.style.opacity = "1";
+        } else {
+          quad.style.filter = "";
+          quad.style.opacity = "";
+        }
+      });
+      bottomQuadrants.forEach((quad) => {
+        if (active && stepIndex === 1) {
+          quad.style.filter = "saturate(0.35) brightness(0.9)";
+          quad.style.opacity = "0.9";
+        } else if (active && stepIndex === 2) {
+          quad.style.filter = "";
+          quad.style.opacity = "1";
+        } else if (active && stepIndex === 3) {
+          quad.style.filter = "saturate(0.35) brightness(0.9)";
+          quad.style.opacity = "0.9";
+        } else if (active && stepIndex === 4) {
+          quad.style.filter = "";
+          quad.style.opacity = "1";
+        } else if (active && stepIndex === 5) {
+          quad.style.filter = "none";
+          quad.style.opacity = "1";
+        } else {
+          quad.style.filter = "";
+          quad.style.opacity = "";
+        }
+      });
+      if (active && stepIndex >= 1 && stepIndex !== 3) {
+        central?.classList.remove("is-active");
+        central?.classList.remove("is-demo-focus");
+        central?.classList.remove("is-demo-focus-central");
+        graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
+        graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => n.classList.remove("is-demo-focus-central"));
+      }
+      if (active && stepIndex === 3) {
+        requestAnimationFrame(() => {
+          const freshCentral =
+            graph.querySelector<HTMLElement>('.ego-node[data-role="central"]') ||
+            graph.querySelector<HTMLElement>('[data-central-node="true"]');
+          applyCentralDemoFocus(freshCentral);
+        });
+      }
+      if (active && stepIndex !== 3 && centralFocusTimer !== null) {
+        window.clearInterval(centralFocusTimer);
+        centralFocusTimer = null;
+      }
+      if (!active) {
+        graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
+        graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => n.classList.remove("is-demo-focus-central"));
+        if (centralFocusTimer !== null) {
+          window.clearInterval(centralFocusTimer);
+          centralFocusTimer = null;
+        }
+      }
+      // Séquence de focus sur les satellites de Zeus quand on passe aux étapes liées à la démo (interactions réelles)
+      if (stepIndex === 1 && active) {
+        clearFocusSequence();
+        focusAbort = false;
+        getController().then(async (ctrl) => {
+          if (!ctrl) return;
+          const sequences = [
+            ["grecque-cronos", "cronos"],
+            ["grecque-rhea", "rhea"],
+            ["grecque-hera", "hera"],
+          ];
+          while (!focusAbort && active && stepIndex === 1) {
+            for (const variants of sequences) {
+              if (focusAbort || !active || stepIndex !== 1) break;
+              await focusSlugReal(variants);
+              await new Promise<void>((resolve) => {
+                focusSequenceTimer = window.setTimeout(() => {
+                  focusSequenceTimer = null;
+                  resolve();
+                }, 1000);
+              });
+            }
+          }
+        });
+      } else {
+        clearFocusSequence();
+      }
+
+      // Étape 3 (index 2) : démonstration du double clic réel (Rhéa -> Déméter -> Zeus) en boucle
+      if (stepIndex === 2 && active) {
+        stepTwoAbort = false;
+        const shouldStop = () => !active || stepIndex !== 2 || stepTwoAbort;
+        const doubleClick = async (variants: string[], between = 1000) => {
+          if (shouldStop()) return;
+          await focusSlugReal(variants);
+          if (shouldStop()) return;
+          await delayStepTwo(between);
+          if (shouldStop()) return;
+          await focusSlugReal(variants);
+        };
+        const loop = async () => {
+          while (!shouldStop()) {
+            await doubleClick(["grecque-rhea", "rhea"]);
+            if (shouldStop()) break;
+            await delayStepTwo(1500);
+            if (shouldStop()) break;
+            await doubleClick(["grecque-demeter", "demeter"]);
+            if (shouldStop()) break;
+            await delayStepTwo(1500);
+            if (shouldStop()) break;
+            await doubleClick(["grecque-poseidon", "poseidon"]);
+            if (shouldStop()) break;
+            await delayStepTwo(1500);
+          }
+        };
+        loop();
+      } else {
+        stepTwoAbort = true;
+        if (stepTwoTimer !== null) {
+          window.clearTimeout(stepTwoTimer);
+          stepTwoTimer = null;
+        }
+      }
+      // Étape 4 : focus réel sur Déméter (consort) côté cadran consorts uniquement (un seul clic simulé)
+      if (stepIndex === 4 && active) {
+        getController().then(async () => {
+          const clickConsortHera = () => {
+            const btn =
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="grecque-demeter"] button',
+              ) ||
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="demeter"] button',
+              );
+            if (btn) {
+              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+              return true;
+            }
+            return false;
+          };
+
+          // Tentative unique de clic ; si introuvable, fallback setActiveSlug
+          const clicked = clickConsortHera();
+          if (!clicked) {
+            await focusSlugReal(["grecque-demeter", "demeter"]);
+          } else {
+            // Vérifie à t+100ms si le DOM s'est rafraîchi et relance un clic si besoin
+            setTimeout(() => {
+              if (!clickConsortHera()) {
+                focusSlugReal(["grecque-demeter", "demeter"]);
+              }
+            }, 100);
+          }
+        });
+      }
+
+      // Étape 5 : focus réel sur Apollon (enfants)
+      if (stepIndex === 5 && active) {
+        getController().then(async () => {
+          // On force d'abord Zeus au centre (utile quand on revient depuis une étape suivante)
+          const ctrl = await getController();
+          try {
+            await ctrl?.setCurrentSlug?.("grecque-zeus");
+          } catch {
+            await focusSlugReal(["grecque-zeus", "zeus"]);
+          }
+
+          const clickChildApollon = () => {
+            const btn =
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="grecque-apollon"] button',
+              ) ||
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="apollon"] button',
+              );
+            if (btn) {
+              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+              return true;
+            }
+            return false;
+          };
+
+          // Force focus logique puis clique unique
+          await focusSlugReal(["grecque-apollon", "apollon"]);
+          requestAnimationFrame(() => {
+            const ok = clickChildApollon();
+            if (!ok) {
+              setTimeout(() => {
+                clickChildApollon();
+              }, 120);
+            }
+          });
+        });
+      }
+
+      // Étape 7 : focus réel sur Gaïa en position centrale puis clic simple sur Ouranos
+      if (stepIndex === 7 && active) {
+        getController().then(async (ctrl) => {
+          try {
+            await ctrl?.setCurrentSlug?.("grecque-gaia");
+          } catch {
+            // ignore
+          }
+          await focusSlugReal(["grecque-gaia", "gaia"]);
+
+          const clickOuranos = () => {
+            const btn =
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="grecque-ouranos"] button',
+              ) ||
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="ouranos"] button',
+              );
+            if (btn) {
+              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+              return true;
+            }
+            return false;
+          };
+
+          // Laisse un court délai pour que le DOM reflète Gaïa au centre, puis tente un clic simple sur Ouranos
+          setTimeout(() => {
+            if (!active || stepIndex !== 7) return;
+            if (!clickOuranos()) {
+              focusSlugReal(["grecque-ouranos", "ouranos"]);
+            }
+          }, 160);
+        });
+      }
+
+      // Étape 8 : clic simple sur Brontès dans le cadran enfants
+      if (stepIndex === 8 && active) {
+        getController().then(async () => {
+          const clickBrontes = () => {
+            const btn =
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="grecque-brontes"] button',
+              ) ||
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="brontes"] button',
+              );
+            if (btn) {
+              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+              return true;
+            }
+            return false;
+          };
+          await focusSlugReal(["grecque-brontes", "brontes"]);
+          setTimeout(() => {
+            if (!active || stepIndex !== 8) return;
+            if (!clickBrontes()) {
+              focusSlugReal(["grecque-brontes", "brontes"]);
+            }
+          }, 120);
+        });
+      }
+
+      // Étape 9 : clic simple sur Coéos (enfants)
+      if (stepIndex === 9 && active) {
+        getController().then(async () => {
+          const clickCoeos = () => {
+            const btn =
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="grecque-coeos"] button',
+              ) ||
+              graph.querySelector<HTMLButtonElement>(
+                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="coeos"] button',
+              );
+            if (btn) {
+              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+              return true;
+            }
+            return false;
+          };
+          await focusSlugReal(["grecque-coeos", "coeos"]);
+          setTimeout(() => {
+            if (!active || stepIndex !== 9) return;
+            if (!clickCoeos()) {
+              focusSlugReal(["grecque-coeos", "coeos"]);
+            }
+          }, 120);
+        });
+      }
+    };
+
+    const update = () => {
+      toggle.textContent = active ? "Arrêter la démo" : "Comment faire";
+      toggle.setAttribute("aria-pressed", active ? "true" : "false");
+      graph.classList.toggle("is-demo-locked", active);
+      overlay.classList.toggle("is-visible", active);
+      overlay.classList.toggle("is-blocker", active);
+      controls.setAttribute("aria-hidden", active ? "false" : "true");
+      controls.classList.toggle("is-visible", active);
+      controls.classList.toggle("is-top", active && stepIndex >= 4);
+      controls.classList.toggle("is-bottom", active && stepIndex <= 3);
+      if (active) {
+        getController().then(async (ctrl) => {
+          previousSlug = ctrl?.getCurrentSlug?.() ?? null;
+          const demoSlugs = ["grecque-zeus", "zeus"];
+          for (const slug of demoSlugs) {
+            try {
+              await ctrl?.setCurrentSlug?.(slug);
+              break;
+            } catch {
+              continue;
+            }
+          }
+        });
+      } else if (previousSlug) {
+        getController().then((ctrl) => {
+          ctrl?.setCurrentSlug?.(previousSlug);
+          previousSlug = null;
+        });
+      }
+      if (!active) {
+        clearFocusSequence();
+        stepTwoAbort = true;
+        if (stepTwoTimer !== null) {
+          window.clearTimeout(stepTwoTimer);
+          stepTwoTimer = null;
+        }
+        stepIndex = 0;
+        renderStep();
+      }
+    };
+
+    toggle.addEventListener("click", () => {
+      active = !active;
+      update();
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (prevBtn.getAttribute("aria-disabled") === "true") return;
+      stepIndex = Math.max(0, stepIndex - 1);
+      renderStep();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (stepIndex === steps.length - 1) {
+        active = false;
+        update();
+        return;
+      }
+      stepIndex = Math.min(steps.length - 1, stepIndex + 1);
+      renderStep();
+    });
+
+    renderStep();
+  })();
+</script>
 
 <style is:global>
   @font-face {
@@ -69,35 +622,190 @@ const componentId = `ego-graph-${initialSlug}`;
     font-display: swap;
   }
 
-  .ego-graph-sky {
-    position: relative;
-    width: min(80vw, 1100px);
-    aspect-ratio: 16 / 9;
-    border-radius: 1.5rem;
-    overflow: visible;
-    padding: 0;
-    background: transparent;
-    border: 1px solid rgba(226, 232, 240, 0.6);
-    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
-  }
+.ego-graph-sky {
+  position: relative;
+  width: min(80vw, 1100px);
+  aspect-ratio: 16 / 9;
+  border-radius: 1.5rem;
+  overflow: visible;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+}
 
-  .dark .ego-graph-sky {
-    background: rgba(2, 6, 23, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
-  }
+.dark .ego-graph-sky {
+  background: rgba(2, 6, 23, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
 
-  .ego-graph-sky::before,
-  .ego-graph-sky::after {
-    content: "";
+.ego-graph-sky::before,
+.ego-graph-sky::after {
+  content: "";
     position: absolute;
     left: 0;
     right: 0;
     height: 800px;
-    background: transparent;
+  background: transparent;
+  pointer-events: none;
+}
+
+.ego-demo-overlay {
+  position: absolute;
+  inset: -10px;
+  border-radius: 1.75rem;
+  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.08), transparent 35%),
+    rgba(255, 255, 255, 0.65);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+  z-index: 50;
+}
+
+.dark .ego-demo-overlay {
+  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.18), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.16), transparent 40%),
+    rgba(0, 0, 0, 0.45);
+}
+
+.ego-demo-overlay.is-visible {
+  opacity: 1;
+}
+
+.ego-demo-overlay.is-blocker {
+  pointer-events: auto;
+}
+
+.ego-graph-sky.is-demo-locked {
+  pointer-events: none;
+  filter: saturate(0.85) brightness(0.98);
+}
+
+.ego-graph-sky.is-demo-locked *,
+.ego-graph-sky.is-demo-locked {
+  pointer-events: none !important;
+}
+
+.ego-graph-sky.is-demo-locked .ego-demo-controls,
+.ego-graph-sky.is-demo-locked .ego-demo-controls * {
+  pointer-events: auto !important;
+}
+
+  .ego-demo-controls {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    width: min(720px, 92%);
     pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 140ms ease, transform 140ms ease;
   }
 
+  .ego-demo-controls.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .ego-demo-controls.is-top {
+    top: 0.5rem;
+  }
+
+  .ego-demo-controls.is-bottom {
+    bottom: 0.5rem;
+  }
+
+.ego-demo-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.16);
+  pointer-events: auto;
+}
+
+.dark .ego-demo-panel {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.ego-demo-text {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: rgb(30 41 59);
+}
+
+.dark .ego-demo-text {
+  color: rgb(226 232 240);
+}
+
+.demo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.demo-orange {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.demo-blue {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.demo-green {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.ego-demo-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.demo-nav {
+  flex: 1;
+  border-radius: 9999px;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 140ms ease, opacity 140ms ease;
+}
+
+.demo-nav--prev {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(79, 70, 229, 0.9));
+}
+
+.demo-nav--next {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(99, 102, 241, 0.95));
+}
+
+.demo-nav[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.demo-nav[aria-disabled="false"]:hover {
+  transform: translateY(-1px);
+}
   .ego-graph-sky::before {
     top: -800px;
   }
@@ -429,6 +1137,17 @@ const componentId = `ego-graph-${initialSlug}`;
   .ego-node.is-active::before {
     opacity: 1;
     animation: ego-glow 1.6s ease-in-out infinite;
+  }
+
+  .ego-node.is-demo-focus::before {
+    opacity: 1 !important;
+    border-color: rgba(249, 115, 22, 0.85);
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.7), 0 0 22px rgba(249, 115, 22, 0.5);
+    animation: ego-glow 1.6s ease-in-out infinite;
+  }
+
+  .ego-node.is-demo-focus-central {
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.75), 0 0 32px rgba(249, 115, 22, 0.45);
   }
 
   .ego-node.is-animating::before {

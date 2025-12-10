@@ -115,7 +115,13 @@ export async function initEgoGraphInteractive(containerId: string, initialSlug: 
     const data = (await response.json()) as GenealogieData;
     const store = createGenealogieStore(data);
     const controller = new EgoGraphController(root, store);
-    controller.setCurrentSlug(initialSlug).catch((err) => console.error(err));
+    (root as unknown as { __egoController?: EgoGraphController }).__egoController = controller;
+    controller
+      .setCurrentSlug(initialSlug)
+      .then(() => {
+        root.dispatchEvent(new CustomEvent("ego-graph-ready", { detail: { controller } }));
+      })
+      .catch((err) => console.error(err));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur inconnue";
     renderMessage(root, message);
@@ -201,6 +207,10 @@ class EgoGraphController {
     this.sectionScrollTops.clear();
     this.clearMessage();
     await this.renderGraph(graph);
+  }
+
+  getCurrentSlug(): string | null {
+    return this.currentSlug;
   }
 
   private async renderGraph(graph: EgoGraph) {
@@ -539,6 +549,13 @@ class EgoGraphController {
     return Array.from(container.querySelectorAll<HTMLElement>(".ego-node"))
       .map((el) => el.dataset.slug)
       .filter((slug): slug is string => Boolean(slug));
+  }
+
+  public setActiveSlug(slug: string): boolean {
+    const entry = Array.from(this.nodeInstances.entries()).find(([, el]) => el.dataset.slug === slug);
+    if (!entry) return false;
+    this.setActiveNode(entry[0]);
+    return true;
   }
 
   private isSiblingOfFocused(childSlug: string, focusedChildSlug: string): boolean {

@@ -1056,7 +1056,7 @@ entities:
         - id: grecque-tartare
           consensus: true
           sources:
-            - author: ésiode
+            - author: Hésiode
               work: Théogonie
               passage: v.176–194 ; v.820–868
       children:
