@@ -1,0 +1,131 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MetaTags from '../components/MetaTags.astro';
+import '../styles/global.css';
+
+const SITE =
+  (import.meta.env.SITE as string | undefined) ||
+  (import.meta.env.SITE_URL as string | undefined) ||
+  'https://mythoskolis.com';
+
+const thanksUrl = `${SITE.replace(/\/+$/, '')}/contact/merci`;
+const metaTitle = 'Contact | Mythoskolis';
+const metaDescription =
+  "Une question, une remarque ou une idée de collaboration ? Écris à l’équipe Mythoskolis via ce formulaire dédié (envoi sécurisé via FormSubmit).";
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <MetaTags title={metaTitle} description={metaDescription} canonical="/contact/" type="website" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <Header />
+
+    <main class="flex-1 max-w-3xl mx-auto px-4 py-12 space-y-8">
+      <section class="mk-card mk-card-strong p-6 sm:p-8 space-y-6">
+        <header class="space-y-3">
+          <p class="mk-kicker text-indigo-600 dark:text-indigo-300">Contact</p>
+          <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-50">Écrire à Mythoskolis</h1>
+          <p class="text-sm text-slate-700 dark:text-slate-200">
+            Une question, une remarque, une idée de collaboration ? Contactez-nous.
+          </p>
+        </header>
+
+        <form
+          action="https://formsubmit.co/contact@mythoskolis.com"
+          method="POST"
+          class="space-y-5"
+        >
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_subject" value="Nouveau message depuis le site Mythoskolis" />
+          <input type="hidden" name="_next" value={thanksUrl} />
+
+          <div class="hidden" aria-hidden="true">
+            <label class="sr-only" for="honeypot">Laisser vide</label>
+            <input id="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="space-y-1">
+              <label for="name" class="text-sm font-medium text-slate-800 dark:text-slate-100">Nom</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                class="mk-input"
+                autocomplete="name"
+              />
+            </div>
+            <div class="space-y-1">
+              <label for="email" class="text-sm font-medium text-slate-800 dark:text-slate-100">Adresse e-mail</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                class="mk-input"
+                autocomplete="email"
+                inputmode="email"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <label for="subject" class="text-sm font-medium text-slate-800 dark:text-slate-100">Sujet</label>
+            <input
+              id="subject"
+              name="sujet"
+              type="text"
+              required
+              class="mk-input"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label for="message" class="text-sm font-medium text-slate-800 dark:text-slate-100">Message</label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows="6"
+              class="mk-input min-h-[180px]"
+            ></textarea>
+          </div>
+
+          <div class="flex items-start gap-2 rounded-lg bg-slate-100/70 px-3 py-3 text-xs text-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+            <input
+              id="consent"
+              name="consent"
+              type="checkbox"
+              required
+              class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-600"
+            />
+            <label for="consent" class="leading-snug">
+              En envoyant ce message, tu acceptes que les informations saisies soient utilisées uniquement pour te
+              répondre. Elles ne sont ni revendues ni utilisées à des fins commerciales.
+            </label>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              type="submit"
+              class="inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+            >
+              Envoyer le message
+            </button>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Envoi sécurisé via FormSubmit.</p>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>

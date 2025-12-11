@@ -18,12 +18,41 @@ async function getLastmod(filePath: string): Promise<string | undefined> {
   }
 }
 
+async function getMetaDocs(): Promise<UrlEntry[]> {
+  const metaDir = path.resolve(process.cwd(), 'src', 'pages', 'meta');
+  try {
+    const files = await fs.readdir(metaDir);
+    const allowedExt = new Set(['.md', '.mdx', '.astro']);
+    const entries: UrlEntry[] = [];
+
+    for (const file of files) {
+      const ext = path.extname(file).toLowerCase();
+      if (!allowedExt.has(ext)) continue;
+
+      const basename = path.basename(file, ext);
+      const filePath = path.join(metaDir, file);
+      const lastmod = await getLastmod(filePath);
+
+      if (basename === 'index') {
+        entries.push({ path: '/meta/', lastmod });
+      } else {
+        entries.push({ path: `/meta/${basename}/`, lastmod });
+      }
+    }
+
+    return entries;
+  } catch {
+    return [];
+  }
+}
+
 type UrlEntry = { path: string; lastmod?: string };
 
 export async function GET() {
   const entites = await getCollection('entites');
   const recits = await getCollection('recits');
   const ressources = await getCollection('ressources');
+  const metaDocs = await getMetaDocs();
 
   const staticPaths: UrlEntry[] = [
     { path: '/' },
@@ -34,6 +63,8 @@ export async function GET() {
     { path: '/ressources/' },
     { path: '/a-propos/' },
     { path: '/holograph/' },
+    { path: '/contact/' },
+    { path: '/contact/merci/' },
   ];
 
   const urls = new Map<string, UrlEntry>();
@@ -59,6 +90,10 @@ export async function GET() {
     const filePath = path.join(contentRoot, 'ressources', `${ressource.slug}.md`);
     const lastmod = await getLastmod(filePath);
     urls.set(`/ressources/${slug}/`, { path: `/ressources/${slug}/`, lastmod });
+  }
+
+  for (const doc of metaDocs) {
+    urls.set(doc.path, doc);
   }
 
   const body =

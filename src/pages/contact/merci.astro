@@ -1,0 +1,42 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MetaTags from '../../components/MetaTags.astro';
+import '../../styles/global.css';
+
+const metaTitle = 'Message envoyé | Mythoskolis';
+const metaDescription =
+  "Merci pour ton message. L’équipe Mythoskolis a bien reçu ta demande et reviendra vers toi si nécessaire.";
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <MetaTags title={metaTitle} description={metaDescription} canonical="/contact/merci/" type="website" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <Header />
+
+    <main class="flex-1 max-w-3xl mx-auto px-4 py-12">
+      <section class="mk-card mk-card-strong p-6 sm:p-8 text-center space-y-4">
+        <p class="mk-kicker text-indigo-600 dark:text-indigo-300">Contact</p>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-50">Merci pour ton message</h1>
+        <p class="text-sm text-slate-700 dark:text-slate-200">
+          Ton message a bien été envoyé. Si une réponse est nécessaire, tu recevras un retour à l’adresse indiquée.
+        </p>
+        <div class="flex justify-center">
+          <a
+            href="/"
+            class="badge-link badge-link--primary"
+          >
+            Retour à l’accueil
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>

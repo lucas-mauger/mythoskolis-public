@@ -110,11 +110,39 @@ const componentId = `ego-graph-${initialSlug}`;
     let stepIndex = 0;
     let previousSlug: string | null = null;
     let controller = (graph as any).__egoController;
-    let focusSequenceTimer: number | null = null;
-    let focusAbort = false;
-    let centralFocusTimer: number | null = null;
-    let stepTwoAbort = false;
-    let stepTwoTimer: number | null = null;
+    let currentCleanup: (() => void) | null = null;
+    let actionToken = 0;
+
+    const topQuadrantMuted = new Set([0, 3, 4, 5, 7, 8, 9]);
+    const bottomQuadrantMuted = new Set([1, 3]);
+
+    const stopStepAction = () => {
+      actionToken++;
+      if (currentCleanup) {
+        currentCleanup();
+        currentCleanup = null;
+      }
+    };
+
+    const findNodeButton = (slugs: string[], quadrant?: string): HTMLButtonElement | null => {
+      const selector = slugs
+        .map((slug) =>
+          quadrant
+            ? `.ego-quadrant[data-quadrant="${quadrant}"] .ego-node[data-slug="${slug}"] button`
+            : `.ego-node[data-slug="${slug}"] button`,
+        )
+        .join(", ");
+      return graph.querySelector<HTMLButtonElement>(selector);
+    };
+
+    const clickNodeButton = (slugs: string[], quadrant?: string) => {
+      const btn = findNodeButton(slugs, quadrant);
+      if (btn) {
+        btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+        return true;
+      }
+      return false;
+    };
 
     const getController = (): Promise<any> => {
       if (controller) return Promise.resolve(controller);
@@ -145,24 +173,13 @@ const componentId = `ego-graph-${initialSlug}`;
       });
     };
 
-    const clearFocusSequence = () => {
-      focusAbort = true;
-      if (focusSequenceTimer !== null) {
-        window.clearTimeout(focusSequenceTimer);
-        focusSequenceTimer = null;
-      }
-    };
-
     const focusSlugReal = async (variants: string[]) => {
-      // On simule un seul clic utilisateur sur le premier bouton trouvé.
-      for (const slug of variants) {
-        const btn = graph.querySelector<HTMLButtonElement>(`.ego-node[data-slug="${slug}"] button`);
-        if (btn) {
-          btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-          return true;
-        }
+      const btn = findNodeButton(variants);
+      if (btn) {
+        btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+        return true;
       }
-      // Si aucun bouton trouvé, on tente setActiveSlug à défaut (sans double interaction)
+
       const ctrl = await getController();
       if (ctrl?.setActiveSlug) {
         for (const slug of variants) {
@@ -173,41 +190,265 @@ const componentId = `ego-graph-${initialSlug}`;
       return false;
     };
 
-    const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
-    const delayStepTwo = (ms: number) =>
-      new Promise<void>((resolve) => {
-        stepTwoTimer = window.setTimeout(() => {
-          stepTwoTimer = null;
-          resolve();
-        }, ms);
-      });
+    const focusAndClick = async (opts: { slugs: string[]; quadrant?: string; double?: boolean; delayMs?: number }) => {
+      const { slugs, quadrant, double = false, delayMs = 150 } = opts;
+      await focusSlugReal(slugs);
+      const clickOnce = () => clickNodeButton(slugs, quadrant);
+      clickOnce();
+      if (!double) return;
+      const timeout = window.setTimeout(() => clickOnce(), delayMs);
+      return () => window.clearTimeout(timeout);
+    };
 
-    const clearDemoFocus = () => {
-      graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
-      graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => {
-        n.classList.remove("is-demo-focus-central");
-        (n as HTMLElement).style.boxShadow = "";
-        (n as HTMLElement).style.outline = "";
-        (n as HTMLElement).style.outlineOffset = "";
-        (n as HTMLElement).style.border = "";
-        n.querySelectorAll<HTMLElement>("button").forEach((btn) => {
-          btn.style.boxShadow = "";
-          btn.style.outline = "";
-          btn.style.outlineOffset = "";
-        });
-      });
-      if (centralFocusTimer !== null) {
-        window.clearInterval(centralFocusTimer);
-        centralFocusTimer = null;
+    const applyQuadrantStyles = () => {
+      const topQuadrants = graph.querySelectorAll<HTMLElement>('.ego-quadrant[data-quadrant="parents"], .ego-quadrant[data-quadrant="siblings"]');
+      const bottomQuadrants = graph.querySelectorAll<HTMLElement>('.ego-quadrant[data-quadrant="consorts"], .ego-quadrant[data-quadrant="children"]');
+
+      // L'étape intro gère déjà le voile global : pas de couche is-muted supplémentaire.
+      if (active && stepIndex === 0) {
+        topQuadrants.forEach((quad) => quad.classList.remove("is-muted"));
+        bottomQuadrants.forEach((quad) => quad.classList.remove("is-muted"));
+        return;
       }
+
+      const muteTop = active && topQuadrantMuted.has(stepIndex);
+      const muteBottom = active && bottomQuadrantMuted.has(stepIndex);
+
+      topQuadrants.forEach((quad) => quad.classList.toggle("is-muted", muteTop));
+      bottomQuadrants.forEach((quad) => quad.classList.toggle("is-muted", muteBottom));
     };
 
-    const applyCentralDemoFocus = (_central: HTMLElement | null) => {
-      // Conservé pour compat : ne fait plus rien (halo standard suffisant).
+    const getCentralSlug = () =>
+      graph.querySelector<HTMLElement>('.ego-node[data-role="central"]')?.getAttribute("data-slug") ?? null;
+
+    const ensureZeusCenter = async (retries = 6) => {
+      const slugs = ["grecque-zeus", "zeus"];
+      for (let i = 0; i < retries; i++) {
+        const ctrl = await getController();
+        try {
+          const ok = await ctrl?.setCurrentSlug?.("grecque-zeus");
+          if (ok || ctrl?.getCurrentSlug?.() === "grecque-zeus") break;
+        } catch {
+          // ignore, we'll fallback
+        }
+        await focusSlugReal(slugs);
+        if (getCentralSlug()?.includes("zeus")) break;
+        await new Promise((resolve) => setTimeout(resolve, 120));
+      }
+
+      requestAnimationFrame(() => {
+        const done = clickNodeButton(slugs);
+        if (done) return;
+        const centralBtn = graph.querySelector<HTMLButtonElement>('.ego-node[data-role="central"] button');
+        centralBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      });
+    };
+    type StepCleanup = () => void;
+    type StepAction = () => StepCleanup | void | Promise<StepCleanup | void>;
+
+    const stepActions: Record<number, StepAction> = {
+      1: () => {
+        let aborted = false;
+        let timer: number | null = null;
+        const sequences = [
+          ["grecque-cronos", "cronos"],
+          ["grecque-rhea", "rhea"],
+          ["grecque-hera", "hera"],
+        ];
+
+        getController().then(async (ctrl) => {
+          try {
+            await ctrl?.setCurrentSlug?.("grecque-zeus");
+          } catch {
+            await focusSlugReal(["grecque-zeus", "zeus"]);
+          }
+        });
+
+        const loop = async () => {
+          while (!aborted && active && stepIndex === 1) {
+            for (const variants of sequences) {
+              if (aborted || !active || stepIndex !== 1) break;
+              await focusSlugReal(variants);
+              await new Promise<void>((resolve) => {
+                timer = window.setTimeout(() => {
+                  timer = null;
+                  resolve();
+                }, 1000);
+              });
+            }
+          }
+        };
+
+        loop();
+
+        return () => {
+          aborted = true;
+          if (timer !== null) {
+            window.clearTimeout(timer);
+            timer = null;
+          }
+        };
+      },
+      2: () => {
+        let aborted = false;
+        let timer: number | null = null;
+
+        getController().then(async (ctrl) => {
+          try {
+            await ctrl?.setCurrentSlug?.("grecque-zeus");
+          } catch {
+            await focusSlugReal(["grecque-zeus", "zeus"]);
+          }
+        });
+
+        const wait = (ms: number) =>
+          new Promise<void>((resolve) => {
+            timer = window.setTimeout(() => {
+              timer = null;
+              resolve();
+            }, ms);
+          });
+
+        const clickOnce = async (variants: string[]) => {
+          if (clickNodeButton(variants)) return;
+          await focusSlugReal(variants);
+        };
+
+        const doubleClick = async (variants: string[]) => {
+          if (aborted || !active || stepIndex !== 2) return;
+          await clickOnce(variants);
+          if (aborted || !active || stepIndex !== 2) return;
+          await wait(1000);
+          if (aborted || !active || stepIndex !== 2) return;
+          await clickOnce(variants);
+        };
+
+        const loop = async () => {
+          while (!aborted && active && stepIndex === 2) {
+            await doubleClick(["grecque-rhea", "rhea"]);
+            if (aborted || stepIndex !== 2) break;
+            await wait(1500);
+            if (aborted || stepIndex !== 2) break;
+            await doubleClick(["grecque-demeter", "demeter"]);
+            if (aborted || stepIndex !== 2) break;
+            await wait(1500);
+            if (aborted || stepIndex !== 2) break;
+            await doubleClick(["grecque-poseidon", "poseidon"]);
+            if (aborted || stepIndex !== 2) break;
+            await wait(1500);
+          }
+        };
+
+        loop();
+
+        return () => {
+          aborted = true;
+          if (timer !== null) {
+            window.clearTimeout(timer);
+            timer = null;
+          }
+        };
+      },
+      3: async () => {
+        await ensureZeusCenter(6);
+      },
+      4: async () => {
+        const ctrl = await getController();
+        try {
+          await ctrl?.setCurrentSlug?.("grecque-zeus");
+        } catch {
+          await focusSlugReal(["grecque-zeus", "zeus"]);
+        }
+        const cleanup = await focusAndClick({ slugs: ["grecque-demeter", "demeter"], quadrant: "consorts" });
+        const retryTimeout = window.setTimeout(() => {
+          if (!active || stepIndex !== 4) return;
+          if (!clickNodeButton(["grecque-demeter", "demeter"], "consorts")) {
+            void focusSlugReal(["grecque-demeter", "demeter"]);
+          }
+        }, 140);
+        return () => {
+          cleanup?.();
+          window.clearTimeout(retryTimeout);
+        };
+      },
+      5: async () => {
+        const ctrl = await getController();
+        try {
+          await ctrl?.setCurrentSlug?.("grecque-zeus");
+        } catch {
+          await focusSlugReal(["grecque-zeus", "zeus"]);
+        }
+        // Laisse le temps au DOM de refléter Zeus au centre avant le clic enfant
+        await new Promise((resolve) => window.setTimeout(resolve, 120));
+
+        const clickChild = () => clickNodeButton(["grecque-apollon", "apollon"], "children");
+        if (!clickChild()) {
+          // Fallback : un seul clic simulé via focusSlugReal si le bouton n'est pas trouvé
+          await focusSlugReal(["grecque-apollon", "apollon"]);
+        }
+      },
+      6: async () => {
+        const ctrl = await getController();
+        try {
+          await ctrl?.setCurrentSlug?.("grecque-zeus");
+        } catch {
+          await focusSlugReal(["grecque-zeus", "zeus"]);
+        }
+      },
+      7: async () => {
+        const ctrl = await getController();
+        // Repart toujours de Zeus pour éviter un historique Gaïa résiduel
+        try {
+          await ctrl?.setCurrentSlug?.("grecque-zeus");
+        } catch {
+          await focusSlugReal(["grecque-zeus", "zeus"]);
+        }
+        // Puis enchaîne sur Gaïa pour la démonstration
+        try {
+          await ctrl?.setCurrentSlug?.("grecque-gaia");
+        } catch {
+          await focusSlugReal(["grecque-gaia", "gaia"]);
+        }
+        const timeout = window.setTimeout(() => {
+          if (!active || stepIndex !== 7) return;
+          if (!clickNodeButton(["grecque-ouranos", "ouranos"], "consorts")) {
+            void focusSlugReal(["grecque-ouranos", "ouranos"]);
+          }
+        }, 160);
+        return () => window.clearTimeout(timeout);
+      },
+      8: () => {
+        void focusSlugReal(["grecque-brontes", "brontes"]);
+        const timeout = window.setTimeout(() => {
+          if (!active || stepIndex !== 8) return;
+          if (!clickNodeButton(["grecque-brontes", "brontes"], "children")) {
+            void focusSlugReal(["grecque-brontes", "brontes"]);
+          }
+        }, 120);
+        return () => window.clearTimeout(timeout);
+      },
+      9: () => {
+        void focusSlugReal(["grecque-coeos", "coeos"]);
+        const timeout = window.setTimeout(() => {
+          if (!active || stepIndex !== 9) return;
+          if (!clickNodeButton(["grecque-coeos", "coeos"], "children")) {
+            void focusSlugReal(["grecque-coeos", "coeos"]);
+          }
+        }, 120);
+        return () => window.clearTimeout(timeout);
+      },
     };
 
-    const applyDemoFocusNode = (_node: HTMLElement | null) => {
-      // Conservé pour compat : ne fait plus rien (le focus réel suffit).
+    const runStepAction = async () => {
+      stopStepAction();
+      const token = ++actionToken;
+      const action = stepActions[stepIndex];
+      if (!active || !action) return;
+      const cleanup = await action();
+      if (token !== actionToken) return;
+      if (typeof cleanup === "function") {
+        currentCleanup = cleanup;
+      }
     };
 
     const renderStep = () => {
@@ -215,336 +456,34 @@ const componentId = `ego-graph-${initialSlug}`;
       prevBtn.setAttribute("aria-disabled", stepIndex === 0 ? "true" : "false");
       nextBtn.textContent = stepIndex === steps.length - 1 ? "Terminer la démo" : "Suivant";
       nextBtn.setAttribute("aria-disabled", "false");
-      const central =
-        graph.querySelector<HTMLElement>('.ego-node[data-role="central"]') ||
-        graph.querySelector<HTMLElement>('[data-central-node="true"]');
-      graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
-      graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => n.classList.remove("is-demo-focus-central"));
       controls.classList.toggle("is-top", active && stepIndex >= 4);
       controls.classList.toggle("is-bottom", active && stepIndex <= 3);
-      if (active) {
-        overlay.style.opacity = stepIndex === 0 ? "1" : "0";
-      } else {
-        overlay.style.opacity = "";
-      }
-      if (active && stepIndex === 3 && central) {
-        const setCentralOnce = async () => {
-          const ctrl = await getController();
-          try {
-            await ctrl?.setCurrentSlug?.("grecque-zeus");
-          } catch {
-            await focusSlugReal(["grecque-zeus", "zeus"]);
-          }
-          await focusSlugReal(["grecque-zeus", "zeus"]);
-          const freshCentral =
-            graph.querySelector<HTMLElement>('.ego-node[data-role="central"]') ||
-            graph.querySelector<HTMLElement>('[data-central-node="true"]');
-          applyCentralDemoFocus(freshCentral);
-        };
-        requestAnimationFrame(setCentralOnce);
-        if (centralFocusTimer !== null) {
-          window.clearInterval(centralFocusTimer);
-          centralFocusTimer = null;
-        }
-      }
-      // Désaturer/re-saturer les quadrants selon l'étape (uniquement en mode démo)
-      const topQuadrants = graph.querySelectorAll<HTMLElement>('.ego-quadrant[data-quadrant="parents"], .ego-quadrant[data-quadrant="siblings"]');
-      const bottomQuadrants = graph.querySelectorAll<HTMLElement>('.ego-quadrant[data-quadrant="consorts"], .ego-quadrant[data-quadrant="children"]');
-      topQuadrants.forEach((quad) => {
-        if (active && stepIndex === 0) {
-          quad.style.filter = "saturate(0.3) brightness(0.9)";
-          quad.style.opacity = "0.85";
-        } else if (active && stepIndex === 1) {
-          quad.style.filter = "none";
-          quad.style.opacity = "1";
-        } else if (active && stepIndex === 2) {
-          quad.style.filter = "none";
-          quad.style.opacity = "1";
-        } else if (active && stepIndex === 3) {
-          quad.style.filter = "saturate(0.3) brightness(0.9)";
-          quad.style.opacity = "0.85";
-        } else if (active && stepIndex === 4) {
-          quad.style.filter = "none";
-          quad.style.opacity = "1";
-        } else if (active && stepIndex === 5) {
-          quad.style.filter = "none";
-          quad.style.opacity = "1";
-        } else {
-          quad.style.filter = "";
-          quad.style.opacity = "";
-        }
-      });
-      bottomQuadrants.forEach((quad) => {
-        if (active && stepIndex === 1) {
-          quad.style.filter = "saturate(0.35) brightness(0.9)";
-          quad.style.opacity = "0.9";
-        } else if (active && stepIndex === 2) {
-          quad.style.filter = "";
-          quad.style.opacity = "1";
-        } else if (active && stepIndex === 3) {
-          quad.style.filter = "saturate(0.35) brightness(0.9)";
-          quad.style.opacity = "0.9";
-        } else if (active && stepIndex === 4) {
-          quad.style.filter = "";
-          quad.style.opacity = "1";
-        } else if (active && stepIndex === 5) {
-          quad.style.filter = "none";
-          quad.style.opacity = "1";
-        } else {
-          quad.style.filter = "";
-          quad.style.opacity = "";
-        }
-      });
-      if (active && stepIndex >= 1 && stepIndex !== 3) {
-        central?.classList.remove("is-active");
-        central?.classList.remove("is-demo-focus");
-        central?.classList.remove("is-demo-focus-central");
-        graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
-        graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => n.classList.remove("is-demo-focus-central"));
-      }
+      // Étape 0 : pas de voile global
+      graph.classList.toggle("is-demo-intro", false);
+      overlay.classList.remove("is-visible", "is-blocker");
+      applyQuadrantStyles();
+
+      // Sécurise un recentrage sur Zeus en entrant dans l'étape 3,
+      // même si l'étape précédente jouait encore une animation.
       if (active && stepIndex === 3) {
-        requestAnimationFrame(() => {
-          const freshCentral =
-            graph.querySelector<HTMLElement>('.ego-node[data-role="central"]') ||
-            graph.querySelector<HTMLElement>('[data-central-node="true"]');
-          applyCentralDemoFocus(freshCentral);
-        });
-      }
-      if (active && stepIndex !== 3 && centralFocusTimer !== null) {
-        window.clearInterval(centralFocusTimer);
-        centralFocusTimer = null;
-      }
-      if (!active) {
-        graph.querySelectorAll(".ego-node.is-demo-focus").forEach((n) => n.classList.remove("is-demo-focus"));
-        graph.querySelectorAll(".ego-node.is-demo-focus-central").forEach((n) => n.classList.remove("is-demo-focus-central"));
-        if (centralFocusTimer !== null) {
-          window.clearInterval(centralFocusTimer);
-          centralFocusTimer = null;
-        }
-      }
-      // Séquence de focus sur les satellites de Zeus quand on passe aux étapes liées à la démo (interactions réelles)
-      if (stepIndex === 1 && active) {
-        clearFocusSequence();
-        focusAbort = false;
         getController().then(async (ctrl) => {
-          if (!ctrl) return;
-          const sequences = [
-            ["grecque-cronos", "cronos"],
-            ["grecque-rhea", "rhea"],
-            ["grecque-hera", "hera"],
-          ];
-          while (!focusAbort && active && stepIndex === 1) {
-            for (const variants of sequences) {
-              if (focusAbort || !active || stepIndex !== 1) break;
-              await focusSlugReal(variants);
-              await new Promise<void>((resolve) => {
-                focusSequenceTimer = window.setTimeout(() => {
-                  focusSequenceTimer = null;
-                  resolve();
-                }, 1000);
-              });
-            }
-          }
-        });
-      } else {
-        clearFocusSequence();
-      }
-
-      // Étape 3 (index 2) : démonstration du double clic réel (Rhéa -> Déméter -> Zeus) en boucle
-      if (stepIndex === 2 && active) {
-        stepTwoAbort = false;
-        const shouldStop = () => !active || stepIndex !== 2 || stepTwoAbort;
-        const doubleClick = async (variants: string[], between = 1000) => {
-          if (shouldStop()) return;
-          await focusSlugReal(variants);
-          if (shouldStop()) return;
-          await delayStepTwo(between);
-          if (shouldStop()) return;
-          await focusSlugReal(variants);
-        };
-        const loop = async () => {
-          while (!shouldStop()) {
-            await doubleClick(["grecque-rhea", "rhea"]);
-            if (shouldStop()) break;
-            await delayStepTwo(1500);
-            if (shouldStop()) break;
-            await doubleClick(["grecque-demeter", "demeter"]);
-            if (shouldStop()) break;
-            await delayStepTwo(1500);
-            if (shouldStop()) break;
-            await doubleClick(["grecque-poseidon", "poseidon"]);
-            if (shouldStop()) break;
-            await delayStepTwo(1500);
-          }
-        };
-        loop();
-      } else {
-        stepTwoAbort = true;
-        if (stepTwoTimer !== null) {
-          window.clearTimeout(stepTwoTimer);
-          stepTwoTimer = null;
-        }
-      }
-      // Étape 4 : focus réel sur Déméter (consort) côté cadran consorts uniquement (un seul clic simulé)
-      if (stepIndex === 4 && active) {
-        getController().then(async () => {
-          const clickConsortHera = () => {
-            const btn =
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="grecque-demeter"] button',
-              ) ||
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="demeter"] button',
-              );
-            if (btn) {
-              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-              return true;
-            }
-            return false;
-          };
-
-          // Tentative unique de clic ; si introuvable, fallback setActiveSlug
-          const clicked = clickConsortHera();
-          if (!clicked) {
-            await focusSlugReal(["grecque-demeter", "demeter"]);
-          } else {
-            // Vérifie à t+100ms si le DOM s'est rafraîchi et relance un clic si besoin
-            setTimeout(() => {
-              if (!clickConsortHera()) {
-                focusSlugReal(["grecque-demeter", "demeter"]);
-              }
-            }, 100);
-          }
-        });
-      }
-
-      // Étape 5 : focus réel sur Apollon (enfants)
-      if (stepIndex === 5 && active) {
-        getController().then(async () => {
-          // On force d'abord Zeus au centre (utile quand on revient depuis une étape suivante)
-          const ctrl = await getController();
           try {
             await ctrl?.setCurrentSlug?.("grecque-zeus");
           } catch {
             await focusSlugReal(["grecque-zeus", "zeus"]);
           }
-
-          const clickChildApollon = () => {
-            const btn =
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="grecque-apollon"] button',
-              ) ||
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="apollon"] button',
-              );
-            if (btn) {
-              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-              return true;
-            }
-            return false;
-          };
-
-          // Force focus logique puis clique unique
-          await focusSlugReal(["grecque-apollon", "apollon"]);
-          requestAnimationFrame(() => {
-            const ok = clickChildApollon();
-            if (!ok) {
-              setTimeout(() => {
-                clickChildApollon();
-              }, 120);
-            }
-          });
         });
       }
 
-      // Étape 7 : focus réel sur Gaïa en position centrale puis clic simple sur Ouranos
-      if (stepIndex === 7 && active) {
-        getController().then(async (ctrl) => {
-          try {
-            await ctrl?.setCurrentSlug?.("grecque-gaia");
-          } catch {
-            // ignore
-          }
-          await focusSlugReal(["grecque-gaia", "gaia"]);
-
-          const clickOuranos = () => {
-            const btn =
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="grecque-ouranos"] button',
-              ) ||
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="consorts"] .ego-node[data-slug="ouranos"] button',
-              );
-            if (btn) {
-              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-              return true;
-            }
-            return false;
-          };
-
-          // Laisse un court délai pour que le DOM reflète Gaïa au centre, puis tente un clic simple sur Ouranos
-          setTimeout(() => {
-            if (!active || stepIndex !== 7) return;
-            if (!clickOuranos()) {
-              focusSlugReal(["grecque-ouranos", "ouranos"]);
-            }
-          }, 160);
-        });
+      if (!active) {
+        graph
+          .querySelectorAll(".ego-node.is-demo-focus, .ego-node.is-demo-focus-central")
+          .forEach((n) => n.classList.remove("is-demo-focus", "is-demo-focus-central"));
+        stopStepAction();
+        return;
       }
 
-      // Étape 8 : clic simple sur Brontès dans le cadran enfants
-      if (stepIndex === 8 && active) {
-        getController().then(async () => {
-          const clickBrontes = () => {
-            const btn =
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="grecque-brontes"] button',
-              ) ||
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="brontes"] button',
-              );
-            if (btn) {
-              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-              return true;
-            }
-            return false;
-          };
-          await focusSlugReal(["grecque-brontes", "brontes"]);
-          setTimeout(() => {
-            if (!active || stepIndex !== 8) return;
-            if (!clickBrontes()) {
-              focusSlugReal(["grecque-brontes", "brontes"]);
-            }
-          }, 120);
-        });
-      }
-
-      // Étape 9 : clic simple sur Coéos (enfants)
-      if (stepIndex === 9 && active) {
-        getController().then(async () => {
-          const clickCoeos = () => {
-            const btn =
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="grecque-coeos"] button',
-              ) ||
-              graph.querySelector<HTMLButtonElement>(
-                '.ego-quadrant[data-quadrant="children"] .ego-node[data-slug="coeos"] button',
-              );
-            if (btn) {
-              btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-              return true;
-            }
-            return false;
-          };
-          await focusSlugReal(["grecque-coeos", "coeos"]);
-          setTimeout(() => {
-            if (!active || stepIndex !== 9) return;
-            if (!clickCoeos()) {
-              focusSlugReal(["grecque-coeos", "coeos"]);
-            }
-          }, 120);
-        });
-      }
+      void runStepAction();
     };
 
     const update = () => {
@@ -577,15 +516,10 @@ const componentId = `ego-graph-${initialSlug}`;
         });
       }
       if (!active) {
-        clearFocusSequence();
-        stepTwoAbort = true;
-        if (stepTwoTimer !== null) {
-          window.clearTimeout(stepTwoTimer);
-          stepTwoTimer = null;
-        }
+        stopStepAction();
         stepIndex = 0;
-        renderStep();
       }
+      renderStep();
     };
 
     toggle.addEventListener("click", () => {
@@ -661,7 +595,7 @@ const componentId = `ego-graph-${initialSlug}`;
   opacity: 0;
   pointer-events: none;
   transition: opacity 160ms ease;
-  z-index: 50;
+  z-index: 3;
 }
 
 .dark .ego-demo-overlay {
@@ -676,6 +610,60 @@ const componentId = `ego-graph-${initialSlug}`;
 
 .ego-demo-overlay.is-blocker {
   pointer-events: auto;
+}
+
+:root {
+  --ego-mute-filter: saturate(0) brightness(0.82);
+  --ego-mute-opacity: 0.92;
+  --ego-mute-node-filter: saturate(0) brightness(0.8);
+  --ego-mute-node-opacity: 0.92;
+  --ego-mute-overlay: rgba(255, 255, 255, 0.7);
+  --ego-mute-overlay-dark: rgba(0, 0, 0, 0.4);
+  --ego-mute-blur: 6px;
+  --ego-mute-node-blur: 2px;
+}
+
+.ego-graph-sky.is-demo-intro {
+  filter: saturate(0.8) brightness(0.98);
+}
+
+.ego-graph-sky.is-demo-intro .ego-quadrant,
+.ego-quadrant.is-muted {
+  filter: var(--ego-mute-filter);
+  opacity: var(--ego-mute-opacity);
+  backdrop-filter: blur(var(--ego-mute-blur));
+}
+
+.ego-graph-sky.is-demo-intro .ego-quadrant .ego-node,
+.ego-quadrant.is-muted .ego-node {
+  filter: var(--ego-mute-node-filter) blur(var(--ego-mute-node-blur));
+  opacity: var(--ego-mute-node-opacity);
+}
+
+.ego-graph-sky.is-demo-intro .ego-quadrant::after,
+.ego-quadrant.is-muted::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--ego-mute-overlay);
+  opacity: 1;
+  pointer-events: none;
+  z-index: 1;
+  backdrop-filter: blur(var(--ego-mute-blur));
+}
+
+.dark .ego-graph-sky.is-demo-intro .ego-quadrant::after,
+.dark .ego-quadrant.is-muted::after {
+  background: var(--ego-mute-overlay-dark);
+}
+
+.ego-graph-sky.is-demo-intro .ego-node[data-role="central"],
+.ego-graph-sky.is-demo-intro .ego-node[data-central-node="true"] {
+  filter: none;
+  opacity: 1;
+  position: absolute;
+  z-index: 4;
 }
 
 .ego-graph-sky.is-demo-locked {
