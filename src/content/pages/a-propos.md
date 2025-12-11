@@ -52,8 +52,3 @@ Mythoskolis évoluera progressivement : amélioration de l’ergonomie, ajout de
 
 L’objectif reste le même : proposer un lieu où l’on peut comprendre, apprendre et contempler les traditions anciennes, avec une approche accessible, exigeante et moderne.
 
----
-
-## Contact
-Une page de contact sera mise en place pour les questions, suggestions et propositions futures.
-

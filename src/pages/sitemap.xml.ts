@@ -65,6 +65,7 @@ export async function GET() {
     { path: '/holograph/' },
     { path: '/contact/' },
     { path: '/contact/merci/' },
+    { path: '/mentions-legales/' },
   ];
 
   const urls = new Map<string, UrlEntry>();

@@ -1,0 +1,73 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MetaTags from '../components/MetaTags.astro';
+import '../styles/global.css';
+
+const metaTitle = 'Mentions légales | Mythoskolis';
+const metaDescription =
+  "Informations légales de Mythoskolis : éditeur, propriété intellectuelle, hébergement, responsabilité éditoriale et données personnelles.";
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <MetaTags title={metaTitle} description={metaDescription} canonical="/mentions-legales/" type="website" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <Header />
+
+    <main class="flex-1 max-w-4xl mx-auto px-4 py-12 space-y-8">
+      <section class="mk-card mk-card-strong p-6 sm:p-8 space-y-6">
+        <header class="space-y-3">
+          <p class="mk-kicker text-indigo-600 dark:text-indigo-300">Informations légales</p>
+          <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-50">Mentions légales</h1>
+        </header>
+
+        <article class="prose prose-slate max-w-none dark:prose-invert">
+          <h2>Éditeur du site</h2>
+          <p>
+            Mythoskolis est un projet éditorial personnel consacré à la mythologie grecque. Il est conçu et développé par
+            <strong>Lucas Mauger</strong>.<br />
+          </p>
+
+          <h2>Propriété intellectuelle</h2>
+          <p>
+            L’ensemble du contenu présent sur ce site (textes, structures de données, récits, éléments graphiques,
+            généalogie, code spécifique au HoloGraph) est protégé par le droit d’auteur. La marque
+            <strong>Mythoskolis</strong> est une <strong>marque déposée</strong> auprès de l’INPI.
+          </p>
+          <p>
+            Toute reproduction, diffusion ou réutilisation du contenu sans autorisation est interdite, sauf exceptions
+            prévues par la loi.
+          </p>
+
+          <h2>Hébergement</h2>
+          <p>
+            Le site est hébergé par :<br />
+            <strong>Cloudflare, Inc.</strong><br />
+            101 Townsend Street, San Francisco, CA 94107, USA<br />
+            <a href="https://www.cloudflare.com/" target="_blank" rel="noreferrer">https://www.cloudflare.com/</a>
+          </p>
+
+          <h2>Responsabilité éditoriale</h2>
+          <p>
+            Les informations présentées sur Mythoskolis sont fournies à titre culturel et pédagogique. Elles peuvent
+            s’appuyer sur différentes sources historiques, littéraires ou archéologiques dont les interprétations peuvent
+            varier.
+          </p>
+
+          <h2>Données personnelles</h2>
+          <p>
+            Mythoskolis ne collecte aucune donnée personnelle nominative. Aucun formulaire d’inscription, aucun espace
+            membre et aucune fonctionnalité commerciale ne sont proposés.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
