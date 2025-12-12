@@ -13,13 +13,16 @@ export interface RelationSource {
   author: string;
   work: string;
   note?: string;
+  consensus?: boolean;
 }
 
 export interface GenealogieRelation {
   source_id: string;
   target_id: string;
+  origin_id?: string; // entité qui déclare cette relation
   type: RelationType;
   variant?: string;
+  consensus?: boolean;
   source_texts: RelationSource[];
 }
 
@@ -46,6 +49,7 @@ export interface GraphNodeCard {
   name: string;
   slug: string;
   relationType: RelationType;
+  consensus?: boolean;
   variant?: string;
   sources: RelationSource[];
   display_class?: string;
@@ -103,19 +107,21 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
     }
 
     const parents = data.relations
-      .filter((relation) => relation.type === "parent" && relation.target_id === central.id)
+      .filter((relation) => relation.type === "parent" && relation.target_id === central.id && relation.origin_id === central.id)
       .map((relation) => toRelatedNode(relation.source_id, relation))
       .filter(Boolean) as RelatedNode[];
 
     const children = data.relations
-      .filter((relation) => relation.type === "parent" && relation.source_id === central.id)
+      .filter((relation) => relation.type === "parent" && relation.source_id === central.id && relation.origin_id === central.id)
       .map((relation) => toRelatedNode(relation.target_id, relation))
       .filter(Boolean) as RelatedNode[];
 
     const siblings = data.relations
       .filter(
         (relation) =>
-          relation.type === "sibling" && (relation.source_id === central.id || relation.target_id === central.id),
+          relation.type === "sibling" &&
+          (relation.source_id === central.id || relation.target_id === central.id) &&
+          relation.origin_id === central.id,
       )
       .map((relation) => {
         const otherId = relation.source_id === central.id ? relation.target_id : relation.source_id;
@@ -126,7 +132,9 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
     const consorts = data.relations
       .filter(
         (relation) =>
-          relation.type === "consort" && (relation.source_id === central.id || relation.target_id === central.id),
+          relation.type === "consort" &&
+          (relation.source_id === central.id || relation.target_id === central.id) &&
+          relation.origin_id === central.id,
       )
       .map((relation) => {
         const otherId = relation.source_id === central.id ? relation.target_id : relation.source_id;
@@ -152,6 +160,7 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
       name: entity.name,
       slug: entity.slug,
       relationType: relation.type,
+      consensus: relation.consensus,
       variant: relation.variant,
       sources: relation.source_texts,
       display_class: (entity as any).display_class,

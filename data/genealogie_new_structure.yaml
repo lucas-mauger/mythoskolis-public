@@ -11,6 +11,18 @@ entities:
         - id: grecque-rhea
           consensus: true
           sources: []
+        - id: grecque-cronos
+          consensus: true
+          sources:
+            - author: 'Source : Hésiode'
+              work: Théogonie — v.453–458
+              passage: ''
+        - id: grecque-rhea
+          consensus: true
+          sources:
+            - author: 'Source : Hésiode'
+              work: Théogonie — v.453–458
+              passage: ''
       children:
         - id: grecque-ares
           consensus: true
@@ -168,6 +180,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.918–920
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: Hymnes orphiques
+              passage: '30'
       siblings:
         - id: grecque-hestia
           consensus: true
@@ -266,6 +284,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.901–906
+        - id: grecque-persephone
+          consensus: false
+          sources:
+            - author: Orphica
+              work: Hymnes orphiques
+              passage: '30'
   - name: Léto
     slug: leto
     culture: grecque
@@ -426,9 +450,6 @@ entities:
               work: ''
               passage: ''
       children:
-        - id: grecque-zeus
-          consensus: true
-          sources: []
         - id: grecque-hestia
           consensus: true
           sources:
@@ -459,6 +480,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.455
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: 'Source : Hésiode'
+              work: Théogonie — v.453–458
+              passage: ''
       siblings:
         - id: grecque-rhea
           consensus: true
@@ -529,7 +556,10 @@ entities:
       consorts:
         - id: grecque-rhea
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.453–458
   - name: Rhéa
     slug: rhea
     culture: grecque
@@ -549,9 +579,6 @@ entities:
               work: Théogonie
               passage: v.132–153
       children:
-        - id: grecque-zeus
-          consensus: true
-          sources: []
         - id: grecque-hestia
           consensus: true
           sources:
@@ -582,6 +609,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.455
+        - id: grecque-zeus
+          consensus: true
+          sources:
+            - author: 'Source : Hésiode'
+              work: Théogonie — v.453–458
+              passage: ''
       siblings:
         - id: grecque-cronos
           consensus: true
@@ -652,7 +685,10 @@ entities:
       consorts:
         - id: grecque-cronos
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.453–458
       childs:
         - id: grecque-cronos
           consensus: true
@@ -19738,6 +19774,12 @@ entities:
             - author: Orphica
               work: fragments ; Pseudo-Plutarque
               passage: De mundo 28
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Orphica
+              work: Hymnes orphiques
+              passage: '30'
       siblings: []
       consorts:
         - id: grecque-hades
@@ -19746,6 +19788,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.912–914.
+        - id: grecque-zeus
+          consensus: false
+          sources:
+            - author: Orphica
+              work: Hymnes orphiques
+              passage: '30'
   - name: Triton
     slug: triton
     culture: grecque
@@ -20385,6 +20433,12 @@ entities:
             - author: Homère
               work: Hymne homérique à Pan
               passage: v.34–47
+        - id: grecque-aphrodite
+          consensus: false
+          sources:
+            - author: Ovide
+              work: Métamorphoses
+              passage: IV ; 274–388
   - name: Dionysos
     slug: dionysos
     culture: grecque
@@ -20409,9 +20463,63 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.940–942
-      children: []
+        - id: grecque-persephone
+          consensus: false
+          sources:
+            - author: Orphica
+              work: Hymnes orphiques
+              passage: '30'
+        - id: grecque-zeus
+          consensus: false
+          sources:
+            - author: Orphica
+              work: Hymnes orphiques
+              passage: '30'
+      children:
+        - id: grecque-nopion
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.62.6
+        - id: grecque-staphylos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.2
+        - id: grecque-thoas
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.9.27
       siblings: []
-      consorts: []
+      consorts:
+        - id: grecque-ariane
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.947–949
+        - id: grecque-ariane
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.62.6
+        - id: grecque-ariane
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.2
+        - id: grecque-ariane
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.9.27
   - name: Aphrodite
     slug: aphrodite
     culture: grecque
@@ -20481,6 +20589,12 @@ entities:
             - author: Homère
               work: Odyssée
               passage: VIII
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Ovide
+              work: Métamorphoses
+              passage: IV ; 274–388
   - name: Clio
     slug: clio_2
     culture: grecque
@@ -23395,12 +23509,6 @@ entities:
     relations:
       parents:
         - id: grecque-athena
-          consensus: true
-          sources:
-            - author: Apollodore
-              work: Bibliothèque
-              passage: III.14.6
-        - id: grecque-athena
           consensus: false
           sources:
             - author: Apollodore
@@ -23532,6 +23640,120 @@ entities:
             - author: Hygin
               work: Fables
               passage: '90'
+      children: []
+      siblings: []
+      consorts: []
+  - name: Ariane
+    slug: ariane
+    culture: grecque
+    id: grecque-ariane
+    relations:
+      parents: []
+      children:
+        - id: grecque-nopion
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.62.6
+        - id: grecque-staphylos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.2
+        - id: grecque-thoas
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.9.27
+      siblings: []
+      consorts:
+        - id: grecque-dionysos
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.947–949
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.62.6
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.2
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.9.27
+  - name: Œnopion
+    slug: nopion
+    culture: grecque
+    id: grecque-nopion
+    relations:
+      parents:
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.62.6
+        - id: grecque-ariane
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.62.6
+      children: []
+      siblings: []
+      consorts: []
+  - name: Staphylos
+    slug: staphylos
+    culture: grecque
+    id: grecque-staphylos
+    relations:
+      parents:
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.2
+        - id: grecque-ariane
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.1.2
+      children: []
+      siblings: []
+      consorts: []
+  - name: Thoas
+    slug: thoas
+    culture: grecque
+    id: grecque-thoas
+    relations:
+      parents:
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.9.27
+        - id: grecque-ariane
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.9.27
       children: []
       siblings: []
       consorts: []

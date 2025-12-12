@@ -20,6 +20,9 @@ Transformation d'un mortel en dieu. Exemple célèbre : Héraclès.
 
 ## C
 
+### Catabasis
+Descente volontaire d’un dieu ou d’un héros dans le monde des morts. La catabasis est un motif majeur des mythes initiatiques et de renaissance. Exemples notables : Orphée, Héraclès, et Dionysos lors du retour de Sémélé.
+
 ### Chthonien
 Relatif au monde souterrain. Désigne les divinités liées à la terre, aux morts, aux forces profondes.
 
@@ -49,6 +52,9 @@ Mortel exceptionnel, parfois demi-dieu, qui accomplit exploits ou quêtes. Héra
 
 ### Hiérogamie
 Union sacrée entre deux divinités symbolisant la cohésion cosmique.
+
+### Hubris
+Démesure orgueilleuse qui pousse un mortel à dépasser sa condition et à défier l’ordre divin. L’hubris appelle presque toujours un châtiment exemplaire infligé par les dieux. Exemples célèbres : Niobé, Icare, Achille dans certaines traditions.
 
 ## M
 

@@ -32,7 +32,3 @@ Héphaïstos forge les armes d’Achille, le trône d’Héra, les chaînes de P
 
 ## Iconographie
 Il apparaît comme un artisan robuste, souvent boiteux, tenant marteau, enclume ou pinces. La lueur du foyer et les étincelles de la forge sont au cœur de sa représentation, symboles de la puissance créatrice issue du feu maîtrisé.
-
-## Ascendance :
-– Version canonique (Hésiode) : fils d’Héra seule.
-– Variante (Homère) : fils de Zeus et Héra.

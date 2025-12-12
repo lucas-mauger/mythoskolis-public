@@ -36,11 +36,10 @@ function getNatureLabel(node: any): string | null {
 
         <ul class="space-y-3">
           {section.nodes.map((node) => {
-            const primarySource = node.sources?.[0];
             return (
               <li class="relation-node p-4 bg-white rounded-lg border border-gray-200 shadow-sm text-sm">
                 <div class="flex items-start justify-between gap-3">
-                  <div>
+                  <div class="space-y-1">
                     <p class="font-semibold text-gray-900">{node.name}</p>
                     {node.display_class || node.nature ? (
                       <span class="nature-badge">{getNatureLabel(node)}</span>
@@ -62,12 +61,48 @@ function getNatureLabel(node: any): string | null {
                   </p>
                 )}
 
-                {primarySource && (
-                  <p class="text-xs text-gray-500 mt-2">
-                    Source : {primarySource.author}, {primarySource.work}
-                    {primarySource.note ? ` — ${primarySource.note}` : ''}
-                  </p>
-                )}
+                {node.sources && node.sources.length > 0 ? (
+                  (() => {
+                    const hasMultipleSources = node.sources.length > 1;
+                    if (!hasMultipleSources) {
+                      const src = node.sources[0];
+                      return (
+                        <div class="mt-2 space-y-1 text-xs text-gray-500 leading-relaxed">
+                          <div class="flex items-center gap-2">
+                            <span class="font-semibold text-gray-600">Source :</span>
+                            {src.consensus === false ? <span class="non-consensus-badge">non consensuel</span> : null}
+                          </div>
+                          <p class="text-gray-500">
+                            {src.author}
+                            {src.work ? `, ${src.work}` : ''}
+                            {src.note ? ` — ${src.note}` : ''}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div class="mt-2 space-y-1.5 text-xs text-gray-500 leading-relaxed">
+                        <p class="font-semibold text-gray-600">Sources :</p>
+                        <div class="space-y-1">
+                          {node.sources.map((src) => (
+                            <div class="flex items-start justify-between gap-3 border-t border-slate-200 pt-1.5 first:border-t-0 first:pt-0">
+                              <p class="flex-1">
+                                {src.author}
+                                {src.work ? `, ${src.work}` : ''}
+                                {src.note ? ` — ${src.note}` : ''}
+                              </p>
+                              {src.consensus === false ? (
+                                <span class="non-consensus-badge">non consensuel</span>
+                              ) : (
+                                <span class="consensus-badge">consensuel</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()
+                ) : null}
               </li>
             );
           })}
@@ -89,6 +124,18 @@ function getNatureLabel(node: any): string | null {
     font-size: 0.8rem;
     font-weight: 600;
     border: 1px solid rgba(139, 90, 43, 0.22);
+  }
+
+  .non-consensus-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    background: #fff7ed;
+    color: #9a3412;
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    font-size: 0.68rem;
+    font-weight: 700;
   }
 
   :global(.theme-dark .ego-detail-card) {
@@ -134,5 +181,27 @@ function getNatureLabel(node: any): string | null {
     background: #3a2f23;
     color: #f6e7d0;
     border-color: rgba(246, 231, 208, 0.35);
+  }
+  :global(.theme-dark .ego-detail-card .non-consensus-badge) {
+    background: rgba(76, 29, 149, 0.28);
+    color: #e9d5ff;
+    border-color: rgba(233, 213, 255, 0.4);
+  }
+
+  .consensus-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    background: #eef2ff;
+    color: #1d4ed8;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  :global(.theme-dark .ego-detail-card .consensus-badge) {
+    background: rgba(59, 130, 246, 0.16);
+    color: #bfdbfe;
+    border-color: rgba(191, 219, 254, 0.4);
   }
 </style>

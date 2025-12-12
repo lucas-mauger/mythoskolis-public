@@ -4,6 +4,8 @@ import Footer from '../../components/Footer.astro';
 import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
 import { getCollection, getEntry } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const recits = await getCollection('recits');
 const tagEntry = await getEntry('data', 'tags-recits');
@@ -15,7 +17,9 @@ tagEntry?.data?.categories?.forEach((cat) => {
 const recitsWithTags = recits.map((r) => {
   const tagIds = r.data.tags || [];
   const tagLabels = tagIds.map((id) => tagLabelMap.get(id) ?? id);
-  return { ...r, tagIds, tagLabels };
+  const imagePath = path.join(process.cwd(), 'public', 'recits_images', `${r.data.id}.webp`);
+  const imageUrl = fs.existsSync(imagePath) ? `/recits_images/${r.data.id}.webp` : null;
+  return { ...r, tagIds, tagLabels, imageUrl };
 });
 
 const sorted = recitsWithTags
@@ -76,17 +80,33 @@ const pageDescription =
             return (
               <a
                 href={`/recits/${recit.slug}/`}
-                class="recit-card mk-card block rounded-xl p-5 shadow-sm hover:shadow-md transition dark:hover:shadow-lg"
+                class="recit-card mk-card group relative block overflow-hidden transition hover:shadow-md dark:hover:shadow-lg"
                 data-tags={tagString}
                 data-search={`${recit.data.title} ${tagString}`}
               >
-                <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-50">{recit.data.title}</h2>
-                {recit.data.era && (
-                  <p class="text-xs text-slate-500 mt-1 dark:text-slate-300">{recit.data.era}</p>
-                )}
-                {recit.data.summary && (
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-3 line-clamp-3">{recit.data.summary}</p>
-                )}
+                {recit.imageUrl ? (
+                  <>
+                    <div
+                      class="absolute inset-0 bg-cover bg-center transition-transform duration-200 group-hover:scale-[1.02]"
+                      style={`background-image: url(${recit.imageUrl});`}
+                    />
+                    <div class="absolute inset-0 bg-slate-900/50 transition duration-200 group-hover:bg-slate-900/40" />
+                  </>
+                ) : null}
+
+                <div class={`mk-card-body relative flex h-full flex-col ${recit.imageUrl ? 'text-white' : ''}`}>
+                  <h2 class={`mk-card-title ${recit.imageUrl ? 'text-white' : ''}`}>{recit.data.title}</h2>
+                  {recit.data.era && (
+                    <p class={`text-xs mt-1 ${recit.imageUrl ? 'text-slate-100/90' : 'text-slate-500 dark:text-slate-300'}`}>
+                      {recit.data.era}
+                    </p>
+                  )}
+                  {recit.data.summary && (
+                    <p class={`text-sm mt-3 line-clamp-3 ${recit.imageUrl ? 'text-white/95' : 'text-slate-600 dark:text-slate-300'}`}>
+                      {recit.data.summary}
+                    </p>
+                  )}
+                </div>
               </a>
             );
           })}
