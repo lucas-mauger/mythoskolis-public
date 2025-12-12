@@ -7,12 +7,6 @@ entities:
       parents:
         - id: grecque-cronos
           consensus: true
-          sources: []
-        - id: grecque-rhea
-          consensus: true
-          sources: []
-        - id: grecque-cronos
-          consensus: true
           sources:
             - author: 'Source : Hésiode'
               work: Théogonie — v.453–458
