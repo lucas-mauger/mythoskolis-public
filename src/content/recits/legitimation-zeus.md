@@ -6,16 +6,12 @@ type: "recit"
 
 main_entities:
   - grecque-zeus
-  - grecque-rhea
-  - grecque-cronos
   - grecque-hades
   - grecque-poseidon
   - grecque-hestia
   - grecque-demeter
   - grecque-hera
   - grecque-gaia
-opponents:
-  - grecque-cronos
 places:
   - Olympe
   - Mont Othrys

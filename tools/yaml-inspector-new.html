@@ -69,6 +69,88 @@
         color: #64748b;
         font-size: 0.9rem;
       }
+      .sources-list {
+        margin: 6px 0 0 16px;
+        padding: 0;
+        list-style: disc;
+      }
+      .sources-list li {
+        margin: 4px 0;
+      }
+      .source-actions {
+        display: inline-flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-left: 8px;
+      }
+      .entity-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .entity-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .entity-toggle {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+        padding: 2px 4px;
+      }
+      .entity-actions {
+        display: inline-flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .entity-body {
+        margin-top: 8px;
+      }
+      .entity-collapsed .entity-body {
+        display: none;
+      }
+      .rel-entry {
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .rel-entry.consensus {
+        background: #e0f2fe;
+        border-color: #bfdbfe;
+      }
+      .rel-entry.non-consensus {
+        background: #fef9c3;
+        border-color: #fde68a;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        border: 1px solid transparent;
+        font-weight: 600;
+      }
+      .badge.consensus {
+        background: #e0f2fe;
+        border-color: #bfdbfe;
+        color: #0369a1;
+      }
+      .badge.non-consensus {
+        background: #fef9c3;
+        border-color: #fde68a;
+        color: #92400e;
+      }
       .pill {
         display: inline-block;
         padding: 2px 8px;
@@ -254,6 +336,7 @@
             <option value="child">child</option>
             <option value="sibling">sibling</option>
             <option value="consort">consort</option>
+            <option value="nuclear-family">nuclear family</option>
           </select>
         </label>
         <label>Consensus ?
@@ -276,13 +359,13 @@
         </label>
       </div>
       <div class="form-grid">
-        <label>Sources (entités)
+        <label><span id="b-source-label">Sources (entités)</span>
           <div style="display:flex; gap:8px; align-items:center;">
             <input type="text" id="b-source-input" placeholder="slug ou id" autocomplete="off" />
           </div>
           <div class="pill-list" id="b-source-list"></div>
         </label>
-        <label>Cibles (entités)
+        <label><span id="b-target-label">Cibles (entités)</span>
           <div style="display:flex; gap:8px; align-items:center;">
             <input type="text" id="b-target-input" placeholder="slug ou id" autocomplete="off" />
           </div>
@@ -314,42 +397,6 @@
         </label>
         <label>ID (auto)
           <input type="text" id="c-id" readonly />
-        </label>
-      </div>
-      <div class="section-title" style="margin-top:12px;">
-        <span>Relation initiale (optionnel)</span>
-      </div>
-      <div class="form-grid">
-        <label>Type
-          <select id="c-rel-type">
-            <option value="">(aucun)</option>
-            <option value="parent">parent</option>
-            <option value="child">child</option>
-            <option value="sibling">sibling</option>
-            <option value="consort">consort</option>
-          </select>
-        </label>
-        <label>Cible (slug ou id)
-          <input list="entity-list" type="text" id="c-rel-target" placeholder="grecque-xxx" />
-          <datalist id="entity-list"></datalist>
-        </label>
-        <label>Consensus ?
-          <input type="checkbox" id="c-rel-consensus" checked />
-        </label>
-        <label>Créer aussi l'inverse
-          <input type="checkbox" id="c-rel-inverse" checked />
-        </label>
-        <label>Sources (CSV auteur, œuvre, passage)
-          <input type="text" id="c-rel-combo" placeholder="Auteur, Œuvre, Passage" />
-        </label>
-        <label>Source auteur
-          <input type="text" id="c-rel-author" />
-        </label>
-        <label>Source œuvre
-          <input type="text" id="c-rel-work" />
-        </label>
-        <label>Passage
-          <input type="text" id="c-rel-passage" />
         </label>
       </div>
       <div class="status" id="create-status"></div>
@@ -398,6 +445,7 @@
 
     <script>
       const byId = new Map();
+      const expandedEntities = new Set();
       let entities = [];
       let currentEntity = null;
       let toastTimer = null;
@@ -463,6 +511,23 @@
         });
       }
 
+      function toggleEntityCard(card, expanded, persist = true) {
+        if (!card) return;
+        const id = card.getAttribute("data-entity-id");
+        if (expanded) {
+          card.classList.remove("entity-collapsed");
+          if (persist && id) expandedEntities.add(id);
+        } else {
+          card.classList.add("entity-collapsed");
+          if (persist && id) expandedEntities.delete(id);
+        }
+        const btn = card.querySelector("[data-toggle-entity]");
+        if (btn) {
+          btn.textContent = expanded ? "▼" : "▶";
+          btn.setAttribute("aria-label", expanded ? "Replier" : "Dérouler");
+        }
+      }
+
       function buildRelationLabel(r) {
         const src = byId.get(r.source);
         const tgt = byId.get(r.target);
@@ -484,48 +549,92 @@
         return `${srcName} → ${tgtName}`;
       }
 
+      function formatRelationDisplay(r, focusIds) {
+        const src = byId.get(r.source);
+        const tgt = byId.get(r.target);
+        const srcName = src?.name ?? r.source;
+        const tgtName = tgt?.name ?? r.target;
+        let displayType = r.type;
+        let label = buildRelationLabel(r);
+
+        if (r.type === "parent") {
+          const srcFocused = focusIds.has(r.source);
+          if (r.origin === "children" && srcFocused) {
+            // Vue descendante depuis le parent affiché
+            displayType = "child";
+            label = `${tgtName} est enfant de ${srcName}`;
+          }
+        }
+
+        return { displayType, label };
+      }
+
   function renderRelations(searchValue) {
     const wrap = document.getElementById("relations");
     wrap.innerHTML = "";
     const summaryEl = document.getElementById("relations-summary");
-    const q = (searchValue || "").toLowerCase();
-        const all = buildRelationList();
-        const filtered = all.filter((r) => {
-          if (!q) return true;
-          const srcSlug = byId.get(r.source)?.slug ?? r.source;
-          const tgtSlug = byId.get(r.target)?.slug ?? r.target;
-          return srcSlug.toLowerCase().startsWith(q) || tgtSlug.toLowerCase().startsWith(q);
-        });
-        summaryEl.textContent = `${filtered.length} relation(s)`;
-        if (!filtered.length) {
-          wrap.innerHTML = '<p class="muted">Aucune relation</p>';
-          return;
-        }
-        const byType = filtered.reduce((acc, r) => {
-          acc[r.type] = acc[r.type] || [];
-          acc[r.type].push(r);
-          return acc;
-        }, {});
-        ["parent", "child", "sibling", "consort"].forEach((type) => {
-          const list = byType[type] || [];
-          if (!list.length) return;
-          const section = document.createElement("div");
-          const title = document.createElement("div");
-          title.className = "section-title";
-          title.innerHTML = `<span>${type}</span><span class="count">${list.length}</span>`;
-          section.appendChild(title);
-          list.forEach((r) => {
-            const div = document.createElement("div");
-            div.className = "item";
-            div.innerHTML = `
-              <div><span class="pill ${r.type}">${r.type}</span> ${buildRelationLabel(r)}</div>
+    const q = (searchValue || "").toLowerCase().trim();
+    const hasQuery = q.length >= 3;
+    const expandedIds = Array.from(document.querySelectorAll("#entities .item:not(.entity-collapsed)"))
+      .map((el) => el.getAttribute("data-entity-id"))
+      .filter(Boolean);
+    const showExpandedOnly = !hasQuery && expandedIds.length > 0;
+    const searchIds = hasQuery
+      ? entities.filter((e) => (e.slug || "").toLowerCase().startsWith(q)).map((e) => e.id)
+      : [];
+    const focusIds = new Set(hasQuery ? searchIds : expandedIds);
+
+    const all = buildRelationList();
+    const filtered = all.filter((r) => {
+      if (hasQuery) {
+        const srcSlug = byId.get(r.source)?.slug ?? r.source;
+        const tgtSlug = byId.get(r.target)?.slug ?? r.target;
+        return srcSlug.toLowerCase().startsWith(q) || tgtSlug.toLowerCase().startsWith(q);
+      }
+      if (showExpandedOnly) {
+        return expandedIds.includes(r.source) || expandedIds.includes(r.target);
+      }
+      return false;
+    });
+
+    const decorated = filtered.map((r) => {
+      const formatted = formatRelationDisplay(r, focusIds);
+      return { ...r, displayType: formatted.displayType, label: formatted.label };
+    });
+
+    summaryEl.textContent = `${decorated.length} relation(s)`;
+    if (!decorated.length) {
+      wrap.innerHTML = hasQuery
+        ? '<p class="muted">Aucune relation</p>'
+        : '<p class="muted">Relations masquées (saisis ≥ 3 caractères ou déroule une carte).</p>';
+      return;
+    }
+    const byType = decorated.reduce((acc, r) => {
+      const key = r.displayType || r.type;
+      acc[key] = acc[key] || [];
+      acc[key].push(r);
+      return acc;
+    }, {});
+    ["parent", "child", "sibling", "consort"].forEach((type) => {
+      const list = byType[type] || [];
+      if (!list.length) return;
+      const section = document.createElement("div");
+      const title = document.createElement("div");
+      title.className = "section-title";
+      title.innerHTML = `<span>${type}</span><span class="count">${list.length}</span>`;
+      section.appendChild(title);
+      list.forEach((r) => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+              <div><span class="pill ${r.displayType || r.type}">${r.displayType || r.type}</span> ${r.label}</div>
               ${r.consensus === false ? '<div class="muted">Non consensuel</div>' : ""}
             `;
-            section.appendChild(div);
-          });
-          wrap.appendChild(section);
-        });
-      }
+        section.appendChild(div);
+      });
+      wrap.appendChild(section);
+    });
+  }
 
   function setupEditor() {
         const editor = document.getElementById("editor");
@@ -584,7 +693,11 @@
         const editor = document.getElementById("editor");
         if (!editor) return;
         const target = document.querySelector(`[data-entity-id="${ent.id}"]`);
-        if (target) target.appendChild(editor);
+        if (target) {
+          toggleEntityCard(target, true);
+          const body = target.querySelector(".entity-body") || target;
+          body.appendChild(editor);
+        }
         editor.style.display = "block";
         fillEditor(ent);
         const status = document.getElementById("editor-status");
@@ -605,30 +718,84 @@
         const wrap = document.createElement("div");
         ["parents", "children", "siblings", "consorts"].forEach((type) => {
           const list = dedupeList(getRelList(rel, type), type);
-          if (!list.length) return;
+          const grouped = groupRelationsByTarget(list);
+          if (!grouped.length) return;
           const section = document.createElement("div");
           const title = document.createElement("div");
           title.className = "section-title";
-          title.innerHTML = `<span>${type}</span><span class="count">${list.length}</span>`;
+          title.innerHTML = `<span>${type}</span><span class="count">${grouped.length}</span>`;
           section.appendChild(title);
-          list.forEach((item) => {
-            const tgt = byId.get(item.id);
-            const name = tgt?.name ?? item.id;
-            const srcLine = (item.sources || [])
-              .map((s) => [s.author, s.work, s.passage].filter(Boolean).join(", "))
-              .filter(Boolean)
-              .join(" ; ");
+          grouped.forEach(({ targetId, entries }) => {
+            const tgt = byId.get(targetId);
+            const name = tgt?.name ?? targetId;
+            const hasNonConsensus = entries.some((e) => e.consensus === false);
             const div = document.createElement("div");
-            div.className = `item ${item.consensus === false ? "non-consensus" : "consensus"}`;
+            div.className = "item";
+            const badgeLabel = { parents: "parent", children: "child", siblings: "sibling", consorts: "consort" }[type] || type;
+            const renderSourceLine = (entry) => {
+              const srcLine = (entry.sources || [])
+                .map((s) => [s.author, s.work, s.passage].filter(Boolean).join(", "))
+                .filter(Boolean)
+                .join(", ");
+              const label = srcLine || "Sans source";
+              return { label };
+            };
+            const sourcesHtml = entries
+              .map((entry) => {
+                const { label } = renderSourceLine(entry);
+                return `
+                  <li>
+                    <span class="muted" style="font-style:italic;">${label}</span>
+                    ${entry.consensus === false ? '<span class="muted" style="margin-left:6px;">Non consensuel</span>' : ""}
+                    <span class="source-actions">
+                      <button class="btn secondary" data-edit-rel data-source="${ent.id}" data-type="${type}" data-target="${targetId}" data-consensus="${entry.consensus !== false}" data-sources='${JSON.stringify(entry.sources || [])}'>Modifier</button>
+                      <button class="btn secondary" data-del-rel data-source="${ent.id}" data-type="${type}" data-target="${targetId}" data-consensus="${entry.consensus !== false}" data-sources='${JSON.stringify(entry.sources || [])}'>Supprimer</button>
+                    </span>
+                  </li>
+                `;
+              })
+              .join("");
+            const singleEntry = entries.length === 1 ? entries[0] : null;
             div.innerHTML = `
               <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                <span class="pill ${type.slice(0, -1)}">${type.slice(0, -1)}</span>
+                <span class="pill ${badgeLabel}">${badgeLabel}</span>
                 <span>${name}</span>
-                <button class="btn secondary" data-edit-rel data-source="${ent.id}" data-type="${type}" data-target="${item.id}" data-consensus="${item.consensus !== false}" data-sources='${JSON.stringify(item.sources || [])}'>Modifier</button>
-                <button class="btn secondary" data-del-rel data-source="${ent.id}" data-type="${type}" data-target="${item.id}" data-consensus="${item.consensus !== false}" data-sources='${JSON.stringify(item.sources || [])}'>Supprimer</button>
-                ${item.consensus === false ? '<span class="muted">Non consensuel</span>' : ""}
               </div>
-              ${srcLine ? `<div class="muted" style="font-style:italic; margin-top:4px;">${srcLine}</div>` : ""}
+              ${
+                singleEntry
+                  ? (() => {
+                      const { label } = renderSourceLine(singleEntry);
+                      return `
+                        <div class="rel-entry ${singleEntry.consensus === false ? "non-consensus" : "consensus"}" style="margin-top:6px;">
+                          <span class="badge ${singleEntry.consensus === false ? "non-consensus" : "consensus"}">${singleEntry.consensus === false ? "non consensuel" : "consensuel"}</span>
+                          <span class="muted" style="font-style:italic;">${label}</span>
+                          <span class="source-actions">
+                            <button class="btn secondary" data-edit-rel data-source="${ent.id}" data-type="${type}" data-target="${targetId}" data-consensus="${singleEntry.consensus !== false}" data-sources='${JSON.stringify(singleEntry.sources || [])}'>Modifier</button>
+                            <button class="btn secondary" data-del-rel data-source="${ent.id}" data-type="${type}" data-target="${targetId}" data-consensus="${singleEntry.consensus !== false}" data-sources='${JSON.stringify(singleEntry.sources || [])}'>Supprimer</button>
+                          </span>
+                        </div>
+                      `;
+                    })()
+                  : `<ul class="sources-list">
+                      ${entries
+                        .map((entry) => {
+                          const { label } = renderSourceLine(entry);
+                          return `
+                            <li>
+                              <div class="rel-entry ${entry.consensus === false ? "non-consensus" : "consensus"}">
+                                <span class="badge ${entry.consensus === false ? "non-consensus" : "consensus"}">${entry.consensus === false ? "non consensuel" : "consensuel"}</span>
+                                <span class="muted" style="font-style:italic;">${label}</span>
+                                <span class="source-actions">
+                                  <button class="btn secondary" data-edit-rel data-source="${ent.id}" data-type="${type}" data-target="${targetId}" data-consensus="${entry.consensus !== false}" data-sources='${JSON.stringify(entry.sources || [])}'>Modifier</button>
+                                  <button class="btn secondary" data-del-rel data-source="${ent.id}" data-type="${type}" data-target="${targetId}" data-consensus="${entry.consensus !== false}" data-sources='${JSON.stringify(entry.sources || [])}'>Supprimer</button>
+                                </span>
+                              </div>
+                            </li>
+                          `;
+                        })
+                        .join("")}
+                    </ul>`
+              }
             `;
             section.appendChild(div);
           });
@@ -691,6 +858,7 @@
         }
         wrap.innerHTML = "";
         const q = (filterValue || "").toLowerCase();
+        const autoExpand = q.trim().length >= 3;
         const list = !q ? entities : entities.filter((e) => e.slug?.toLowerCase().startsWith(q));
         if (!list.length) {
           wrap.innerHTML = '<p class="muted">Aucune entité</p>';
@@ -701,21 +869,26 @@
           .sort((a, b) => a.slug.localeCompare(b.slug))
           .forEach((e) => {
             const div = document.createElement("div");
-            div.className = "item";
+            const expanded = autoExpand || expandedEntities.has(e.id);
+            div.className = expanded ? "item" : "item entity-collapsed";
             div.dataset.entityId = e.id;
             div.innerHTML = `
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-                <div>
-                  <strong>${e.name ?? e.id}</strong>
-                  <div class="muted">${e.id}</div>
+              <div class="entity-header">
+                <div class="entity-title">
+                  <button class="entity-toggle" data-toggle-entity="${e.id}" aria-label="${expanded ? "Replier" : "Dérouler"}">${expanded ? "▼" : "▶"}</button>
+                  <div>
+                    <strong>${e.name ?? e.id}</strong>
+                    <div class="muted">${e.id}</div>
+                  </div>
                 </div>
-              <div style="display:flex; gap:8px;">
-                <button class="btn" data-edit="${e.id}">Éditer</button>
-                <button class="btn" data-add-rel="${e.id}">Ajouter relation</button>
-                <button class="btn secondary" data-delete="${e.id}">Supprimer</button>
+                <div class="entity-actions">
+                  <button class="btn" data-edit="${e.id}">Éditer</button>
+                  <button class="btn" data-add-rel="${e.id}">Ajouter relation</button>
+                  <button class="btn secondary" data-delete="${e.id}">Supprimer</button>
+                </div>
               </div>
-            </div>
-              <div class="editor small-editor" id="rel-editor-${e.id}" style="display:none;">
+              <div class="entity-body">
+                <div class="editor small-editor" id="rel-editor-${e.id}" style="display:none;">
         <div class="form-grid">
           <label>Type
             <select name="type">
@@ -754,15 +927,28 @@
                 </div>
               </div>
               <div class="relations-block">${renderRelationsForEntity(e)}</div>
+              </div>
             `;
             wrap.appendChild(div);
+            // harmonise état visuel sans persister l'auto-dépliage forcé
+            toggleEntityCard(div, expanded, false);
           });
+
+        const expandCard = (id) => {
+          const card = wrap.querySelector(`[data-entity-id="${id}"]`);
+          if (card) toggleEntityCard(card, true);
+          return card;
+        };
 
         wrap.querySelectorAll("[data-edit]").forEach((btn) => {
           btn.addEventListener("click", () => {
             const id = btn.getAttribute("data-edit");
             const ent = byId.get(id);
-            if (ent) selectEntity(ent);
+            if (ent) {
+              const card = expandCard(id);
+              renderRelations(document.getElementById("search").value);
+              selectEntity(ent);
+            }
           });
         });
         wrap.querySelectorAll("[data-add-rel]").forEach((btn) => {
@@ -770,6 +956,8 @@
             const id = btn.getAttribute("data-add-rel");
             const form = document.getElementById(`rel-editor-${id}`);
             if (form) {
+              expandCard(id);
+              renderRelations(document.getElementById("search").value);
               form.style.display = "block";
               form.scrollIntoView({ behavior: "smooth", block: "start" });
               form.querySelector('input[name="target"]')?.focus();
@@ -876,6 +1064,16 @@
             }
           });
         });
+        wrap.querySelectorAll("[data-toggle-entity]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-toggle-entity");
+            const card = btn.closest(".item");
+            if (!card || !id) return;
+            const collapsed = card.classList.contains("entity-collapsed");
+            toggleEntityCard(card, collapsed);
+            renderRelations(document.getElementById("search").value);
+          });
+        });
       }
 
       function getRelList(rel, pluralType) {
@@ -903,6 +1101,16 @@
           seen.add(k);
           return true;
         });
+      }
+
+      function groupRelationsByTarget(list) {
+        const buckets = new Map();
+        list.forEach((item) => {
+          if (!item || !item.id) return;
+          if (!buckets.has(item.id)) buckets.set(item.id, []);
+          buckets.get(item.id).push(item);
+        });
+        return Array.from(buckets.entries()).map(([targetId, entries]) => ({ targetId, entries }));
       }
 
       function normalize(str) {
@@ -1133,7 +1341,6 @@
         const cultureInput = document.getElementById("c-culture");
         const idInput = document.getElementById("c-id");
         const cultureList = document.getElementById("culture-list");
-        const entityList = document.getElementById("entity-list");
 
         function slugify(str) {
           return str
@@ -1150,13 +1357,6 @@
             const option = document.createElement("option");
             option.value = c;
             cultureList.appendChild(option);
-          });
-          entityList.innerHTML = "";
-          entities.forEach((e) => {
-            const option = document.createElement("option");
-            option.value = e.id;
-            option.label = e.name ?? e.id;
-            entityList.appendChild(option);
           });
         }
 
@@ -1176,14 +1376,6 @@
           slugInput.value = "";
           cultureInput.value = "";
           idInput.value = "";
-          document.getElementById("c-rel-type").value = "";
-          document.getElementById("c-rel-target").value = "";
-          document.getElementById("c-rel-consensus").checked = true;
-          document.getElementById("c-rel-inverse").checked = true;
-          document.getElementById("c-rel-author").value = "";
-          document.getElementById("c-rel-work").value = "";
-          document.getElementById("c-rel-passage").value = "";
-          document.getElementById("c-rel-combo").value = "";
         status.textContent = "";
         status.className = "status";
       }
@@ -1200,13 +1392,6 @@
         nameInput?.addEventListener("input", recompute);
         slugInput?.addEventListener("input", recompute);
         cultureInput?.addEventListener("input", recompute);
-        attachAutocomplete(document.getElementById("c-rel-target"), "id");
-        setupSourceCombo(
-          document.getElementById("c-rel-combo"),
-          document.getElementById("c-rel-author"),
-          document.getElementById("c-rel-work"),
-          document.getElementById("c-rel-passage"),
-        );
 
         saveBtn?.addEventListener("click", async () => {
           status.textContent = "";
@@ -1220,24 +1405,7 @@
             status.className = "status err";
             return;
           }
-          const relType = document.getElementById("c-rel-type").value;
-          const relTarget = document.getElementById("c-rel-target").value.trim();
-        const relConsensus = document.getElementById("c-rel-consensus").checked;
-        const relInverse = document.getElementById("c-rel-inverse").checked;
-        const relAuthor = document.getElementById("c-rel-author").value.trim();
-        const relWork = document.getElementById("c-rel-work").value.trim();
-        const relPassage = document.getElementById("c-rel-passage").value.trim();
-
           const payload = { name, slug, culture };
-          if (relType && relTarget) {
-            payload.relation = {
-              type: relType,
-              targetId: relTarget,
-              consensus: relConsensus,
-              addInverse: relInverse,
-              sourceInfo: { author: relAuthor, work: relWork, passage: relPassage },
-            };
-          }
 
           status.textContent = "Création...";
           try {
@@ -1301,6 +1469,12 @@
         const bConsensus = document.getElementById("b-consensus");
         const bInverse = document.getElementById("b-inverse");
         const bApply = document.getElementById("b-apply");
+        const bCombo = document.getElementById("b-combo");
+        const bAuthor = document.getElementById("b-author");
+        const bWork = document.getElementById("b-work");
+        const bPassage = document.getElementById("b-passage");
+        const bSourceLabel = document.getElementById("b-source-label");
+        const bTargetLabel = document.getElementById("b-target-label");
         const bulkSources = [];
         const bulkTargets = [];
 
@@ -1331,6 +1505,12 @@
               renderBulkLists();
             }),
           );
+        };
+
+        const updateBulkLabels = () => {
+          const isNuclear = bType?.value === "nuclear-family";
+          if (bSourceLabel) bSourceLabel.textContent = isNuclear ? "Parents" : "Sources (entités)";
+          if (bTargetLabel) bTargetLabel.textContent = isNuclear ? "Enfants" : "Cibles (entités)";
         };
 
         const addBulkEntity = (input, bucket, entOverride) => {
@@ -1370,10 +1550,16 @@
         // Autocomplete : clic direct ajoute l'entité dans la liste
         attachAutocomplete(bSrcInput, "id", (ent) => addBulkEntity(bSrcInput, "src", ent));
         attachAutocomplete(bTgtInput, "id", (ent) => addBulkEntity(bTgtInput, "tgt", ent));
+        updateBulkLabels();
+        bType?.addEventListener("change", updateBulkLabels);
         bReset?.addEventListener("click", () => {
           bulkSources.length = 0;
           bulkTargets.length = 0;
           renderBulkLists();
+          if (bCombo) bCombo.value = "";
+          if (bAuthor) bAuthor.value = "";
+          if (bWork) bWork.value = "";
+          if (bPassage) bPassage.value = "";
           if (bStatus) {
             bStatus.textContent = "";
             bStatus.className = "status";
@@ -1392,13 +1578,77 @@
           const type = bType.value;
           const skipped = [];
           let created = 0;
+          const createRel = async (sourceId, targetId, relType, inverseFlag = addInverse, label) => {
+            try {
+              const res = await fetch("/relations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sourceId,
+                  targetId,
+                  type: relType,
+                  consensus,
+                  addInverse: inverseFlag,
+                  sourceInfo,
+                }),
+              });
+              const out = await res.json();
+              if (!res.ok) {
+                if (res.status === 409) {
+                  skipped.push(label || `${sourceId} → ${targetId}`);
+                  return;
+                }
+                throw new Error(out.error || "Erreur ajout");
+              }
+              created += 1;
+            } catch (err) {
+              skipped.push(`${label || `${sourceId} → ${targetId}`} (${err.message})`);
+            }
+          };
           if (bStatus) {
             bStatus.textContent = "Création en cours...";
             bStatus.className = "status";
           }
 
-          // Cas spécial fratrie : une seule liste suffit, on génère toutes les paires i ≠ j
-          if (type === "sibling") {
+          if (type === "nuclear-family") {
+            const parents = bulkSources;
+            const children = bulkTargets;
+            if (!parents.length || !children.length) {
+              if (bStatus) {
+                bStatus.textContent = "Ajoute au moins un parent et un enfant.";
+                bStatus.className = "status err";
+              }
+              return;
+            }
+            if (parents.length > 1) {
+              for (let i = 0; i < parents.length; i++) {
+                for (let j = i + 1; j < parents.length; j++) {
+                  const p1 = parents[i];
+                  const p2 = parents[j];
+                  if (!p1 || !p2 || p1.id === p2.id) continue;
+                  await createRel(p1.id, p2.id, "consort", true, `${p1.id} ↔ ${p2.id}`);
+                }
+              }
+            }
+            for (const parent of parents) {
+              for (const child of children) {
+                if (!parent || !child || parent.id === child.id) continue;
+                // parent link is porté par l'enfant → parent dans le YAML
+                await createRel(child.id, parent.id, "parent", addInverse, `${child.id} → ${parent.id}`);
+              }
+            }
+            if (children.length > 1) {
+              for (let i = 0; i < children.length; i++) {
+                for (let j = i + 1; j < children.length; j++) {
+                  const c1 = children[i];
+                  const c2 = children[j];
+                  if (!c1 || !c2 || c1.id === c2.id) continue;
+                  await createRel(c1.id, c2.id, "sibling", true, `${c1.id} ↔ ${c2.id}`);
+                }
+              }
+            }
+          } else if (type === "sibling") {
+            // Cas spécial fratrie : une seule liste suffit, on génère toutes les paires i ≠ j
             const list = bulkSources.length ? bulkSources : bulkTargets;
             if (!list || list.length < 2) {
               if (bStatus) {

@@ -12,12 +12,6 @@ entities:
           consensus: true
           sources: []
       children:
-        - id: grecque-apollon
-          consensus: true
-          sources: []
-        - id: grecque-artemis
-          consensus: true
-          sources: []
         - id: grecque-ares
           consensus: true
           sources:
@@ -162,6 +156,18 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.901–906
+        - id: grecque-apollon
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
+        - id: grecque-artemis
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
       siblings:
         - id: grecque-hestia
           consensus: true
@@ -281,10 +287,16 @@ entities:
       children:
         - id: grecque-apollon
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
         - id: grecque-artemis
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
       siblings:
         - id: grecque-asteria
           consensus: true
@@ -307,15 +319,24 @@ entities:
       parents:
         - id: grecque-zeus
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
         - id: grecque-leto
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
       children: []
       siblings:
         - id: grecque-apollon
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
       consorts: []
   - name: Apollon
     slug: apollon
@@ -325,16 +346,61 @@ entities:
       parents:
         - id: grecque-leto
           consensus: true
-          sources: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
         - id: grecque-zeus
           consensus: true
-          sources: []
-      children: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
+      children:
+        - id: grecque-asclepios
+          consensus: true
+          sources:
+            - author: Pindare
+              work: Pythiques
+              passage: III
+        - id: grecque-ion
+          consensus: false
+          sources:
+            - author: Euripide
+              work: Ion
+              passage: v.10–20
+        - id: grecque-troilos
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Fables
+              passage: '90'
       siblings:
         - id: grecque-artemis
           consensus: true
-          sources: []
-      consorts: []
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.918–920
+      consorts:
+        - id: grecque-coronis
+          consensus: true
+          sources:
+            - author: Pindare
+              work: Pythiques
+              passage: III
+        - id: grecque-creuse
+          consensus: false
+          sources:
+            - author: Euripide
+              work: Ion
+              passage: v.10–20
+        - id: grecque-hecube
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Fables
+              passage: '90'
   - name: Cronos
     slug: cronos
     culture: grecque
@@ -1047,12 +1113,6 @@ entities:
     id: grecque-typhon
     relations:
       parents:
-        - id: grecque-gaia
-          consensus: true
-          sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.176–194 ; v.820–868
         - id: grecque-tartare
           consensus: true
           sources:
@@ -2071,6 +2131,12 @@ entities:
             - author: Pausanias
               work: Description de la Grèce
               passage: VIII, 25, 4–8
+        - id: grecque-polypheme
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.3
       siblings:
         - id: grecque-zeus
           consensus: true
@@ -2139,6 +2205,12 @@ entities:
             - author: Pausanias
               work: Description de la Grèce
               passage: VIII, 25, 4–8
+        - id: grecque-thoosa
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.3
   - name: Océan
     slug: ocean
     culture: grecque
@@ -18576,6 +18648,24 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.337–370
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
       children:
         - id: grecque-iris
           consensus: true
@@ -18638,6 +18728,42 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.337–370
+        - id: grecque-maia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-alcyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-merope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-asterope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-taygete
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-celeno
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
       consorts:
         - id: grecque-thaumas
           consensus: true
@@ -19716,21 +19842,6 @@ entities:
               passage: I.9.8
       siblings: []
       consorts: []
-  - name: Thoosa
-    slug: thoosa
-    culture: grecque
-    id: grecque-thoosa
-    relations:
-      parents: []
-      children:
-        - id: grecque-polypheme
-          consensus: true
-          sources:
-            - author: Homère
-              work: Odyssée
-              passage: I
-      siblings: []
-      consorts: []
   - name: Polyphème
     slug: polypheme
     culture: grecque
@@ -19743,12 +19854,18 @@ entities:
             - author: Homère
               work: Odyssée
               passage: I
-        - id: grecque-thoosa
-          consensus: true
+        - id: grecque-poseidon
+          consensus: false
           sources:
-            - author: Homère
-              work: Odyssée
-              passage: I
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.3
+        - id: grecque-thoosa
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.3
       children: []
       siblings: []
       consorts: []
@@ -20033,7 +20150,25 @@ entities:
     culture: grecque
     id: grecque-maia
     relations:
-      parents: []
+      parents:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
       children:
         - id: grecque-hermes
           consensus: true
@@ -20041,7 +20176,43 @@ entities:
             - author: Anonyme
               work: Hymne homérique à Hermès
               passage: v.3–5
-      siblings: []
+      siblings:
+        - id: grecque-alcyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-merope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-asterope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-taygete
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-celeno
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
       consorts:
         - id: grecque-zeus
           consensus: true
@@ -20145,9 +20316,75 @@ entities:
             - author: Anonyme
               work: Hymne homérique à Hermès
               passage: v.3–5
-      children: []
+      children:
+        - id: grecque-hermaphrodite
+          consensus: false
+          sources:
+            - author: Ovide
+              work: Métamorphoses
+              passage: IV ; 274–388
+        - id: grecque-abderos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: II.5.8
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Homère
+              work: Hymne homérique à Pan
+              passage: v.34–47
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Hérodote
+              work: Histoires
+              passage: II
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholia in Hymnum Homericum ad Panem
+              passage: ad v. 34–47.
       siblings: []
-      consorts: []
+      consorts:
+        - id: grecque-nymphe-inconnue
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholia in Hymnum Homericum ad Panem
+              passage: ad v. 34–47.
+        - id: grecque-callisto
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+        - id: grecque-penelope
+          consensus: false
+          sources:
+            - author: Hérodote
+              work: Histoires
+              passage: II
+        - id: grecque-dryope
+          consensus: false
+          sources:
+            - author: Homère
+              work: Hymne homérique à Pan
+              passage: v.34–47
   - name: Dionysos
     slug: dionysos
     culture: grecque
@@ -20218,6 +20455,12 @@ entities:
             - author: Homère
               work: Hymne homérique à Aphrodite
               passage: v.45–290
+        - id: grecque-hermaphrodite
+          consensus: false
+          sources:
+            - author: Ovide
+              work: Métamorphoses
+              passage: IV ; 274–388
       siblings: []
       consorts:
         - id: grecque-ares
@@ -20952,7 +21195,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.886–900
-      children: []
+      children:
+        - id: grecque-erichthonios
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.14.6
       siblings: []
       consorts: []
   - name: Astéria
@@ -21297,7 +21546,91 @@ entities:
             - author: Apollodore
               work: Bibliothèque
               passage: I.2.2
-      children: []
+      children:
+        - id: grecque-maia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-alcyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-merope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-asterope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-taygete
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-celeno
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-maia
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-alcyone
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-merope
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-asterope
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-taygete
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-celeno
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-electre
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
       siblings:
         - id: grecque-menetios
           consensus: true
@@ -21317,7 +21650,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.507–511
-      consorts: []
+      consorts:
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
   - name: Ménétios
     slug: menetios
     culture: grecque
@@ -22472,4 +22811,727 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.901–906
+      consorts: []
+  - name: Hermaphrodite
+    slug: hermaphrodite
+    culture: grecque
+    id: grecque-hermaphrodite
+    relations:
+      parents:
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Ovide
+              work: Métamorphoses
+              passage: IV ; 274–388
+        - id: grecque-aphrodite
+          consensus: false
+          sources:
+            - author: Ovide
+              work: Métamorphoses
+              passage: IV ; 274–388
+      children: []
+      siblings: []
+      consorts: []
+  - name: Pléioné
+    slug: pleione
+    culture: grecque
+    id: grecque-pleione
+    relations:
+      parents: []
+      children:
+        - id: grecque-maia
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-alcyone
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-merope
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-asterope
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-taygete
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-celeno
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-electre
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+      siblings: []
+      consorts:
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+  - name: Alcyone
+    slug: alcyone
+    culture: grecque
+    id: grecque-alcyone
+    relations:
+      parents:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+      children: []
+      siblings:
+        - id: grecque-maia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-merope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-asterope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-taygete
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-celeno
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+      consorts: []
+  - name: Mérope
+    slug: merope
+    culture: grecque
+    id: grecque-merope
+    relations:
+      parents:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+      children: []
+      siblings:
+        - id: grecque-maia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-alcyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-asterope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-taygete
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-celeno
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+      consorts: []
+  - name: Astérope
+    slug: asterope
+    culture: grecque
+    id: grecque-asterope
+    relations:
+      parents:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+      children: []
+      siblings:
+        - id: grecque-maia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-alcyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-merope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-taygete
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-celeno
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+      consorts: []
+  - name: Taygète
+    slug: taygete
+    culture: grecque
+    id: grecque-taygete
+    relations:
+      parents:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+      children: []
+      siblings:
+        - id: grecque-maia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-alcyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-merope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-asterope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-celeno
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+      consorts: []
+  - name: Céléno
+    slug: celeno
+    culture: grecque
+    id: grecque-celeno
+    relations:
+      parents:
+        - id: grecque-atlas
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–939
+        - id: grecque-atlas
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+        - id: grecque-pleione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Astronomia
+              passage: II.21
+      children: []
+      siblings:
+        - id: grecque-maia
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-alcyone
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-merope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-asterope
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-taygete
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+        - id: grecque-electre
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.938–943
+      consorts: []
+  - name: Thoôsa
+    slug: thoosa
+    culture: grecque
+    id: grecque-thoosa
+    relations:
+      parents: []
+      children:
+        - id: grecque-polypheme
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.3
+      siblings: []
+      consorts:
+        - id: grecque-poseidon
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.3
+  - name: Pan
+    slug: pan
+    culture: grecque
+    id: grecque-pan
+    relations:
+      parents:
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Homère
+              work: Hymne homérique à Pan
+              passage: v.34–47
+        - id: grecque-dryope
+          consensus: false
+          sources:
+            - author: Homère
+              work: Hymne homérique à Pan
+              passage: v.34–47
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Hérodote
+              work: Histoires
+              passage: II
+        - id: grecque-penelope
+          consensus: false
+          sources:
+            - author: Hérodote
+              work: Histoires
+              passage: II
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+        - id: grecque-callisto
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholia in Hymnum Homericum ad Panem
+              passage: ad v. 34–47.
+        - id: grecque-nymphe-inconnue
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholia in Hymnum Homericum ad Panem
+              passage: ad v. 34–47.
+      children: []
+      siblings: []
+      consorts: []
+  - name: Abderos
+    slug: abderos
+    culture: grecque
+    id: grecque-abderos
+    relations:
+      parents:
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: II.5.8
+      children: []
+      siblings: []
+      consorts: []
+  - name: Dryopé
+    slug: dryope
+    culture: grecque
+    id: grecque-dryope
+    relations:
+      parents: []
+      children:
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Homère
+              work: Hymne homérique à Pan
+              passage: v.34–47
+      siblings: []
+      consorts:
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Homère
+              work: Hymne homérique à Pan
+              passage: v.34–47
+  - name: Pénélope
+    slug: penelope
+    culture: grecque
+    id: grecque-penelope
+    relations:
+      parents: []
+      children:
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Hérodote
+              work: Histoires
+              passage: II
+      siblings: []
+      consorts:
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Hérodote
+              work: Histoires
+              passage: II
+  - name: Callisto
+    slug: callisto
+    culture: grecque
+    id: grecque-callisto
+    relations:
+      parents: []
+      children:
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+      siblings: []
+      consorts:
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.4.1
+  - name: Nymphe inconnue
+    slug: nymphe-inconnue
+    culture: grecque
+    id: grecque-nymphe-inconnue
+    relations:
+      parents: []
+      children:
+        - id: grecque-pan
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholia in Hymnum Homericum ad Panem
+              passage: ad v. 34–47.
+      siblings: []
+      consorts:
+        - id: grecque-hermes
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholia in Hymnum Homericum ad Panem
+              passage: ad v. 34–47.
+  - name: Érichthonios
+    slug: erichthonios
+    culture: grecque
+    id: grecque-erichthonios
+    relations:
+      parents:
+        - id: grecque-athena
+          consensus: true
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.14.6
+        - id: grecque-athena
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: III.14.6
+      children: []
+      siblings: []
+      consorts: []
+  - name: Coronis
+    slug: coronis
+    culture: grecque
+    id: grecque-coronis
+    relations:
+      parents: []
+      children:
+        - id: grecque-asclepios
+          consensus: true
+          sources:
+            - author: Pindare
+              work: Pythiques
+              passage: III
+      siblings: []
+      consorts:
+        - id: grecque-apollon
+          consensus: true
+          sources:
+            - author: Pindare
+              work: Pythiques
+              passage: III
+  - name: Asclépios
+    slug: asclepios
+    culture: grecque
+    id: grecque-asclepios
+    relations:
+      parents:
+        - id: grecque-apollon
+          consensus: true
+          sources:
+            - author: Pindare
+              work: Pythiques
+              passage: III
+        - id: grecque-coronis
+          consensus: true
+          sources:
+            - author: Pindare
+              work: Pythiques
+              passage: III
+      children: []
+      siblings: []
+      consorts: []
+  - name: Créüse
+    slug: creuse
+    culture: grecque
+    id: grecque-creuse
+    relations:
+      parents: []
+      children:
+        - id: grecque-ion
+          consensus: false
+          sources:
+            - author: Euripide
+              work: Ion
+              passage: v.10–20
+      siblings: []
+      consorts:
+        - id: grecque-apollon
+          consensus: false
+          sources:
+            - author: Euripide
+              work: Ion
+              passage: v.10–20
+  - name: Ion
+    slug: ion
+    culture: grecque
+    id: grecque-ion
+    relations:
+      parents:
+        - id: grecque-apollon
+          consensus: false
+          sources:
+            - author: Euripide
+              work: Ion
+              passage: v.10–20
+        - id: grecque-creuse
+          consensus: false
+          sources:
+            - author: Euripide
+              work: Ion
+              passage: v.10–20
+      children: []
+      siblings: []
+      consorts: []
+  - name: Hécube
+    slug: hecube
+    culture: grecque
+    id: grecque-hecube
+    relations:
+      parents: []
+      children:
+        - id: grecque-troilos
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Fables
+              passage: '90'
+      siblings: []
+      consorts:
+        - id: grecque-apollon
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Fables
+              passage: '90'
+  - name: Troïlos
+    slug: troilos
+    culture: grecque
+    id: grecque-troilos
+    relations:
+      parents:
+        - id: grecque-apollon
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Fables
+              passage: '90'
+        - id: grecque-hecube
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Fables
+              passage: '90'
+      children: []
+      siblings: []
       consorts: []
