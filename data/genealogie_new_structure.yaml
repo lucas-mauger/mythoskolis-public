@@ -284,6 +284,12 @@ entities:
             - author: Orphica
               work: Hymnes orphiques
               passage: '30'
+        - id: grecque-hera
+          consensus: false
+          sources:
+            - author: Homère
+              work: Iliade
+              passage: XVIII
   - name: Léto
     slug: leto
     culture: grecque
@@ -437,12 +443,6 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
-        - id: grecque-gaia
-          consensus: false
-          sources:
-            - author: srtj
-              work: ''
-              passage: ''
       children:
         - id: grecque-hestia
           consensus: true
@@ -2001,6 +2001,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.921–923
+        - id: grecque-zeus
+          consensus: false
+          sources:
+            - author: Homère
+              work: Iliade
+              passage: XVIII
   - name: Hadès
     slug: hades
     culture: grecque
@@ -23728,7 +23734,13 @@ entities:
               work: Bibliothèque
               passage: III.1.2
       children: []
-      siblings: []
+      siblings:
+        - id: grecque-thoas
+          consensus: false
+          sources:
+            - author: ollodore
+              work: Bibliothèque
+              passage: I.9.27 ; III.1.2
       consorts: []
   - name: Thoas
     slug: thoas
@@ -23749,5 +23761,11 @@ entities:
               work: Bibliothèque
               passage: I.9.27
       children: []
-      siblings: []
+      siblings:
+        - id: grecque-staphylos
+          consensus: false
+          sources:
+            - author: ollodore
+              work: Bibliothèque
+              passage: I.9.27 ; III.1.2
       consorts: []

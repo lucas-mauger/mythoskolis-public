@@ -9,7 +9,17 @@ const componentId = `ego-graph-${initialSlug}`;
 ---
 
 <section class="bg-white border border-gray-200 rounded-2xl shadow-sm p-0 space-y-4 overflow-hidden dark:bg-slate-900 dark:border-slate-700">
-  <div class="flex justify-end px-4 pt-4">
+  <div class="ego-controls-bar">
+    <button
+      type="button"
+      data-ego-advanced-toggle
+      aria-pressed="false"
+      aria-disabled="true"
+      class="ego-advanced-toggle"
+      title="Affichera les variantes non consensuelles (bientôt)"
+    >
+      Mode avancé
+    </button>
     <button
       type="button"
       data-ego-demo-toggle
@@ -63,20 +73,6 @@ const componentId = `ego-graph-${initialSlug}`;
     </div>
   </div>
 
-  <div class="ego-legend px-4 pb-4">
-    <div class="ego-legend-item">
-      <span class="legend-dot legend-dot-active"></span>
-      <span>Personnage focalisé</span>
-    </div>
-    <div class="ego-legend-item">
-      <span class="legend-dot legend-dot-related"></span>
-      <span>Parent(s) ou enfant(s) du personnage focalisé</span>
-    </div>
-    <div class="ego-legend-item">
-      <span class="legend-dot legend-dot-sibling"></span>
-      <span>Fratrie du personnage focalisé (dans “Enfants”)</span>
-    </div>
-  </div>
 </section>
 
 <script src="/src/scripts/ego-graph-loader.ts"></script>
@@ -791,6 +787,57 @@ const componentId = `ego-graph-${initialSlug}`;
   transform: none;
 }
 
+.ego-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem 0 1.25rem;
+}
+
+.ego-advanced-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+  color: rgb(15 23 42);
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+  cursor: pointer;
+  opacity: 1;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.ego-advanced-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.16);
+  border-color: rgba(79, 70, 229, 0.5);
+}
+
+.dark .ego-advanced-toggle {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.92));
+  color: rgb(226 232 240);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+}
+
+.ego-advanced-toggle[aria-pressed="true"] {
+  border-color: rgba(251, 191, 36, 0.8);
+  box-shadow: 0 10px 24px rgba(251, 191, 36, 0.3);
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.96), rgba(252, 211, 77, 0.9));
+  color: rgb(67 20 7);
+}
+
+.dark .ego-advanced-toggle[aria-pressed="true"] {
+  background: linear-gradient(135deg, rgba(67, 56, 202, 0.22), rgba(251, 191, 36, 0.16));
+  border-color: rgba(251, 191, 36, 0.6);
+  color: rgb(253 230 138);
+}
+
 .demo-nav[aria-disabled="false"]:hover {
   transform: translateY(-1px);
 }
@@ -810,7 +857,7 @@ const componentId = `ego-graph-${initialSlug}`;
     grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: 1.25rem;
     padding: 0.5rem;
-    z-index: 1;
+    z-index: auto;
   }
 
   .ego-quadrant {
@@ -1043,9 +1090,17 @@ const componentId = `ego-graph-${initialSlug}`;
     letter-spacing: -0.01em;
   }
 
-  .ego-node.is-active {
-    z-index: 80;
-  }
+.ego-node.is-active {
+  z-index: 80;
+}
+
+.ego-node.is-active.is-non-consensus {
+  z-index: 120;
+}
+
+.ego-node.is-active.is-mixed-consensus {
+  z-index: 110;
+}
 
   .ego-node-action {
     position: absolute;
@@ -1109,6 +1164,28 @@ const componentId = `ego-graph-${initialSlug}`;
     filter: grayscale(60%);
   }
 
+  .ego-node.is-non-consensus::before {
+    opacity: 0;
+    inset: -6px;
+    border: 0;
+    box-shadow: none;
+    z-index: 3;
+    animation: none !important;
+  }
+
+  .dark .ego-node::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 9999px;
+    border: 3px solid rgba(255, 255, 255, 0.52);
+    box-shadow: 0 0 28px rgba(255, 255, 255, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+    z-index: 1;
+  }
+
   .ego-node::before {
     content: "";
     position: absolute;
@@ -1125,6 +1202,238 @@ const componentId = `ego-graph-${initialSlug}`;
   .ego-node.is-active::before {
     opacity: 1;
     animation: ego-glow 1.6s ease-in-out infinite;
+  }
+
+  .ego-node.is-active.is-non-consensus::before,
+  .ego-node.is-related.is-non-consensus::before,
+  .ego-node.is-sibling.is-non-consensus::before {
+    border: 2px solid rgba(249, 115, 22, 0.65);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.55), 0 0 18px rgba(249, 115, 22, 0.35);
+    opacity: 1;
+    animation: ego-glow 1.6s ease-in-out infinite;
+  }
+
+  .ego-node.is-related.is-non-consensus::before {
+    border-color: rgba(59, 130, 246, 0.7);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.55), 0 0 22px rgba(59, 130, 246, 0.35);
+  }
+
+  .ego-node.is-sibling.is-non-consensus::before {
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.55), 0 0 22px rgba(16, 185, 129, 0.35);
+  }
+
+  .dark .ego-node.is-active::after,
+  .dark .ego-node.is-demo-focus::after,
+  .dark .ego-node.is-related::after,
+  .dark .ego-node.is-sibling::after {
+    opacity: 1;
+  }
+
+  .ego-non-consensus-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.95));
+    color: rgb(69 26 3);
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.85rem;
+    box-shadow: 0 10px 20px rgba(251, 191, 36, 0.35);
+    z-index: 4;
+  }
+
+  .dark .ego-non-consensus-badge {
+    color: rgb(15 23 42);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-mixed-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(251, 191, 36, 0.95));
+    color: rgb(30 27 75);
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.9rem;
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .dark .ego-mixed-badge {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.85), rgba(251, 191, 36, 0.9));
+    color: rgb(253 230 138);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-non-consensus-tooltip {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -90%) translateY(-6px);
+    padding: 0;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    border-radius: 0.75rem;
+    color: rgb(69 26 3);
+    font-weight: 500;
+    font-size: 0.85rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 140ms ease, transform 140ms ease;
+    z-index: 220;
+    white-space: normal;
+    max-width: min(240px, 70vw);
+    text-align: center;
+  }
+
+  .ego-node.is-active .ego-non-consensus-tooltip {
+    opacity: 1;
+    transform: translate(-50%, -100%) translateY(-10px);
+  }
+
+  .dark .ego-non-consensus-tooltip {
+    background: rgba(15, 23, 42, 0.95);
+    border-color: rgba(251, 191, 36, 0.55);
+    color: rgb(253 230 138);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  @media (max-width: 640px) {
+    .ego-non-consensus-tooltip {
+      font-size: 0.72rem;
+    }
+  }
+
+.ego-tooltip-author {
+    font-weight: 1000;
+  }
+
+  .ego-tooltip-author-consensus {
+    color: rgb(37 99 235);
+  }
+
+  .dark .ego-tooltip-author-consensus {
+    color: rgb(191 219 254);
+  }
+
+  .ego-tooltip-row {
+    padding: 0.45rem 0.75rem;
+    display: block;
+    text-align: left;
+    margin: 0;
+  }
+
+  .ego-tooltip-row + .ego-tooltip-row {
+    border-top: 1px solid rgba(15, 23, 42, 0.2);
+  }
+
+  .dark .ego-tooltip-row + .ego-tooltip-row {
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .ego-tooltip-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 22px;
+    padding: 0;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(59, 130, 246, 0.95));
+    color: #fff;
+    font-weight: 900;
+    font-size: 0.78rem;
+    box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
+  }
+
+  .dark .ego-tooltip-index {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(59, 130, 246, 0.92));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-tooltip-index-empty {
+    visibility: hidden;
+  }
+
+  .ego-tooltip-row-consensus {
+    background: rgba(59, 130, 246, 0.28);
+    border-radius: 0.4rem;
+    margin: 0;
+  }
+
+  .ego-tooltip-row-consensus .ego-tooltip-author-consensus {
+    color: rgb(255 255 255);
+  }
+
+  .ego-tooltip-row-consensus .ego-tooltip-author {
+    color: rgb(15 23 42);
+  }
+
+  .dark .ego-tooltip-row-consensus {
+    background: rgba(59, 130, 246, 0.44);
+  }
+
+  .dark .ego-tooltip-row-consensus .ego-tooltip-author-consensus {
+    color: rgb(224 231 255);
+  }
+
+  .dark .ego-tooltip-row-consensus .ego-tooltip-author {
+    color: rgb(226 232 240);
+  }
+
+  .ego-source-index-badge {
+    position: absolute;
+    right: -8px;
+    bottom: -8px;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 0.5rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(59, 130, 246, 0.95));
+    color: #fff;
+    font-weight: 900;
+    font-size: 0.85rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .dark .ego-source-index-badge {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(59, 130, 246, 0.92));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-node.has-source-indices.is-related .ego-source-index-badge,
+  .ego-node.has-source-indices.is-sibling .ego-source-index-badge,
+  .ego-node.has-source-indices[data-central-node="true"] .ego-source-index-badge {
+    display: inline-flex;
+  }
+
+  /* Pastille central rapprochée */
+  .ego-node[data-central-node="true"] .ego-source-index-badge {
+    right: 4px;
+    bottom: 4px;
   }
 
   .ego-node.is-demo-focus::before {
@@ -1172,54 +1481,6 @@ const componentId = `ego-graph-${initialSlug}`;
     }
   }
 
-  .ego-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1.25rem;
-    align-items: center;
-    font-size: 0.9rem;
-    color: rgb(55 65 81);
-    padding: 0.5rem 0.25rem 0;
-  }
-
-  .dark .ego-legend {
-    color: rgb(226 232 240);
-  }
-
-  .ego-legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.6rem;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.85);
-  }
-
-  .dark .ego-legend-item {
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    background: rgba(15, 23, 42, 0.9);
-  }
-
-  .legend-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 9999px;
-    display: inline-block;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-  }
-
-  .legend-dot-active {
-    background: rgba(249, 115, 22, 0.9);
-  }
-
-  .legend-dot-related {
-    background: rgba(59, 130, 246, 0.9);
-  }
-
-  .legend-dot-sibling {
-    background: rgba(16, 185, 129, 0.9);
-  }
 
   @keyframes ego-glow-blue {
     0% {

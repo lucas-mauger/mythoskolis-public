@@ -138,3 +138,5 @@ export const getEgoGraph = store.getEgoGraphBySlug;
 export const getGraphDisplayData = store.getGraphDisplayData;
 export const getEgoGraphById = store.getEgoGraphById;
 export const getEntityById = store.getEntityById;
+export const getRawRelations = () => relations;
+export const getRawEntities = () => entities;

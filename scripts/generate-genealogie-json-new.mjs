@@ -27,20 +27,66 @@ function cleanSources(sources) {
       author: s.author ?? "",
       work: s.work ?? "",
       passage: s.passage ?? "",
+      consensus: s.consensus !== false,
     }))
     .filter((s) => s.author || s.work || s.passage);
 }
 
-function dedupeRelations(relations) {
+function dedupeSources(sources = []) {
   const seen = new Set();
   const out = [];
-  for (const r of relations) {
-    const key = `${r.type}|${[r.source_id, r.target_id].sort().join("|")}|${r.consensus !== false ? "1" : "0"}|${JSON.stringify(r.sources || [])}`;
+  for (const s of sources) {
+    const key = `${s.author ?? ""}|${s.work ?? ""}|${s.passage ?? ""}|${s.consensus !== false}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(r);
+    out.push(s);
   }
   return out;
+}
+
+function dedupeRelations(relations) {
+  const map = new Map();
+  for (const r of relations) {
+    const key = `${r.type}|${[r.source_id, r.target_id].sort().join("|")}`;
+    const normalizedSources = (r.sources || []).map((s) => ({
+      author: s.author ?? "",
+      work: s.work ?? "",
+      passage: s.passage ?? "",
+      consensus: r.consensus === false ? false : s.consensus !== false,
+    }));
+    if (!map.has(key)) {
+      map.set(key, {
+        ...r,
+        consensus: r.consensus !== false,
+        _hasConsensual: r.consensus !== false,
+        _hasNonConsensual: r.consensus === false,
+        sources: dedupeSources(normalizedSources),
+      });
+      continue;
+    }
+    const existing = map.get(key);
+    existing.sources = dedupeSources([...(existing.sources || []), ...normalizedSources]);
+    if (r.consensus === false) {
+      existing._hasNonConsensual = true;
+      existing.consensus = existing._hasConsensual ? null : false;
+    } else {
+      existing._hasConsensual = true;
+      if (!existing._hasNonConsensual) {
+        existing.consensus = true;
+      } else {
+        existing.consensus = null;
+      }
+    }
+  }
+  return Array.from(map.values()).map((item) => {
+    const { _hasConsensual, _hasNonConsensual, ...rest } = item;
+    if (_hasNonConsensual) {
+      rest.consensus = _hasConsensual ? null : false;
+    } else {
+      rest.consensus = true;
+    }
+    return rest;
+  });
 }
 
 async function generateJson() {
@@ -95,15 +141,16 @@ async function generateJson() {
   }
 
   // ne conserver que les relations consensuelles pour l'ego-graph V1
-  const consensusOnly = relations.filter((r) => r.consensus !== false);
-  const deduped = dedupeRelations(consensusOnly).map((r) => ({
+  const deduped = dedupeRelations(relations).map((r) => ({
     source_id: r.source_id,
     target_id: r.target_id,
     type: r.type,
+    consensus: r.consensus === false ? false : r.consensus === null ? null : true,
     source_texts: (r.sources || []).map((s) => ({
       author: s.author ?? "",
       work: s.work ?? "",
       note: s.passage ?? "",
+      consensus: s.consensus !== false,
     })),
   }));
 

@@ -21,7 +21,19 @@ interface NodeSpec {
   isRelatedChild?: boolean;
   isRelatedConsort?: boolean;
   isSibling?: boolean;
+  isNonConsensus?: boolean;
+  isMixedConsensus?: boolean;
+  sourceLabel?: string | string[];
+  sources?: { author?: string; work?: string; note?: string; consensus?: boolean; index?: string | null }[];
+  showBadges?: boolean;
+  showIndexBadge?: boolean;
+  sourceIndexLabels?: string[];
 }
+
+type IndexedSourcesResult = {
+  sources: { author?: string; work?: string; note?: string; consensus?: boolean; index?: string | null }[];
+  labels: string[];
+};
 
 const RELATION_LABELS: Record<NodeRole, string> = {
   central: "Centre",
@@ -39,6 +51,169 @@ const SECTION_ROLE: Record<RelationSection, NodeRole> = {
 };
 
 const RELATION_SECTIONS: RelationSection[] = ["parents", "siblings", "consorts", "children"];
+
+function makeSourceKey(source: { author?: string; work?: string; note?: string }) {
+  return `${source.author ?? ""}|${source.work ?? ""}|${source.note ?? ""}`;
+}
+
+function buildIndexMapFromSources(sources: { author?: string; work?: string; note?: string; consensus?: boolean }[]) {
+  const map = new Map<string, string>();
+  let idx = 1;
+  sources.forEach((s) => {
+    map.set(makeSourceKey(s), String(idx++));
+  });
+  return map;
+}
+
+function buildParentIndexMap(parents: RelatedNode[]) {
+  const perParent = new Map<string, Map<string, string>>();
+  let idx = 1;
+  parents.forEach((p) => {
+    const keyBase = p.entity.slug;
+    (p.relation.source_texts || []).forEach((s) => {
+      if (s.consensus === false) {
+        const key = `${keyBase}|${makeSourceKey(s)}`;
+        if (!perParent.has(keyBase)) perParent.set(keyBase, new Map());
+        const m = perParent.get(keyBase)!;
+        if (!m.has(makeSourceKey(s))) {
+          m.set(makeSourceKey(s), String(idx++));
+        }
+      }
+    });
+  });
+  return perParent;
+}
+
+function buildChildParentIndexedSources(
+  childSlug: string,
+  centralSlug: string,
+  store: GenealogieStore,
+  makeKey: (s: { author?: string; work?: string; note?: string }) => string,
+) {
+  const childGraph = store.getEgoGraphBySlug(childSlug) ?? store.getEgoGraphById?.(childSlug);
+  if (!childGraph) return null;
+
+  // Index map based on la relation central -> child (si présente)
+  const centralRelation = childGraph.parents?.find((p) => p.entity.slug === centralSlug);
+  const centralSources = centralRelation?.relation.source_texts || [];
+  const baseIndexMap = new Map<string, string>();
+  centralSources.forEach((s, idx) => {
+    baseIndexMap.set(makeKey(s), String(idx + 1));
+  });
+
+  const indexedPerParent = new Map<string, IndexedSourcesResult>();
+
+  (childGraph.parents ?? []).forEach((p) => {
+    let fallback = 1;
+    const sources = (p.relation.source_texts || []).map((s) => {
+      const key = makeKey(s);
+      const index = baseIndexMap.get(key) ?? String(fallback++);
+      return { ...s, index };
+    });
+    const labels = sources.map((s) => s.index).filter((x): x is string => Boolean(x));
+    indexedPerParent.set(p.entity.slug, { sources, labels });
+  });
+
+  return { indexedPerParent };
+}
+
+function computeIndexedSources(
+  sources: { author?: string; work?: string; note?: string; consensus?: boolean }[],
+  mapping?: Map<string, string>,
+): IndexedSourcesResult {
+  const labels: string[] = [];
+  let counter = 1;
+  const indexed = sources.map((s) => {
+    const key = makeSourceKey(s);
+    const index = mapping?.get(key) ?? String(counter++);
+    labels.push(index);
+    return { ...s, index };
+  });
+  return { sources: indexed, labels };
+}
+
+type SourceWithIndex = { author?: string; work?: string; note?: string; consensus?: boolean; index?: string | null };
+
+type FocusRelationIndexing = {
+  indexedSources: SourceWithIndex[];
+  labels: string[];
+  perTarget: Map<string, string[]>;
+  unlinkedIndices: string[];
+};
+
+function buildRelationIndexing(
+  relations: { targetSlug: string; sources: SourceWithIndex[] }[],
+  unlinkedSources: SourceWithIndex[] = [],
+): FocusRelationIndexing {
+  const indexedSources: SourceWithIndex[] = [];
+  const perTarget = new Map<string, string[]>();
+  const sourceIndexMap = new Map<string, string>();
+  const addedKeys = new Set<string>();
+  let counter = 1;
+  const unlinkedIndices: string[] = [];
+
+  const getOrCreateIndex = (s: SourceWithIndex) => {
+    const key = makeSourceKey(s);
+    if (!sourceIndexMap.has(key)) {
+      sourceIndexMap.set(key, String(counter++));
+      indexedSources.push({ ...s, index: sourceIndexMap.get(key)! });
+      addedKeys.add(key);
+    }
+    return sourceIndexMap.get(key)!;
+  };
+
+  // Prioriser les sources consensuelles (consensus !== false) pour l'ordre de numérotation
+  const relationItems = relations.flatMap(({ targetSlug, sources }) =>
+    (sources || []).map((s) => ({ targetSlug, source: s })),
+  );
+  relationItems.sort((a, b) => {
+    const ca = a.source.consensus === false ? 1 : 0;
+    const cb = b.source.consensus === false ? 1 : 0;
+    return ca - cb;
+  });
+
+  relationItems.forEach(({ targetSlug, source }) => {
+    const indices = perTarget.get(targetSlug) ?? [];
+    const idx = getOrCreateIndex(source);
+    if (!indices.includes(idx)) {
+      indices.push(idx);
+    }
+    if (indices.length) {
+      perTarget.set(targetSlug, indices);
+    }
+  });
+
+  // Sources sans cible (relation directe avec le personnage central) : pas de pastille mais on les place en haut si consensuelles
+  const sortedUnlinked = [...unlinkedSources].sort((a, b) => {
+    const ca = a.consensus === true ? 0 : 1;
+    const cb = b.consensus === true ? 0 : 1;
+    return ca - cb;
+  });
+  sortedUnlinked.forEach((s) => {
+    const key = makeSourceKey(s);
+    const idx = getOrCreateIndex(s);
+    unlinkedIndices.push(idx);
+    if (!addedKeys.has(key)) {
+      addedKeys.add(key);
+      // On ne numérote pas dans l'infobulle pour ces sources directes
+      indexedSources.push({ ...s, index: null });
+    }
+  });
+
+  // Réordonner pour afficher les sources consensuelles en tête, qu'elles soient numérotées ou non
+  indexedSources.sort((a, b) => {
+    const ca = a.consensus === true ? 0 : 1;
+    const cb = b.consensus === true ? 0 : 1;
+    if (ca !== cb) return ca - cb;
+    // Ensuite, on garde l'ordre numérique des index (null en dernier)
+    const ai = a.index ? Number(a.index) : Number.POSITIVE_INFINITY;
+    const bi = b.index ? Number(b.index) : Number.POSITIVE_INFINITY;
+    return ai - bi;
+  });
+
+  const labels = indexedSources.map((s) => s.index!).filter(Boolean);
+  return { indexedSources, labels, perTarget, unlinkedIndices };
+}
 
 function isScrollable(el: HTMLElement) {
   const style = getComputedStyle(el);
@@ -143,9 +318,19 @@ class EgoGraphController {
   private sectionContainers = new Map<RelationSection, HTMLElement>();
   private sectionScrollTops = new Map<RelationSection, number>();
   private pageIds = new Set<string>();
+  private handleViewportChange = () => {
+    if (!this.activeNodeKey) return;
+    const el = this.nodeInstances.get(this.activeNodeKey);
+    if (el) {
+      this.positionTooltip(el);
+    }
+  };
+  private advancedMode = false;
+  private advancedToggle?: HTMLButtonElement;
 
   constructor(private root: HTMLElement, private store: GenealogieStore) {
     this.messageEl = this.root.querySelector(".ego-graph-message");
+    const scope = this.root.closest("section");
     const pageIdsRaw = this.root.dataset.pageIds;
     if (pageIdsRaw) {
       try {
@@ -161,8 +346,23 @@ class EgoGraphController {
         this.sectionContainers.set(section, container);
         enableQuadrantDragScroll(container);
         monitorScrollable(container);
+        container.addEventListener("scroll", this.handleViewportChange);
       }
     });
+    this.advancedToggle = scope?.querySelector<HTMLButtonElement>('[data-ego-advanced-toggle]');
+    if (this.advancedToggle) {
+      this.advancedToggle.setAttribute("aria-disabled", "false");
+      this.advancedToggle.addEventListener("click", () => {
+        this.advancedMode = !this.advancedMode;
+        this.updateAdvancedToggleUI();
+        if (this.currentGraph) {
+          void this.renderGraph(this.currentGraph);
+        }
+      });
+      this.updateAdvancedToggleUI();
+    }
+    window.addEventListener("scroll", this.handleViewportChange, true);
+    window.addEventListener("resize", this.handleViewportChange, true);
 
     this.root.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
@@ -207,6 +407,7 @@ class EgoGraphController {
     this.sectionScrollTops.clear();
     this.clearMessage();
     await this.renderGraph(graph);
+    this.handleViewportChange();
   }
 
   getCurrentSlug(): string | null {
@@ -217,6 +418,68 @@ class EgoGraphController {
     this.captureScrollTops();
     this.clearNodes();
 
+    const displayedChildren = new Set((graph.children ?? []).map((c) => c.entity.slug));
+    const displayedConsorts = new Set((graph.consorts ?? []).map((c) => c.entity.slug));
+
+    let focusIndexing: FocusRelationIndexing | null = null;
+    let focusIndexingSlug: string | null = null;
+
+    if (this.advancedMode && this.focusedConsortSlug) {
+      const focusGraph =
+        this.store.getEgoGraphBySlug(this.focusedConsortSlug) ?? this.store.getEgoGraphById?.(this.focusedConsortSlug);
+      if (focusGraph) {
+        const relations = (focusGraph.children ?? [])
+          .filter(
+            (child) =>
+              displayedChildren.has(child.entity.slug) &&
+              this.store.hasParent(child.entity.slug, this.focusedConsortSlug!) &&
+              this.store.hasParent(child.entity.slug, graph.central.slug),
+          )
+          .map((child) => ({
+            targetSlug: child.entity.slug,
+            sources: child.relation.source_texts ?? [],
+          }));
+
+        const centralRelation = (graph.consorts ?? []).find((c) => c.entity.slug === this.focusedConsortSlug);
+        const unlinkedSources = centralRelation?.relation.source_texts ?? [];
+
+        const built = buildRelationIndexing(relations, unlinkedSources);
+        if (built.indexedSources.length) {
+          focusIndexing = built;
+          focusIndexingSlug = this.focusedConsortSlug;
+        }
+      }
+    } else if (this.advancedMode && this.focusedChildSlug) {
+      const focusGraph =
+        this.store.getEgoGraphBySlug(this.focusedChildSlug) ?? this.store.getEgoGraphById?.(this.focusedChildSlug);
+      if (focusGraph) {
+        const allParents = focusGraph.parents ?? [];
+        const relations = allParents
+          .filter(
+            (parent) =>
+              displayedConsorts.has(parent.entity.slug) && this.store.hasParent(this.focusedChildSlug!, parent.entity.slug),
+          )
+          .map((parent) => ({
+            targetSlug: parent.entity.slug,
+            sources: parent.relation.source_texts ?? [],
+          }));
+
+        const centralRelation = allParents.find((p) => p.entity.slug === graph.central.slug);
+        const unlinkedSources = centralRelation?.relation.source_texts ?? [];
+
+        const built = buildRelationIndexing(relations, unlinkedSources);
+        if (built.indexedSources.length) {
+          focusIndexing = built;
+          focusIndexingSlug = this.focusedChildSlug;
+        }
+      }
+    }
+
+    const centralIndexLabels =
+      this.advancedMode && focusIndexing && focusIndexing.unlinkedIndices.length > 1
+        ? focusIndexing.unlinkedIndices.slice().filter(Boolean).sort((a, b) => Number(a) - Number(b))
+        : [];
+
     const centralNode = this.createNode({
       key: `central-${graph.central.id}`,
       slug: graph.central.slug,
@@ -226,6 +489,9 @@ class EgoGraphController {
       role: "central",
       relationLabel: RELATION_LABELS.central,
       isRelatedConsort: this.focusedChildSlug !== null,
+      showBadges: centralIndexLabels.length > 0,
+      showIndexBadge: true,
+      sourceIndexLabels: centralIndexLabels,
     });
     this.root.appendChild(centralNode);
     requestAnimationFrame(() => centralNode.classList.add("is-visible"));
@@ -250,7 +516,7 @@ class EgoGraphController {
       const baseColumns = isMobile ? 2 : 3;
       let columns = baseColumns;
       let index = 0;
-      let nodes = sortSection(graph[section] as RelatedNode[]);
+      let nodes = sortSection(this.filterByMode(graph[section] as RelatedNode[]));
       const isCompactParents = section === "parents" && nodes.length > 0 && nodes.length <= 2;
       container.classList.toggle("is-compact-parents", isCompactParents);
       if (isCompactParents) {
@@ -291,6 +557,39 @@ class EgoGraphController {
           isChild &&
           this.focusedChildSlug !== null &&
           this.isSiblingOfFocused(item.entity.slug, this.focusedChildSlug);
+        const relationSources = item.relation.source_texts ?? [];
+        let indexedSources: IndexedSourcesResult = computeIndexedSources(relationSources);
+        let sourceIndexLabels: string[] = indexedSources.labels.slice();
+        const isFocusSlug = focusIndexingSlug !== null && item.entity.slug === focusIndexingSlug;
+        const focusTargets = focusIndexing?.perTarget ?? new Map<string, string[]>();
+
+        if (focusIndexing) {
+          if (isFocusSlug) {
+            indexedSources = { sources: focusIndexing.indexedSources, labels: focusIndexing.labels };
+            sourceIndexLabels = focusIndexing.labels;
+          } else {
+            const indices = focusTargets.get(item.entity.slug);
+            if (indices) {
+              sourceIndexLabels = indices;
+            } else {
+              sourceIndexLabels = [];
+            }
+          }
+        }
+
+        const hasNumbering = focusIndexing !== null && focusIndexing.labels.length > 1;
+        if (!hasNumbering) {
+          sourceIndexLabels = [];
+          indexedSources = {
+            sources: indexedSources.sources.map((s) => ({ ...s, index: null })),
+            labels: [],
+          };
+        } else if (sourceIndexLabels.length > 1) {
+          sourceIndexLabels = sourceIndexLabels.slice().sort((a, b) => Number(a) - Number(b));
+        }
+        const sourceLabel = relationSources
+          .map((s) => [s.author, s.work, s.note].filter(Boolean).join(", ").trim())
+          .filter(Boolean);
         const isMuted =
           (isConsort && this.selectedConsortSlug && this.selectedConsortSlug !== item.entity.slug) ||
           (isConsort &&
@@ -315,6 +614,13 @@ class EgoGraphController {
           isRelatedChild,
           isRelatedConsort,
           isSibling,
+          isNonConsensus: item.relation.consensus === false,
+          isMixedConsensus: item.relation.consensus === null,
+          sourceLabel,
+          sources: indexedSources.sources,
+          showBadges: this.advancedMode,
+          showIndexBadge: !isFocusSlug,
+          sourceIndexLabels: sourceIndexLabels,
         });
         const row = Math.floor(index / columns) + 1;
         const col = (index % columns) + 1;
@@ -372,6 +678,15 @@ class EgoGraphController {
     }
     if (node.isSibling) {
       wrapper.classList.add("is-sibling");
+    }
+    if (node.isNonConsensus) {
+      wrapper.classList.add("is-non-consensus");
+    }
+    if (node.isMixedConsensus) {
+      wrapper.classList.add("is-mixed-consensus");
+    }
+    if (node.showBadges && node.showIndexBadge !== false && (node.sourceIndexLabels?.length ?? 0) > 0) {
+      wrapper.classList.add("has-source-indices");
     }
 
     const button = document.createElement("button");
@@ -479,6 +794,78 @@ class EgoGraphController {
     label.className = "ego-node-label";
     label.textContent = node.name;
 
+    const sources = Array.isArray(node.sources) ? node.sources : [];
+    if (node.showBadges && sources.length) {
+      if (node.isNonConsensus) {
+        const badge = document.createElement("span");
+        badge.className = "ego-non-consensus-badge";
+        badge.setAttribute("aria-label", "Variante non consensuelle");
+        badge.title = "Variante non consensuelle";
+        badge.textContent = "!";
+        wrapper.appendChild(badge);
+      } else if (node.isMixedConsensus) {
+        const badge = document.createElement("span");
+        badge.className = "ego-mixed-badge";
+        badge.setAttribute("aria-label", "Sources divergentes");
+        badge.title = "Sources divergentes";
+        badge.textContent = "±";
+        wrapper.appendChild(badge);
+      }
+
+      const tooltip = document.createElement("div");
+      tooltip.className = node.isMixedConsensus ? "ego-non-consensus-tooltip ego-mixed-tooltip" : "ego-non-consensus-tooltip";
+      const hasIndex = (node.sourceIndexLabels?.length ?? 0) > 0;
+      const sourcesForTooltip =
+        hasIndex && sources.length > 1
+          ? sources.slice().sort((a, b) => {
+              const ai = a.index ? Number(a.index) : Number.POSITIVE_INFINITY;
+              const bi = b.index ? Number(b.index) : Number.POSITIVE_INFINITY;
+              return ai - bi;
+            })
+          : sources;
+      sourcesForTooltip.forEach((s) => {
+        const row = document.createElement("div");
+        row.className = "ego-tooltip-row";
+        if (s.consensus !== false) {
+          row.classList.add("ego-tooltip-row-consensus");
+        }
+        const author = s.author?.trim();
+        const rest = [s.work, s.note].filter(Boolean).map((p) => p!.trim());
+        if (hasIndex && s.index) {
+          const idxSpan = document.createElement("span");
+          idxSpan.className = "ego-tooltip-index";
+          idxSpan.textContent = s.index;
+          row.appendChild(idxSpan);
+          row.append(" ");
+        }
+        if (author) {
+          const strong = document.createElement("span");
+          strong.className = s.consensus !== false ? "ego-tooltip-author ego-tooltip-author-consensus" : "ego-tooltip-author";
+          strong.textContent = author;
+          row.appendChild(strong);
+        }
+        if (rest.length) {
+          row.appendChild(document.createElement("br"));
+          row.append(rest.join(", "));
+        }
+        tooltip.appendChild(row);
+      });
+      wrapper.appendChild(tooltip);
+
+      if (node.showIndexBadge !== false && node.sourceIndexLabels && node.sourceIndexLabels.length > 0) {
+        const idxBadge = document.createElement("span");
+        idxBadge.className = "ego-source-index-badge";
+        idxBadge.textContent = node.sourceIndexLabels.join("·");
+        wrapper.appendChild(idxBadge);
+      }
+    } else if (node.showBadges && node.showIndexBadge !== false && node.sourceIndexLabels && node.sourceIndexLabels.length > 0) {
+      // Permet d'afficher la pastille sur le central même sans tooltip (pas de sources attachées)
+      const idxBadge = document.createElement("span");
+      idxBadge.className = "ego-source-index-badge";
+      idxBadge.textContent = node.sourceIndexLabels.join("·");
+      wrapper.appendChild(idxBadge);
+    }
+
     if (node.role === "central" && this.pageIds.has(node.id)) {
       const action = document.createElement("div");
       action.className = "ego-node-action";
@@ -501,6 +888,12 @@ class EgoGraphController {
     this.nodeInstances.forEach((el, nodeKey) => {
       el.classList.toggle("is-active", key !== null && nodeKey === key);
     });
+    if (key) {
+      const el = this.nodeInstances.get(key);
+      if (el) {
+        this.positionTooltip(el);
+      }
+    }
     if (key === null) {
       return;
     }
@@ -543,6 +936,12 @@ class EgoGraphController {
     }
   }
 
+  private updateAdvancedToggleUI() {
+    if (!this.advancedToggle) return;
+    this.advancedToggle.setAttribute("aria-pressed", this.advancedMode ? "true" : "false");
+    this.advancedToggle.textContent = this.advancedMode ? "Mode avancé activé" : "Mode avancé";
+  }
+
   private getSectionOrder(section: RelationSection): string[] {
     const container = this.sectionContainers.get(section);
     if (!container) return [];
@@ -561,6 +960,11 @@ class EgoGraphController {
   private isSiblingOfFocused(childSlug: string, focusedChildSlug: string): boolean {
     if (childSlug === focusedChildSlug) return false;
     return this.store.hasSibling(childSlug, focusedChildSlug);
+  }
+
+  private filterByMode(nodes: RelatedNode[]): RelatedNode[] {
+    if (this.advancedMode) return nodes;
+    return nodes.filter((n) => n.relation.consensus !== false);
   }
 
   private async animateToCenter(nodeEl: HTMLElement): Promise<void> {
@@ -751,7 +1155,7 @@ class EgoGraphController {
       if (!container) return;
       let columns = baseColumns;
       let index = 0;
-      let nodes = sortSection(graph[section] as RelatedNode[]);
+      let nodes = sortSection(this.filterByMode(graph[section] as RelatedNode[]));
       const isCompactParents = section === "parents" && nodes.length > 0 && nodes.length <= 2;
       if (isCompactParents) {
         columns = isMobile ? 1 : Math.min(2, nodes.length);
@@ -788,6 +1192,30 @@ class EgoGraphController {
 
     ghostRoot.remove();
     return positions;
+  }
+
+  private positionTooltip(el: HTMLElement) {
+    const tooltip = el.querySelector<HTMLElement>(".ego-non-consensus-tooltip");
+    if (!tooltip) return;
+    const rect = el.getBoundingClientRect();
+    const rawLeft = rect.left + rect.width / 2;
+    const top = rect.top;
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const margin = 12;
+    const half = tooltipRect.width / 2;
+    const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    let targetLeft = rawLeft;
+    if (isMobile) {
+      const role = el.dataset.role;
+      if (role === "consort") {
+        targetLeft = margin + half;
+      } else if (role === "child") {
+        targetLeft = window.innerWidth - margin - half;
+      }
+    }
+    const clampedLeft = Math.min(Math.max(targetLeft, margin + half), window.innerWidth - margin - half);
+    tooltip.style.left = `${clampedLeft}px`;
+    tooltip.style.top = `${top}px`;
   }
 
   private createGhostNode(slug: string, name: string, role: NodeRole): HTMLElement {
