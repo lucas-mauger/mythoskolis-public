@@ -1399,24 +1399,35 @@ const componentId = `ego-graph-${initialSlug}`;
     color: rgb(226 232 240);
   }
 
-  .ego-source-index-badge {
+  .ego-source-index-badges {
     position: absolute;
-    right: -8px;
-    bottom: -8px;
-    min-width: 28px;
-    height: 24px;
-    padding: 0 0.5rem;
+    right: -6px;
+    bottom: -6px;
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+    justify-content: flex-end;
+    align-items: flex-end;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .ego-source-index-badge {
+    position: relative;
+    min-width: 22px;
+    height: 18px;
+    padding: 0 0.24rem;
     border-radius: 9999px;
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(59, 130, 246, 0.95));
     color: #fff;
     font-weight: 900;
-    font-size: 0.85rem;
-    display: none;
+    font-size: 0.78rem;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
     pointer-events: none;
-    z-index: 5;
   }
 
   .dark .ego-source-index-badge {
@@ -1424,16 +1435,101 @@ const componentId = `ego-graph-${initialSlug}`;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
   }
 
-  .ego-node.has-source-indices.is-related .ego-source-index-badge,
-  .ego-node.has-source-indices.is-sibling .ego-source-index-badge,
-  .ego-node.has-source-indices[data-central-node="true"] .ego-source-index-badge {
-    display: inline-flex;
+  /* Couleurs par index */
+  .ego-source-index-badge--1 {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
+    color: #fff;
+  }
+  .dark .ego-source-index-badge--1 {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(59, 130, 246, 0.92));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-source-index-badge--2 {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 8px 18px rgba(34, 197, 94, 0.32);
+    color: #fff;
+  }
+  .dark .ego-source-index-badge--2 {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.92), rgba(21, 128, 61, 0.9));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-source-index-badge--3 {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    box-shadow: 0 8px 18px rgba(124, 58, 237, 0.32);
+    color: #fff;
+  }
+  .dark .ego-source-index-badge--3 {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.92), rgba(124, 58, 237, 0.9));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    color: #f8fafc;
+  }
+
+  .ego-source-index-badge--4 {
+    background: linear-gradient(135deg, #fb923c, #f97316);
+    box-shadow: 0 8px 18px rgba(249, 115, 22, 0.32);
+    color: #fff;
+  }
+  .dark .ego-source-index-badge--4 {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.92), rgba(249, 115, 22, 0.9));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    color: #f8fafc;
+  }
+
+  .ego-source-index-badge--5 {
+    background: linear-gradient(135deg, #111827, #0f172a);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+    color: #f9fafb;
+  }
+  .dark .ego-source-index-badge--5 {
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(15, 23, 42, 0.92));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    color: #e5e7eb;
+  }
+
+  .ego-source-index-badge--6 {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 8px 18px rgba(239, 68, 68, 0.32);
+    color: #fff;
+  }
+  .dark .ego-source-index-badge--6 {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.92), rgba(220, 38, 38, 0.9));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    color: #f8fafc;
+  }
+
+  .ego-source-index-badge--7 {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    box-shadow: 0 8px 18px rgba(236, 72, 153, 0.32);
+    color: #fff;
+  }
+  .dark .ego-source-index-badge--7 {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.92), rgba(219, 39, 119, 0.9));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-source-index-badge--8 {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
+    color: #fff;
+  }
+  .dark .ego-source-index-badge--8 {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(59, 130, 246, 0.92));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .ego-node.has-source-indices.is-related .ego-source-index-badges,
+  .ego-node.has-source-indices.is-sibling .ego-source-index-badges,
+  .ego-node.has-source-indices[data-central-node="true"] .ego-source-index-badges {
+    display: flex;
   }
 
   /* Pastille central rapprochée */
-  .ego-node[data-central-node="true"] .ego-source-index-badge {
-    right: 4px;
-    bottom: 4px;
+  .ego-node[data-central-node="true"] .ego-source-index-badges {
+    right: 2px;
+    bottom: 2px;
   }
 
   .ego-node.is-demo-focus::before {

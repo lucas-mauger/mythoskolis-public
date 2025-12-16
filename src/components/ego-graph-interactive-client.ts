@@ -215,6 +215,31 @@ function buildRelationIndexing(
   return { indexedSources, labels, perTarget, unlinkedIndices };
 }
 
+function getIndexColorClass(index?: string | null): string | null {
+  if (!index) return null;
+  const match = `${index}`.match(/\d+/);
+  if (!match) return null;
+  const idx = parseInt(match[0] ?? "", 10);
+  const colorKey = idx >= 8 ? 1 : idx; // 8 et plus : fallback bleu
+  if (colorKey < 1) return null;
+  return `ego-source-index-badge--${colorKey}`;
+}
+
+function createIndexBadges(labels?: string[]): HTMLElement | null {
+  if (!labels || labels.length === 0) return null;
+  const container = document.createElement("div");
+  container.className = "ego-source-index-badges";
+  labels.forEach((label) => {
+    const badge = document.createElement("span");
+    badge.className = "ego-source-index-badge";
+    const badgeClass = getIndexColorClass(label);
+    if (badgeClass) badge.classList.add(badgeClass);
+    badge.textContent = label;
+    container.appendChild(badge);
+  });
+  return container;
+}
+
 function isScrollable(el: HTMLElement) {
   const style = getComputedStyle(el);
   const overflowY = style.overflowY;
@@ -475,10 +500,11 @@ class EgoGraphController {
       }
     }
 
-    const centralIndexLabels =
-      this.advancedMode && focusIndexing && focusIndexing.unlinkedIndices.length > 1
-        ? focusIndexing.unlinkedIndices.slice().filter(Boolean).sort((a, b) => Number(a) - Number(b))
-        : [];
+    const hasMultipleSources = this.advancedMode && focusIndexing && focusIndexing.labels.length > 1;
+
+    const centralIndexLabels = hasMultipleSources
+      ? focusIndexing.unlinkedIndices.slice().filter(Boolean).sort((a, b) => Number(a) - Number(b))
+      : [];
 
     const centralNode = this.createNode({
       key: `central-${graph.central.id}`,
@@ -834,6 +860,8 @@ class EgoGraphController {
         if (hasIndex && s.index) {
           const idxSpan = document.createElement("span");
           idxSpan.className = "ego-tooltip-index";
+          const badgeClass = getIndexColorClass(s.index);
+          if (badgeClass) idxSpan.classList.add(badgeClass);
           idxSpan.textContent = s.index;
           row.appendChild(idxSpan);
           row.append(" ");
@@ -853,17 +881,13 @@ class EgoGraphController {
       wrapper.appendChild(tooltip);
 
       if (node.showIndexBadge !== false && node.sourceIndexLabels && node.sourceIndexLabels.length > 0) {
-        const idxBadge = document.createElement("span");
-        idxBadge.className = "ego-source-index-badge";
-        idxBadge.textContent = node.sourceIndexLabels.join("·");
-        wrapper.appendChild(idxBadge);
+        const badgeContainer = createIndexBadges(node.sourceIndexLabels);
+        if (badgeContainer) wrapper.appendChild(badgeContainer);
       }
     } else if (node.showBadges && node.showIndexBadge !== false && node.sourceIndexLabels && node.sourceIndexLabels.length > 0) {
       // Permet d'afficher la pastille sur le central même sans tooltip (pas de sources attachées)
-      const idxBadge = document.createElement("span");
-      idxBadge.className = "ego-source-index-badge";
-      idxBadge.textContent = node.sourceIndexLabels.join("·");
-      wrapper.appendChild(idxBadge);
+      const badgeContainer = createIndexBadges(node.sourceIndexLabels);
+      if (badgeContainer) wrapper.appendChild(badgeContainer);
     }
 
     if (node.role === "central" && this.pageIds.has(node.id)) {
@@ -1204,6 +1228,16 @@ class EgoGraphController {
     const margin = 12;
     const half = tooltipRect.width / 2;
     const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    const container = el.closest<HTMLElement>(".ego-quadrant-content");
+    const gridStyle = container ? getComputedStyle(container) : null;
+    const columns = gridStyle?.gridTemplateColumns
+      ? gridStyle.gridTemplateColumns.split(" ").filter(Boolean).length
+      : 0;
+    const containerRect = container?.getBoundingClientRect();
+    const columnWidth = containerRect && columns ? containerRect.width / columns : null;
+    const centerX = rect.left + rect.width / 2;
+    const columnIndex =
+      containerRect && columnWidth ? Math.max(0, Math.min(columns - 1, Math.floor((centerX - containerRect.left) / columnWidth))) : null;
     let targetLeft = rawLeft;
     if (isMobile) {
       const role = el.dataset.role;
@@ -1211,6 +1245,14 @@ class EgoGraphController {
         targetLeft = margin + half;
       } else if (role === "child") {
         targetLeft = window.innerWidth - margin - half;
+      }
+    } else if (columns && columnIndex !== null) {
+      const role = el.dataset.role;
+      // Décale horizontalement pour les extrêmes : consorts à droite -> bulle vers la gauche ; enfants à gauche -> bulle vers la droite.
+      if (role === "consort" && columnIndex === columns - 1) {
+        targetLeft = rawLeft - (half - rect.width / 2);
+      } else if (role === "child" && columnIndex === 0) {
+        targetLeft = rawLeft + (half - rect.width / 2);
       }
     }
     const clampedLeft = Math.min(Math.max(targetLeft, margin + half), window.innerWidth - margin - half);
