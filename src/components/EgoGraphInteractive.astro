@@ -6,9 +6,27 @@ interface Props {
 
 const { initialSlug, pageIds = [] } = Astro.props as Props;
 const componentId = `ego-graph-${initialSlug}`;
+const searchInputId = `${componentId}-search`;
 ---
 
 <section class="bg-white border border-gray-200 rounded-2xl shadow-sm p-0 space-y-4 overflow-hidden dark:bg-slate-900 dark:border-slate-700">
+  <div class="ego-search-bar">
+    <label class="ego-search-label" for={searchInputId}>Rechercher un nom</label>
+    <div class="ego-search-field">
+      <input
+        id={searchInputId}
+        class="ego-search-input"
+        type="search"
+        name="ego-search"
+        placeholder="🔍 Ex : Zeus, Héra, Apollon…"
+        data-ego-search-input
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <div class="ego-search-results" data-ego-search-results hidden></div>
+    </div>
+  </div>
+
   <div class="ego-controls-bar">
     <button
       type="button"
@@ -787,6 +805,154 @@ const componentId = `ego-graph-${initialSlug}`;
   transform: none;
 }
 
+.ego-search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.25rem 0 1.25rem;
+}
+
+.ego-search-field {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+  max-width: 540px;
+}
+
+.ego-search-label {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: rgb(79 70 229);
+  font-size: 0.95rem;
+}
+
+.dark .ego-search-label {
+  color: rgb(224 231 255);
+}
+
+.ego-search-input {
+  flex: 1;
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+  color: rgb(15 23 42);
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.ego-search-input:focus {
+  outline: none;
+  border-color: rgba(79, 70, 229, 0.6);
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.18);
+  transform: translateY(-1px);
+}
+
+.ego-search-input::placeholder {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.dark .ego-search-input {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgb(226 232 240);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.dark .ego-search-input::placeholder {
+  color: rgba(226, 232, 240, 0.65);
+}
+
+.ego-search-results {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.6rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+  z-index: 30;
+}
+
+.dark .ego-search-results {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+}
+
+.ego-search-option {
+  width: 100%;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  background: transparent;
+  font-weight: 700;
+  color: rgb(17 24 39);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.ego-search-option:hover,
+.ego-search-option.is-highlighted,
+.ego-search-option:focus-visible {
+  background: rgba(79, 70, 229, 0.08);
+  border-color: rgba(79, 70, 229, 0.35);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.ego-search-option-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.35), rgba(226, 232, 240, 0.35));
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.ego-search-option-avatar.is-empty {
+  visibility: hidden;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.ego-search-option-label {
+  display: inline-block;
+}
+
+.dark .ego-search-option {
+  color: rgb(226 232 240);
+}
+
+.dark .ego-search-option:hover,
+.dark .ego-search-option.is-highlighted,
+.dark .ego-search-option:focus-visible {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.dark .ego-search-option-avatar {
+  background: linear-gradient(135deg, rgba(71, 85, 105, 0.6), rgba(30, 41, 59, 0.8));
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
 .ego-controls-bar {
   display: flex;
   justify-content: space-between;
@@ -901,6 +1067,7 @@ const componentId = `ego-graph-${initialSlug}`;
     position: relative;
     width: 100%;
     height: 100%;
+    max-height: 380px;
     padding: 4rem 1.25rem 1.25rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -917,7 +1084,7 @@ const componentId = `ego-graph-${initialSlug}`;
     scrollbar-width: none;
     cursor: grab;
     grid-auto-flow: row dense;
-    --fade-size: 2.4rem;
+    --fade-size: 3.2rem;
     background-image: none;
   }
 
@@ -938,6 +1105,9 @@ const componentId = `ego-graph-${initialSlug}`;
   }
 
   @media (max-width: 640px) {
+    .ego-quadrant-content {
+      max-height: 320px;
+    }
     .ego-quadrant-content.is-compact-parents {
       grid-template-columns: repeat(1, minmax(0, 1fr));
       grid-template-rows: repeat(2, minmax(120px, 1fr));
@@ -959,35 +1129,39 @@ const componentId = `ego-graph-${initialSlug}`;
   }
   .ego-quadrant-content::before,
   .ego-quadrant-content::after {
+    content: none;
+  }
+
+  .ego-quadrant::before,
+  .ego-quadrant::after {
     content: "";
-    position: sticky;
+    position: absolute;
     left: 0;
     right: 0;
     height: var(--fade-size);
     pointer-events: none;
     opacity: 0;
     transition: opacity 150ms ease;
-    z-index: 3;
+    z-index: 20;
   }
-  .ego-quadrant-content::before {
+  .ego-quadrant::before {
     top: 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+    background: linear-gradient(180deg, rgba(79, 70, 229, 0.5), rgba(255, 255, 255, 0));
   }
-  .ego-quadrant-content::after {
+  .ego-quadrant::after {
     bottom: 0;
-    background: linear-gradient(0deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+    background: linear-gradient(0deg, rgba(79, 70, 229, 0.5), rgba(255, 255, 255, 0));
   }
-
-  .dark .ego-quadrant-content::before {
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0));
+  .dark .ego-quadrant::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(15, 23, 42, 0));
   }
-  .dark .ego-quadrant-content::after {
-    background: linear-gradient(0deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0));
+  .dark .ego-quadrant::after {
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(15, 23, 42, 0));
   }
-  .ego-quadrant-content.has-more-top::before {
+  .ego-quadrant.has-more-top::before {
     opacity: 1;
   }
-  .ego-quadrant-content.has-more-bottom::after {
+  .ego-quadrant.has-more-bottom::after {
     opacity: 1;
   }
 

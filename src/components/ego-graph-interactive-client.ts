@@ -3,6 +3,7 @@ import {
   type GenealogieData,
   type GenealogieStore,
   type EgoGraph,
+  type GenealogieEntity,
   type RelatedNode,
 } from "../lib/genealogie-shared";
 
@@ -342,6 +343,7 @@ class EgoGraphController {
   private nodeInstances = new Map<string, HTMLElement>();
   private sectionContainers = new Map<RelationSection, HTMLElement>();
   private sectionScrollTops = new Map<RelationSection, number>();
+  private sectionScrollUpdaters = new Map<RelationSection, () => void>();
   private pageIds = new Set<string>();
   private handleViewportChange = () => {
     if (!this.activeNodeKey) return;
@@ -352,6 +354,14 @@ class EgoGraphController {
   };
   private advancedMode = false;
   private advancedToggle?: HTMLButtonElement;
+  private searchInput?: HTMLInputElement;
+  private searchResults?: HTMLElement;
+  private searchField?: HTMLElement;
+  private searchResultsData: GenealogieEntity[] = [];
+  private searchHighlightIndex = -1;
+  private readonly searchMinLength = 3;
+  private faceCache = new Map<string, string | null>();
+  private facePending = new Map<string, Promise<string | null>>();
 
   constructor(private root: HTMLElement, private store: GenealogieStore) {
     this.messageEl = this.root.querySelector(".ego-graph-message");
@@ -370,7 +380,10 @@ class EgoGraphController {
       if (container) {
         this.sectionContainers.set(section, container);
         enableQuadrantDragScroll(container);
-        monitorScrollable(container);
+        const updater = monitorScrollable(container);
+        if (updater) {
+          this.sectionScrollUpdaters.set(section, updater);
+        }
         container.addEventListener("scroll", this.handleViewportChange);
       }
     });
@@ -413,6 +426,8 @@ class EgoGraphController {
       }
     });
 
+    this.setupSearch(scope);
+
   }
 
   async setCurrentSlug(slug: string) {
@@ -437,6 +452,245 @@ class EgoGraphController {
 
   getCurrentSlug(): string | null {
     return this.currentSlug;
+  }
+
+  private normalizeText(value: string) {
+    return value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
+  private searchEntities(query: string): GenealogieEntity[] {
+    const normalizedQuery = this.normalizeText(query);
+    if (!normalizedQuery || normalizedQuery.length < this.searchMinLength) {
+      return [];
+    }
+
+    const scored = this.store.getAllEntities().map((entity) => {
+      const normalizedName = this.normalizeText(entity.name);
+      const normalizedSlug = this.normalizeText(entity.slug);
+      const matches = normalizedName.includes(normalizedQuery) || normalizedSlug.includes(normalizedQuery);
+      if (!matches) return null;
+      const startsWith =
+        (normalizedName.startsWith(normalizedQuery) ? 0 : 1) +
+        (normalizedSlug.startsWith(normalizedQuery) ? 0 : 1);
+      const distance = Math.abs(normalizedName.length - normalizedQuery.length);
+      return { entity, score: startsWith, distance };
+    });
+
+    return scored
+      .filter((item): item is { entity: GenealogieEntity; score: number; distance: number } => Boolean(item))
+      .sort((a, b) => {
+        if (a.score !== b.score) return a.score - b.score;
+        if (a.distance !== b.distance) return a.distance - b.distance;
+        return a.entity.name.localeCompare(b.entity.name, "fr", { sensitivity: "base" });
+      })
+      .slice(0, 8)
+      .map((item) => item.entity);
+  }
+
+  private clearSearchResults() {
+    if (!this.searchResults) return;
+    this.searchResults.innerHTML = "";
+    this.searchResults.hidden = true;
+    this.searchResultsData = [];
+    this.searchHighlightIndex = -1;
+  }
+
+  private updateSearchHighlight() {
+    if (!this.searchResults) return;
+    Array.from(this.searchResults.children).forEach((child, idx) => {
+      child.classList.toggle("is-highlighted", idx === this.searchHighlightIndex);
+      if (idx === this.searchHighlightIndex) {
+        (child as HTMLElement).focus({ preventScroll: true });
+      }
+    });
+  }
+
+  private renderSearchResults(results: GenealogieEntity[]) {
+    if (!this.searchResults) return;
+    this.searchResults.innerHTML = "";
+    if (!results.length) {
+      this.searchResults.hidden = true;
+      return;
+    }
+    results.forEach((entity) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ego-search-option";
+      btn.dataset.egoSearchOption = "true";
+      btn.dataset.slug = entity.slug;
+      btn.dataset.name = entity.name;
+      btn.innerHTML = `<span class="ego-search-option-avatar is-empty" aria-hidden="true"></span><span class="ego-search-option-label">${entity.name}</span>`;
+      this.searchResults!.appendChild(btn);
+      void this.loadFaceForButton(entity, btn);
+    });
+    this.searchResultsData = results;
+    this.searchHighlightIndex = -1;
+    this.searchResults.hidden = false;
+  }
+
+  private handleSearchSelection(slug: string, label?: string) {
+    if (this.searchInput && label) {
+      this.searchInput.value = label;
+    }
+    this.clearSearchResults();
+    void this.setCurrentSlug(slug);
+    centerElementInViewport(this.root, "smooth");
+  }
+
+  private handleSearchNavigation(event: KeyboardEvent) {
+    if (!this.searchResults || this.searchResults.hidden) {
+      if (event.key === "Escape") {
+        this.clearSearchResults();
+      }
+      return;
+    }
+    if (!this.searchResultsData.length) return;
+
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const delta = event.key === "ArrowDown" ? 1 : -1;
+      const total = this.searchResultsData.length;
+      this.searchHighlightIndex = (this.searchHighlightIndex + delta + total) % total;
+      this.updateSearchHighlight();
+      return;
+    }
+
+    if (event.key === "Enter") {
+      const selected = this.searchResultsData[this.searchHighlightIndex];
+      if (selected) {
+        event.preventDefault();
+        this.handleSearchSelection(selected.slug, selected.name);
+      }
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.clearSearchResults();
+    }
+  }
+
+  private async preloadImage(url: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
+  }
+
+  private async findExistingFaceUrl(entity: GenealogieEntity): Promise<string | null> {
+    const cacheKey = entity.slug;
+    if (this.faceCache.has(cacheKey)) {
+      return this.faceCache.get(cacheKey) ?? null;
+    }
+    if (this.facePending.has(cacheKey)) {
+      return this.facePending.get(cacheKey)!;
+    }
+
+    const candidates: string[] = [];
+    const culture = entity.culture || "grecque";
+    if (culture) {
+      candidates.push(`/faces/${culture}/${entity.slug}.webp`);
+      if (entity.id && entity.id !== entity.slug) {
+        candidates.push(`/faces/${culture}/${entity.id}.webp`);
+      }
+    }
+    candidates.push(`/faces/${entity.slug}.webp`);
+    if (entity.id && entity.id !== entity.slug) {
+      candidates.push(`/faces/${entity.id}.webp`);
+    }
+
+    const pending = (async () => {
+      for (const url of candidates) {
+        const ok = await this.preloadImage(url);
+        if (ok) {
+          this.faceCache.set(cacheKey, url);
+          return url;
+        }
+      }
+      this.faceCache.set(cacheKey, null);
+      return null;
+    })().finally(() => {
+      this.facePending.delete(cacheKey);
+    });
+
+    this.facePending.set(cacheKey, pending);
+    return pending;
+  }
+
+  private applyFaceToButton(button: HTMLButtonElement, url: string | null) {
+    const avatar =
+      button.querySelector<HTMLElement>(".ego-search-option-avatar") ??
+      (() => {
+        const span = document.createElement("span");
+        span.className = "ego-search-option-avatar is-empty";
+        span.setAttribute("aria-hidden", "true");
+        const label = button.querySelector(".ego-search-option-label");
+        if (label) {
+          button.insertBefore(span, label);
+        } else {
+          button.prepend(span);
+        }
+        return span;
+      })();
+
+    if (!url) {
+      avatar.style.backgroundImage = "";
+      avatar.classList.add("is-empty");
+      return;
+    }
+
+    avatar.style.backgroundImage = `url(${url})`;
+    avatar.classList.remove("is-empty");
+  }
+
+  private async loadFaceForButton(entity: GenealogieEntity, button: HTMLButtonElement) {
+    const url = await this.findExistingFaceUrl(entity);
+    this.applyFaceToButton(button, url);
+  }
+
+  private setupSearch(scope: HTMLElement | null) {
+    this.searchInput = scope?.querySelector<HTMLInputElement>('[data-ego-search-input]');
+    this.searchResults = scope?.querySelector<HTMLElement>('[data-ego-search-results]');
+    this.searchField = scope?.querySelector<HTMLElement>(".ego-search-field");
+    if (!this.searchInput || !this.searchResults || !this.searchField) return;
+
+    const onInput = () => {
+      const value = this.searchInput!.value;
+      if (!value || value.trim().length < this.searchMinLength) {
+        this.clearSearchResults();
+        return;
+      }
+      const results = this.searchEntities(value);
+      this.renderSearchResults(results);
+    };
+
+    this.searchInput.addEventListener("input", onInput);
+    this.searchInput.addEventListener("focus", onInput);
+    this.searchInput.addEventListener("keydown", (event) => this.handleSearchNavigation(event));
+
+    this.searchResults.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      const button = target.closest<HTMLButtonElement>('[data-ego-search-option="true"]');
+      if (!button) return;
+      event.preventDefault();
+      const slug = button.dataset.slug;
+      const label = button.dataset.name;
+      if (!slug) return;
+      this.handleSearchSelection(slug, label);
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      if (!this.searchField?.contains(target)) {
+        this.clearSearchResults();
+      }
+    });
   }
 
   private async renderGraph(graph: EgoGraph) {
@@ -661,6 +915,10 @@ class EgoGraphController {
       // Restore scroll position to avoid jump-to-top
       requestAnimationFrame(() => {
         container.scrollTop = restoreScroll;
+        const updater = this.sectionScrollUpdaters.get(section);
+        if (updater) {
+          requestAnimationFrame(updater);
+        }
       });
     });
 
@@ -1445,15 +1703,25 @@ function enableQuadrantDragScroll(container: HTMLElement) {
 
 function monitorScrollable(container: HTMLElement) {
   const update = () => {
-    const atTop = container.scrollTop <= 2;
-    const atBottom = container.scrollHeight - container.clientHeight - container.scrollTop <= 2;
+    const slack = 0.5;
+    const atTop = container.scrollTop <= slack;
+    const atBottom = container.scrollHeight - container.clientHeight - container.scrollTop <= slack;
     container.classList.toggle("has-more-top", !atTop);
     container.classList.toggle("has-more-bottom", !atBottom);
+    const quad = container.closest<HTMLElement>(".ego-quadrant");
+    if (quad) {
+      quad.classList.toggle("has-more-top", !atTop);
+      quad.classList.toggle("has-more-bottom", !atBottom);
+    }
   };
   container.addEventListener("scroll", update);
-  const resizeObserver = new ResizeObserver(update);
+  const resizeObserver = new ResizeObserver(() => requestAnimationFrame(update));
   resizeObserver.observe(container);
   update();
+  requestAnimationFrame(update);
+  window.setTimeout(update, 50);
+  window.setTimeout(update, 150);
+  return update;
 }
 
 function renderMessage(root: HTMLElement, text: string) {

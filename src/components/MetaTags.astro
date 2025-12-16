@@ -20,7 +20,15 @@ function truncate(text: string, max = 160) {
 const metaTitle = props.title;
 const metaDescription = truncate(props.description);
 const metaType = props.type ?? 'website';
-const metaImage = props.image || null;
+const DEFAULT_OG_IMAGE = '/og/mythoskolis-og.webp';
+const baseUrl = (Astro.site?.toString() ?? '').replace(/\/$/, '');
+const metaImage = props.image === null ? null : props.image || DEFAULT_OG_IMAGE;
+const metaImageUrl =
+  metaImage && metaImage.startsWith('http')
+    ? metaImage
+    : metaImage
+      ? `${baseUrl}${metaImage}`
+      : null;
 const metaUrl = props.url || props.canonical || null;
 const canonical = props.canonical || metaUrl || null;
 ---
@@ -32,12 +40,12 @@ const canonical = props.canonical || metaUrl || null;
 <meta property="og:title" content={metaTitle} />
 <meta property="og:description" content={metaDescription} />
 {metaUrl && <meta property="og:url" content={metaUrl} />}
-{metaImage && <meta property="og:image" content={metaImage} />}
+{metaImageUrl && <meta property="og:image" content={metaImageUrl} />}
 
-<meta name="twitter:card" content={metaImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:card" content={metaImageUrl ? 'summary_large_image' : 'summary'} />
 <meta name="twitter:title" content={metaTitle} />
 <meta name="twitter:description" content={metaDescription} />
-{metaImage && <meta name="twitter:image" content={metaImage} />}
+{metaImageUrl && <meta name="twitter:image" content={metaImageUrl} />}
 
 {canonical && <link rel="canonical" href={canonical} />}
 

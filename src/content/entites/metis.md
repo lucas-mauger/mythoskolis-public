@@ -5,6 +5,7 @@ id: grecque-metis
 nature:
   - divinite
   - titanide
+  - oceanide
 gender: f
 role: 'Océanide de la sagesse rusée, première épouse de Zeus'
 description: >-
@@ -18,6 +19,7 @@ symbols:
   - Filets et stratagèmes
   - Eaux profondes
   - Voix conseillère
+type: entity
 ---
 Métis est une Océanide personnifiant la sagesse rusée, l’intelligence stratégique et la prudence. Sa nature associe réflexion profonde et capacité à concevoir des solutions subtiles. Elle appartient à la génération des divinités aquatiques liées à l’ordre ancien.
 

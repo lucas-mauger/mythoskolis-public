@@ -1,9 +1,21 @@
 ---
-title: "La naissance d’Apollon et Artémis"
-slug: "naissance-apollon-artemis"
-id: "naissance-apollon-artemis"
-type: "recit"
-
+title: La naissance d’Apollon et Artémis
+slug: naissance-apollon-artemis
+id: naissance-apollon-artemis
+type: recit
+era: Cycle apollinien
+importance: majeur
+summary: >
+  Pourchassée par Héra, Léto erre dans le monde jusqu’à trouver refuge sur l’île
+  flottante de Délos, où elle donne naissance à Artémis puis à Apollon.
+tags:
+  - naissance-divine
+  - origine-dun-dieu
+  - union-divine
+  - jalousie
+  - destin
+  - forces-de-la-nature
+  - legitimation
 main_entities:
   - grecque-leto
   - grecque-apollon
@@ -15,22 +27,6 @@ places:
   - Délos
   - Ortygie
 artifacts: []
-
-era: "Cycle apollinien"
-importance: "majeur"
-summary: >
-  Pourchassée par Héra, Léto erre dans le monde jusqu’à trouver refuge sur l’île
-  flottante de Délos, où elle donne naissance à Artémis puis à Apollon.
-
-tags:
-  - naissance-divine
-  - origine-dun-dieu
-  - union-divine
-  - jalousie
-  - destin
-  - forces-de-la-nature
-  - legitimation
-
 sources:
   - author: Callimaque
     work: Hymne à Artémis
@@ -76,7 +72,7 @@ cycles féminins, la protection des jeunes.
 ## Deuxième naissance : Apollon, la lumière qui s’élève
 Mais pour le second enfant, la douleur revient, et Héra -en pleine rage- retient
 Eileithyie, déesse des accouchements, afin de prolonger la souffrance de Léto.
-Hermès, selon certaines traditions, intervient : il dérobe Eileithyie, l’amène à
+Hermès, selon certaines traditions, intervient : il dérobe Ilythie, l’amène à
 Délos, et le travail s’accomplit enfin.
 
 Apollon naît dans un éclat de clarté :
