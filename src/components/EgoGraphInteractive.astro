@@ -95,6 +95,8 @@ const searchInputId = `${componentId}-search`;
 
 <script src="/src/scripts/ego-graph-loader.ts"></script>
 <script>
+import { FileWatcherEventKind } from "typescript";
+
   (() => {
     const toggle = document.querySelector<HTMLButtonElement>('[data-ego-demo-toggle]');
     const scope = toggle?.closest("section");
@@ -112,7 +114,7 @@ const searchInputId = `${componentId}-search`;
       "Voici l’HoloGraph : une vision vivante des liens familiaux de la mythologie grecque.",
       'Cliquez sur un personnage pour le mettre en <span class="demo-pill demo-orange">focus</span>. Rien ne bouge encore : vous préparez l’exploration.',
       'Après un <span class="demo-pill demo-orange">second clic</span> sur un portrait lié, il devient le centre du graphe et ses propres relations apparaissent.',
-      'Avec un <span class="demo-pill demo-orange">focus</span> sur le portrait central, un bouton « Aller à la fiche » apparaît si une fiche existe.',
+      'Avec un <span class="demo-pill demo-orange">focus</span> sur le portrait central, un bouton « Aller à la fiche » apparaît si une fiche existe. Les portraits marqués "📄" indiquent la présence d\'une fiche.',
       'Un focus sur un consort révèle sa descendance avec le personnage central. Ici, l’enfant de <span class="demo-pill demo-orange">Déméter</span> et Zeus est <span class="demo-pill demo-blue">Perséphone</span>.',
       'Un focus sur un enfant montre ses parents et sa fratrie réelle. Ici, les parents d’<span class="demo-pill demo-orange">Apollon</span> sont <span class="demo-pill demo-blue">Zeus</span> et <span class="demo-pill demo-blue">Léto</span>, et sa sœur est <span class="demo-pill demo-green">Artémis</span>.',
       "L’HoloGraph n’affiche que les fratries RECONNUES par les récits. Observons le cas de Gaïa et Ouranos.",
@@ -1344,7 +1346,6 @@ const searchInputId = `${componentId}-search`;
     border: 0;
     box-shadow: none;
     z-index: 3;
-    animation: none !important;
   }
 
   .dark .ego-node::after {
@@ -1576,13 +1577,16 @@ const searchInputId = `${componentId}-search`;
   .ego-source-index-badges {
     position: absolute;
     right: -6px;
-    bottom: -6px;
+    bottom: -2px;
     display: none;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0;
-    justify-content: flex-end;
-    align-items: flex-end;
+    grid-template-columns: repeat(2, max-content);
+    grid-auto-rows: max-content;
+    column-gap: 2px;
+    row-gap: 2px;
+    justify-items: end;
+    align-items: end;
+    justify-content: end;
+    align-content: end;
     pointer-events: none;
     z-index: 5;
   }
@@ -1689,6 +1693,53 @@ const searchInputId = `${componentId}-search`;
     box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
     color: #fff;
   }
+
+  .ego-node-page {
+    position: absolute;
+    left: 0px;
+    bottom: -2px;
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 6;
+    text-shadow:
+      -1px 0 0 #0f172a,
+      1px 0 0 #0f172a,
+      0 -1px 0 #0f172a,
+      0 1px 0 #0f172a;
+  }
+
+  .ego-quadrant-content:not(.is-compact-parents) .ego-node:not([data-central-node="true"]) .ego-node-page {
+    left: -6px;
+    bottom: -4px;
+    font-size: 0.95rem;
+  }
+
+  .ego-quadrant-content.is-compact-parents .ego-node .ego-node-page {
+    left: 4px;
+    bottom: 0px;
+    font-size: 1rem;
+  }
+
+  .ego-node[data-central-node="true"] .ego-node-page {
+    left: 6px;
+    bottom: 0px;
+    font-size: 1.12rem;
+  }
+
+  .ego-node.is-animating .ego-non-consensus-badge,
+  .ego-node.is-animating .ego-mixed-badge,
+  .ego-node.is-animating .ego-source-index-badges,
+  .ego-node.is-animating .ego-non-consensus-tooltip,
+  .ego-node.is-animating .ego-node-page,
+  .ego-node.is-animating .ego-node-action,
+  .ego-node-fly .ego-non-consensus-badge,
+  .ego-node-fly .ego-mixed-badge,
+  .ego-node-fly .ego-source-index-badges,
+  .ego-node-fly .ego-non-consensus-tooltip,
+  .ego-node-fly .ego-node-page,
+  .ego-node-fly .ego-node-action {
+    display: none !important;
+  }
   .dark .ego-source-index-badge--8 {
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(59, 130, 246, 0.92));
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
@@ -1697,7 +1748,7 @@ const searchInputId = `${componentId}-search`;
   .ego-node.has-source-indices.is-related .ego-source-index-badges,
   .ego-node.has-source-indices.is-sibling .ego-source-index-badges,
   .ego-node.has-source-indices[data-central-node="true"] .ego-source-index-badges {
-    display: flex;
+    display: grid;
   }
 
   /* Pastille central rapprochée */

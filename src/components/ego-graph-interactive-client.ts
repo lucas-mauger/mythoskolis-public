@@ -29,6 +29,7 @@ interface NodeSpec {
   showBadges?: boolean;
   showIndexBadge?: boolean;
   sourceIndexLabels?: string[];
+  hasPage?: boolean;
 }
 
 type IndexedSourcesResult = {
@@ -370,7 +371,7 @@ class EgoGraphController {
     if (pageIdsRaw) {
       try {
         const parsed = JSON.parse(pageIdsRaw) as string[];
-        parsed.forEach((id) => this.pageIds.add(id));
+        parsed.forEach((id) => this.pageIds.add(id.toString()));
       } catch {
         this.pageIds = new Set();
       }
@@ -428,6 +429,12 @@ class EgoGraphController {
 
     this.setupSearch(scope);
 
+  }
+
+  private hasPageFor(entity: { id?: string; slug?: string }) {
+    const id = entity.id?.toString() ?? "";
+    const slug = entity.slug?.toString() ?? "";
+    return (id && this.pageIds.has(id)) || (slug && this.pageIds.has(slug));
   }
 
   async setCurrentSlug(slug: string) {
@@ -772,6 +779,7 @@ class EgoGraphController {
       showBadges: centralIndexLabels.length > 0,
       showIndexBadge: true,
       sourceIndexLabels: centralIndexLabels,
+      hasPage: this.hasPageFor(graph.central),
     });
     this.root.appendChild(centralNode);
     requestAnimationFrame(() => centralNode.classList.add("is-visible"));
@@ -901,6 +909,7 @@ class EgoGraphController {
           showBadges: this.advancedMode,
           showIndexBadge: !isFocusSlug,
           sourceIndexLabels: sourceIndexLabels,
+          hasPage: this.hasPageFor(item.entity),
         });
         const row = Math.floor(index / columns) + 1;
         const col = (index % columns) + 1;
@@ -950,6 +959,9 @@ class EgoGraphController {
     wrapper.dataset.slug = node.slug;
     if (node.role === "central") {
       wrapper.dataset.centralNode = "true";
+    }
+    if (node.hasPage) {
+      wrapper.classList.add("has-page");
     }
     if (node.isMuted) {
       wrapper.classList.add("is-muted");
@@ -1078,6 +1090,15 @@ class EgoGraphController {
     label.className = "ego-node-label";
     label.textContent = node.name;
 
+    if (node.hasPage) {
+      const pageBadge = document.createElement("span");
+      pageBadge.className = "ego-node-page";
+      pageBadge.title = "Fiche détaillée disponible";
+      pageBadge.setAttribute("aria-label", "Fiche détaillée disponible");
+      pageBadge.textContent = "📄";
+      wrapper.appendChild(pageBadge);
+    }
+
     const sources = Array.isArray(node.sources) ? node.sources : [];
     if (node.showBadges && sources.length) {
       if (node.isNonConsensus) {
@@ -1148,13 +1169,16 @@ class EgoGraphController {
       if (badgeContainer) wrapper.appendChild(badgeContainer);
     }
 
-    if (node.role === "central" && this.pageIds.has(node.id)) {
+    if (node.role === "central" && node.hasPage) {
       const action = document.createElement("div");
       action.className = "ego-node-action";
       action.textContent = "Aller à la fiche";
+      const targetId = this.pageIds.has(node.id) ? node.id : node.slug;
       action.addEventListener("click", (event) => {
         event.stopPropagation();
-          window.location.href = `/entites/${node.id}/`;
+        if (targetId) {
+          window.location.href = `/entites/${targetId}/`;
+        }
       });
       wrapper.appendChild(action);
     }
