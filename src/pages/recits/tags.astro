@@ -5,9 +5,10 @@ import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
 import { getEntry, getCollection } from 'astro:content';
 import { normalizeTagForSearch } from '../../utils/tags';
+import { isPublishedEntry } from '../../utils/content-filters';
 
 const tagEntry = await getEntry('data', 'tags-recits');
-const recits = await getCollection('recits');
+const recits = await getCollection('recits', isPublishedEntry);
 
 const tagCounts = new Map<string, number>();
 recits.forEach((recit) => {

@@ -4,9 +4,10 @@ import Footer from '../../components/Footer.astro';
 import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
 import { getEntry, getCollection } from 'astro:content';
+import { isPublishedEntry } from '../../utils/content-filters';
 
 const natureEntry = await getEntry('data', 'natures-entites');
-const entites = await getCollection('entites');
+const entites = await getCollection('entites', isPublishedEntry);
 
 const usedNatures = new Set<string>();
 const natureCounts = new Map<string, number>();

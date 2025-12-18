@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { isPublishedEntry } from '../utils/content-filters';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -49,8 +50,8 @@ async function getMetaDocs(): Promise<UrlEntry[]> {
 type UrlEntry = { path: string; lastmod?: string };
 
 export async function GET() {
-  const entites = await getCollection('entites');
-  const recits = await getCollection('recits');
+  const entites = await getCollection('entites', isPublishedEntry);
+  const recits = await getCollection('recits', isPublishedEntry);
   const ressources = await getCollection('ressources');
   const metaDocs = await getMetaDocs();
 

@@ -6,8 +6,9 @@ import '../../styles/global.css';
 import { getCollection, getEntry } from 'astro:content';
 import fs from 'node:fs';
 import path from 'node:path';
+import { isPublishedEntry } from '../../utils/content-filters';
 
-const recits = await getCollection('recits');
+const recits = await getCollection('recits', isPublishedEntry);
 const tagEntry = await getEntry('data', 'tags-recits');
 const tagLabelMap = new Map<string, string>();
 tagEntry?.data?.categories?.forEach((cat) => {

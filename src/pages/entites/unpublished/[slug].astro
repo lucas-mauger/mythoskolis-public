@@ -1,0 +1,403 @@
+---
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import MetaTags from '../../../components/MetaTags.astro';
+import '../../../styles/global.css';
+import { getCollection, getEntry } from 'astro:content';
+import EgoGraph from '../../../components/EgoGraph.astro';
+import { getGraphDisplayData, getEntityById, getEntityBySlug } from '../../../lib/genealogie';
+import { getRecitsForEntity } from '../../../utils/recits';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { isPublishedEntry } from '../../../utils/content-filters';
+
+export async function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  const all = await getCollection('entites');
+  return all
+    .filter((entry) => entry.id.startsWith('unpublished/'))
+    .map((entry) => ({
+      params: { slug: entry.id.replace(/^unpublished\//, '').replace(/\.mdx?$/, '') },
+      props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const {
+  id: frontId,
+  culture: frontCulture,
+  title,
+  description,
+  image,
+  role,
+  domains,
+  symbols,
+  gender,
+} = entry.data;
+const { Content, headings } = await entry.render();
+const entityId = (frontId ?? entry.data.id ?? entry.slug).toString();
+const allEntries = await getCollection('entites', isPublishedEntry);
+const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
+const yamlEntity = getEntityById(entityId) ?? getEntityBySlug(entityId) ?? getEntityBySlug(entry.slug);
+const genealogie = getGraphDisplayData(entityId);
+const hasGenealogie = Boolean(genealogie?.central?.id);
+const entityCulture = (frontCulture ?? yamlEntity?.culture ?? 'grecque').toString();
+const recitsAssocies = await getRecitsForEntity(entityId);
+
+// Resolve project root from this file (/src/pages/entites/[slug].astro -> up 3 levels)
+const projectRoot = fileURLToPath(new URL('../../../..', import.meta.url));
+const publicDir = path.join(projectRoot, 'public');
+
+const videoSrc =
+  ensurePublicPath(entry.data.video) ??
+  findFirstExistingFromList(buildMediaBases('videos'), ['mp4', 'webm', 'ogg', 'ogv']);
+const videoType = videoSrc ? getMimeFromExt(videoSrc) : null;
+
+const imageSrc =
+  ensurePublicPath(image) ??
+  findFirstExistingFromList(buildMediaBases('images'), ['webp', 'jpg', 'jpeg', 'png']) ??
+  findFallbackUnknown(gender);
+
+const isGrecPantheon = (yamlEntity?.culture ?? entry.data.culture ?? entityCulture) === 'grecque';
+const natureLabel = getNatureLabel(yamlEntity, entry.data);
+const natureBadgesRaw = Array.from(
+  new Set(
+    [
+      ...(Array.isArray(entry.data.nature) ? entry.data.nature : entry.data.nature ? [entry.data.nature] : []),
+      ...(Array.isArray(yamlEntity?.nature) ? (yamlEntity?.nature as any[]).map((n) => (typeof n === 'string' ? n : n?.category ?? n?.subtype).toString()).filter(Boolean) : []),
+    ]
+      .map((n) => (n ?? '').toString().trim())
+      .filter(Boolean),
+  ),
+);
+const natureEntry = await getEntry('data', 'natures-entites');
+const natureLabelMap = new Map<string, { fr?: Record<string, string> }>();
+natureEntry?.data?.natures?.forEach((n) => {
+  natureLabelMap.set(n.id, { fr: n.labels?.fr ?? {} });
+});
+natureEntry?.data?.natures?.forEach((n) => {
+  const fr = n.labels?.fr ?? {};
+});
+
+function getNatureLabelFromList(natureId: string, gender?: string): string {
+  const labels = natureLabelMap.get(natureId)?.fr;
+  if (!labels) return natureId;
+  const g = (gender ?? 'x').toLowerCase();
+  return labels[g] ?? labels.x ?? labels.f ?? labels.m ?? natureId;
+}
+
+const natureBadges = natureBadgesRaw.map((n) => ({
+  id: n,
+  label: getNatureLabelFromList(n, gender),
+}));
+
+const tocHeadings = (headings ?? []).filter((h) => h.depth === 2 || h.depth === 3);
+const tocExtras: { slug: string; text: string }[] = [];
+if (hasGenealogie) tocExtras.push({ slug: 'genealogie-detaillee', text: 'Généalogie détaillée' });
+if (recitsAssocies.length > 0) tocExtras.push({ slug: 'recits-associes', text: 'Récits associés' });
+const toc = [...tocHeadings, ...tocExtras];
+
+function buildMediaBases(kind: 'images' | 'videos') {
+  const bases: string[] = [];
+  bases.push(`${kind}/${entityCulture}/${entityId}`);
+  bases.push(`${kind}/${entityCulture}/${entry.slug}`);
+  bases.push(`${kind}/${entityId}`);
+  bases.push(`${kind}/${entry.slug}`);
+  return bases;
+}
+
+function findFirstExisting(baseWithoutExt: string, extensions: string[]): string | null {
+  // try exact casing first
+  for (const ext of extensions) {
+    const rel = baseWithoutExt.includes('.') ? baseWithoutExt : `${baseWithoutExt}.${ext}`;
+    const relPath = rel.startsWith('/') ? rel.slice(1) : rel;
+    const full = path.join(publicDir, relPath);
+    if (fs.existsSync(full)) {
+      return '/' + relPath.replace(/\\/g, '/');
+    }
+  }
+  // fallback: case-insensitive scan in the target directory
+  const dir = path.dirname(baseWithoutExt);
+  const baseName = path.basename(baseWithoutExt).toLowerCase();
+  const dirPath = path.join(publicDir, dir.startsWith('/') ? dir.slice(1) : dir);
+  if (!fs.existsSync(dirPath)) return null;
+  const candidates = fs.readdirSync(dirPath);
+  const match = candidates.find((file) => {
+    const lowered = file.toLowerCase();
+    return extensions.some((ext) => lowered === `${baseName}.${ext}`);
+  });
+  if (match) {
+    const rel = path.join(dir, match);
+    const relPath = rel.startsWith('/') ? rel.slice(1) : rel;
+    return '/' + relPath.replace(/\\/g, '/');
+  }
+  return null;
+}
+
+function findFirstExistingFromList(bases: string[], extensions: string[]): string | null {
+  for (const base of bases) {
+    const found = findFirstExisting(base, extensions);
+    if (found) return found;
+  }
+  return null;
+}
+
+function findFallbackUnknown(gender?: string): string | null {
+  const normalized = gender?.toString().toLowerCase();
+  const byGender: Record<string, string> = {
+    m: 'images/grecque/grecque-unknown_m.webp',
+    male: 'images/grecque/grecque-unknown_m.webp',
+    masculin: 'images/grecque/grecque-unknown_m.webp',
+    f: 'images/grecque/grecque-unknown_f.webp',
+    femelle: 'images/grecque/grecque-unknown_f.webp',
+    fem: 'images/grecque/grecque-unknown_f.webp',
+    female: 'images/grecque/grecque-unknown_f.webp',
+    feminin: 'images/grecque/grecque-unknown_f.webp',
+    autre: 'images/grecque/grecque-unknown_x.webp',
+    other: 'images/grecque/grecque-unknown_x.webp',
+    x: 'images/grecque/grecque-unknown_x.webp',
+  };
+  const prioritized: string[] = [];
+  if (normalized && byGender[normalized]) {
+    prioritized.push(byGender[normalized]);
+  }
+  const candidates = [
+    ...prioritized,
+    'images/grecque/grecque-unknown_m.webp',
+    'images/grecque/grecque-unknown_f.webp',
+    'images/grecque/grecque-unknown_x.webp',
+    'images/unknown_m.webp',
+    'images/unknown_f.webp',
+    'images/unknown_x.webp',
+  ];
+  for (const rel of candidates) {
+    const full = path.join(publicDir, rel);
+    if (fs.existsSync(full)) {
+      return '/' + rel;
+    }
+  }
+  const fallbackSvg = encodeURI(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200" fill="none"><rect width="800" height="1200" rx="40" fill="#E2E8F0"/><text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" fill="#475569" font-family="Arial, sans-serif" font-size="96">?</text></svg>`
+  );
+  return `data:image/svg+xml;utf8,${fallbackSvg}`;
+}
+
+function getMimeFromExt(filePath: string): string | null {
+  const ext = filePath.split('.').pop()?.toLowerCase();
+  if (!ext) return null;
+  switch (ext) {
+    case 'mp4':
+      return 'video/mp4';
+    case 'webm':
+      return 'video/webm';
+    case 'ogg':
+    case 'ogv':
+      return 'video/ogg';
+    default:
+      return null;
+  }
+}
+
+function ensurePublicPath(relPath: string | undefined): string | null {
+  if (!relPath) return null;
+  const cleaned = relPath.startsWith('/') ? relPath.slice(1) : relPath;
+  const full = path.join(publicDir, cleaned);
+  if (fs.existsSync(full)) {
+    return '/' + cleaned.replace(/\\/g, '/');
+  }
+  return null;
+}
+
+function getNatureLabel(
+  yamlEntity: ReturnType<typeof getEntityBySlug> | undefined,
+  frontmatter: Record<string, any>,
+): string | null {
+  const fromYamlDisplay = yamlEntity?.display_class;
+  if (fromYamlDisplay) return fromYamlDisplay;
+  const yamlNature = yamlEntity?.nature;
+  if (typeof yamlNature === 'string') return yamlNature;
+  if (yamlNature && typeof yamlNature === 'object') {
+    const { category, subtype } = yamlNature as { category?: string; subtype?: string };
+    if (category && subtype) return `${category} — ${subtype}`;
+    if (category) return category;
+  }
+  const fmDisplay = frontmatter.display_class;
+  if (fmDisplay) return fmDisplay as string;
+  const fmNature = frontmatter.nature;
+  if (typeof fmNature === 'string') return fmNature;
+  if (fmNature && typeof fmNature === 'object') {
+    const { category, subtype } = fmNature as { category?: string; subtype?: string };
+    if (category && subtype) return `${category} — ${subtype}`;
+    if (category) return category;
+  }
+  return null;
+}
+---
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={`${title} | Mythoskolis`}
+    description={(role ? role.toString() : (description || 'Fiche entité Mythoskolis')).toString()}
+    image={imageSrc}
+    canonical={`/entites/${entityId}/`}
+    type="article"
+  />
+</head>
+
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+  <Header />
+
+  <main class="flex-1 max-w-4xl mx-auto px-4 py-5">
+    <div class="flex flex-wrap gap-3 text-sm mb-9">
+      <a href="/entites/" class="badge-link badge-link--neutral badge-link--back">Toutes les entités</a>
+      {hasGenealogie ? (
+        <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">Voir dans l’HoloGraph</a>
+      ) : null}
+    </div>
+
+    <div class="text-center">
+      <h1
+        class={`text-5xl md:text-6xl font-bold mb-1 text-[#8b5a2b] dark:text-[#a86b32] ${
+          isGrecPantheon ? "font-[Dalek] tracking-[0.01em]" : ""
+        }`}
+      >
+        {title}
+      </h1>
+      {natureBadges.length > 0 && (
+        <div class="flex flex-wrap justify-center gap-2 mb-3">
+          {natureBadges.map((n) => (
+            <a
+              href={`/entites/?q=${encodeURIComponent(n.id)}`}
+              class="mk-pill mk-pill-amber text-sm font-semibold px-3 py-1.5 hover:-translate-y-[1px] hover:shadow-sm"
+            >
+              {n.label}
+            </a>
+          ))}
+        </div>
+      )}
+      {natureLabel && <span class="mk-pill mk-pill-amber text-sm font-semibold px-3 py-1.5 inline-flex items-center justify-center mt-1">{natureLabel}</span>}
+      {role && <p class="text-xl text-slate-600 mb-6 dark:text-slate-300">{role}</p>}
+    </div>
+
+    <div class="mx-auto mb-8 flex justify-center">
+      {videoSrc ? (
+        <video 
+          class="w-full md:w-4/6 rounded-2xl border border-slate-200 shadow-lg dark:border-slate-700"
+          autoplay 
+          muted 
+          loop
+          playsinline
+          controlsList="nodownload nofullscreen noplaybackrate"
+          disablePictureInPicture
+          oncontextmenu="event.preventDefault()"
+        >
+          <source src={videoSrc} type={videoType ?? undefined} />
+          Votre navigateur ne supporte pas la vidéo HTML5.
+        </video>
+      ) : (
+        imageSrc && (
+        <img 
+          src={imageSrc} 
+          alt={`Portrait de ${title}`} 
+          class="w-full md:w-4/6 rounded-2xl border border-slate-200 shadow-lg select-none dark:border-slate-700"
+          draggable="false"
+          oncontextmenu="event.preventDefault()"
+        />
+        )
+      )}
+    </div>
+
+    {(domains || symbols) && (
+      <div class={`mt-8 grid gap-4 text-sm ${domains && symbols ? "grid-cols-2" : "grid-cols-1"}`}>
+        {domains && (
+          <div class="mk-card p-4 text-slate-900">
+            <h3 class="mb-2 text-base font-semibold text-slate-900 dark:text-slate-50">Domaines</h3>
+            <ul class="ml-4 list-disc space-y-1">
+              {domains.map((d) => <li class="text-gray-800 dark:text-slate-100">{d}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {symbols && (
+          <div class="mk-card p-4 text-slate-900">
+            <h3 class="mb-2 text-base font-semibold text-slate-900 dark:text-slate-50">Symboles</h3>
+            <ul class="ml-4 list-disc space-y-1">
+              {symbols.map((s) => <li class="text-gray-800 dark:text-slate-100">{s}</li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    )}
+
+
+    {toc.length > 0 && (
+      <nav class="mk-card-strong mt-8 p-4 text-sm text-slate-900 dark:text-slate-100">
+        <p class="mb-3 text-lg font-semibold text-slate-900 dark:text-slate-50">Sommaire</p>
+        <ul class="space-y-2">
+          {toc.map((h) => (
+            <li class={`leading-relaxed ${h.depth === 3 ? "pl-4 text-gray-600 dark:text-slate-300" : ""}`}>
+              <a
+                class="text-slate-700 hover:underline hover:text-slate-900 dark:text-indigo-200 dark:hover:text-indigo-100"
+                href={`#${h.slug}`}
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    <section class="mk-prose-card max-w-none mt-8 p-2">
+      <Content />
+    </section>
+
+    {hasGenealogie ? (
+      <section id="genealogie-detaillee" class="mt-12 space-y-4">
+        <div class="flex items-center rounded-xl justify-between gap-3">
+          <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-50">Généalogie détaillée</h2>
+          <div class="flex items-center gap-2">
+            <a
+              href={`/genealogie/${entityId}/`}
+              class="badge-link badge-link--primary text-sm font-semibold normal-case"
+            >
+              Ouvrir l’HoloGraph dédié
+            </a>
+          </div>
+        </div>
+        <EgoGraph {...genealogie!} pageIds={pageIds} />
+      </section>
+    ) : null}
+
+    {recitsAssocies.length > 0 && (
+      <section id="recits-associes" class="mt-12">
+        <div class="mk-card p-6 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-50">Récits associés</h2>
+            <span class="text-xs text-slate-500 dark:text-slate-300">{recitsAssocies.length} récit(s)</span>
+          </div>
+          <ul class="space-y-3 text-sm">
+            {recitsAssocies.map((recit) => (
+              <li>
+                <a
+                  href={`/recits/${recit.slug}/`}
+                  class="mk-card-ghost block p-3 rounded-xl border border-slate-100 bg-slate-50 hover:-translate-y-[1px] transition dark:border-slate-700 dark:bg-slate-900/60"
+                >
+                  <span class="text-slate-900 font-semibold block dark:text-slate-50">{recit.data.title}</span>
+                  {recit.data.summary && <p class="text-slate-600 text-xs mt-1 dark:text-slate-300">{recit.data.summary}</p>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Footer />
+</body>
+</html>

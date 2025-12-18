@@ -170,6 +170,63 @@
       .suggestions .item:hover {
         background: #f1f5f9;
       }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.01em;
+        border: 1px solid transparent;
+        text-transform: lowercase;
+      }
+      .status-pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: currentColor;
+        opacity: 0.75;
+      }
+      .status-pill.published {
+        background: #dcfce7;
+        color: #166534;
+        border-color: #86efac;
+      }
+      .status-pill.unpublished {
+        background: #ffedd5;
+        color: #9a3412;
+        border-color: #fdba74;
+      }
+      .list-toolbar {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 10px;
+        align-items: end;
+        margin: 10px 0 12px;
+      }
+      .list-toolbar label {
+        display: grid;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: #334155;
+        margin: 0;
+      }
+      .list-head {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        font-weight: 800;
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
     </style>
   </head>
   <body>
@@ -179,10 +236,6 @@
         <button class="seg-btn active" data-type-btn="entity">Entités</button>
         <button class="seg-btn" data-type-btn="recit">Récits</button>
       </div>
-      <label>
-        Rechercher par slug/nom
-        <input type="text" id="search" placeholder="ex: zeus" />
-      </label>
       <button class="btn save" id="open-create">Créer une fiche</button>
     </header>
 
@@ -233,6 +286,24 @@
     <div class="layout">
       <div class="card">
         <h2 id="entries-title">Fiches entités</h2>
+        <div class="list-toolbar">
+          <label>
+            Statut
+            <select id="status-filter">
+              <option value="all">Tous</option>
+              <option value="published">published</option>
+              <option value="unpublished">unpublished</option>
+            </select>
+          </label>
+          <label>
+            Rechercher par slug / titre
+            <input type="text" id="search" placeholder="ex: zeus / retour-sémélé" />
+          </label>
+        </div>
+        <div class="list-head">
+          <div>Statut</div>
+          <div>Titre</div>
+        </div>
         <div id="entities"></div>
       </div>
     </div>
@@ -248,6 +319,7 @@
       let activeType = TYPE_ENTITY;
 
       const searchInput = document.getElementById("search");
+      const statusFilterSelect = document.getElementById("status-filter");
       const entriesTitle = document.getElementById("entries-title");
 
       function showToast(message, isError = false) {
@@ -658,9 +730,11 @@
         const wrap = document.getElementById("entities");
         wrap.innerHTML = "";
         const q = (filter || "").toLowerCase();
+        const statusFilter = statusFilterSelect?.value || "all";
+        const base = statusFilter === "all" ? entries : entries.filter((e) => (e.status || "published") === statusFilter);
         const list = !q
-          ? entries
-          : entries.filter((e) => e.slug.toLowerCase().includes(q) || (e.frontmatter.title || "").toLowerCase().includes(q));
+          ? base
+          : base.filter((e) => e.slug.toLowerCase().includes(q) || (e.frontmatter.title || "").toLowerCase().includes(q));
         if (!list.length) {
           wrap.innerHTML = '<p class="muted">Aucune fiche</p>';
           return;
@@ -669,16 +743,33 @@
           .slice()
           .sort((a, b) => a.slug.localeCompare(b.slug))
           .forEach((e) => {
+            const status = e.status === "unpublished" ? "unpublished" : "published";
+            const statusLabel = status === "unpublished" ? "unpublished" : "published";
+            const slugForPreview =
+              status === "unpublished"
+                ? e.slug
+                : activeType === TYPE_RECIT
+                  ? e.slug
+                  : e.frontmatter.id || e.slug;
             const div = document.createElement("div");
             div.className = "item";
             div.dataset.slug = e.slug;
             div.innerHTML = `
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-                <div>
-                  <strong>${e.frontmatter.title ?? e.slug}</strong>
-                  <div class="muted">${e.slug}</div>
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                  <span class="status-pill ${status}"><span class="dot"></span>${statusLabel}</span>
+                  <div>
+                    <strong>${e.frontmatter.title ?? e.slug}</strong>
+                    <div class="muted">${e.slug}</div>
+                  </div>
                 </div>
                 <div style="display:flex; gap:8px;" data-action-bar="${e.slug}">
+                  <button class="btn secondary" data-preview-url="/md/preview?type=${activeType}&slug=${encodeURIComponent(
+                    slugForPreview || e.slug,
+                  )}">Aperçu</button>
+                  <button class="btn secondary" data-toggle-publish-file="${escapeHtml(e.file || "")}" data-toggle-publish-status="${status}">
+                    ${status === "unpublished" ? "publish" : "unpublish"}
+                  </button>
                   <button class="btn" data-edit="${e.slug}">Éditer</button>
                   <button class="btn secondary" data-inline-cancel="${e.slug}" style="display:none;">Annuler</button>
                   <button class="btn save" data-inline-save="${e.slug}" style="display:none;">Sauvegarder</button>
@@ -708,6 +799,16 @@
               bar?.querySelector(`[data-inline-save="${slug}"]`)?.setAttribute("style", "");
               wireAutocomplete();
             }
+          });
+        });
+        wrap.querySelectorAll("[data-preview-url]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const target = e.target;
+            if (!(target instanceof HTMLElement)) return;
+            const url = target.getAttribute("data-preview-url");
+            if (!url) return;
+            // Open via window.open so the preview tab can close itself.
+            window.open(url, "_blank");
           });
         });
         wrap.querySelectorAll("[data-cancel-md]").forEach((btn) => {
@@ -759,6 +860,29 @@
             footerCancel?.dispatchEvent(new Event("click"));
           });
         });
+        wrap.querySelectorAll("[data-toggle-publish-file]").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const target = e.target;
+            if (!(target instanceof HTMLElement)) return;
+            const file = target.getAttribute("data-toggle-publish-file") || "";
+            if (!file) return;
+            target.setAttribute("disabled", "true");
+            try {
+              const res = await fetch("/md/toggle-publish", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type: activeType, file }),
+              });
+              const out = await res.json();
+              if (!res.ok) throw new Error(out.error || "Erreur bascule publish/unpublish");
+              showToast("Statut mis à jour");
+              await refresh();
+            } catch (err) {
+              showToast(err.message, true);
+              target.removeAttribute("disabled");
+            }
+          });
+        });
       }
 
       function wireAutocomplete() {
@@ -799,6 +923,7 @@
         await refresh();
         attachAutocomplete(searchInput, "slug");
         searchInput?.addEventListener("input", () => renderEntries(searchInput.value));
+        statusFilterSelect?.addEventListener("change", () => renderEntries(searchInput?.value || ""));
       }
 
       init().catch((err) => {

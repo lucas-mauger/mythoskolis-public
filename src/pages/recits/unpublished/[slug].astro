@@ -1,0 +1,201 @@
+---
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import MetaTags from '../../../components/MetaTags.astro';
+import '../../../styles/global.css';
+import { getCollection, getEntry } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
+import { isPublishedEntry } from '../../../utils/content-filters';
+
+export async function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+
+  const recits = await getCollection('recits');
+  const entites = await getCollection('entites', isPublishedEntry);
+  const entiteById = new Map(entites.map((e) => [e.data.id, e]));
+
+  return recits
+    .filter((recit) => recit.id.startsWith('unpublished/'))
+    .map((recit) => ({
+      params: { slug: recit.data.slug ?? recit.slug },
+      props: { recit, entiteById },
+    }));
+}
+
+const { recit, entiteById } = Astro.props;
+const { Content, headings } = await recit.render();
+const pageTitle = `${recit.data.title} | Mythoskolis`;
+const pageDescription = recit.data.summary ?? recit.data.title;
+const recitImagePath = path.join(process.cwd(), 'public', 'recits_images', `${recit.data.id}.webp`);
+const recitImageUrl = fs.existsSync(recitImagePath) ? `/recits_images/${recit.data.id}.webp` : null;
+
+const tagsEntry = await getEntry('data', 'tags-recits');
+const tagLabelMap = new Map<string, string>();
+tagsEntry?.data?.categories?.forEach((cat) => {
+  cat.tags.forEach((t) => tagLabelMap.set(t.id, t.label));
+});
+const tagList = (recit.data.tags || [])
+  .map((id) => ({ id, label: tagLabelMap.get(id) ?? id }))
+  .filter((t, idx, arr) => arr.findIndex((x) => x.id === t.id) === idx);
+
+function getFaceForEntity(entity) {
+  const gender = entity?.data?.gender?.toLowerCase?.() ?? 'x';
+  const id = entity?.data?.id;
+  if (!id) return null;
+  const abs = path.join(process.cwd(), 'public', 'faces', 'grecque', `${id}.webp`);
+  if (fs.existsSync(abs)) return `/faces/grecque/${id}.webp`;
+  // Pas de portrait disponible : pas d'image de fallback
+  return null;
+}
+
+const mainEntities = (recit.data.main_entities || [])
+  .map((id) => entiteById.get(id))
+  .filter(Boolean)
+  .map((ent) => ({
+    id: ent.data.id,
+    title: ent.data.title,
+    img: getFaceForEntity(ent),
+  }));
+
+const opponentEntities = (recit.data.opponents || [])
+  .map((id) => entiteById.get(id))
+  .filter(Boolean)
+  .map((ent) => ({
+    id: ent.data.id,
+    title: ent.data.title,
+    img: getFaceForEntity(ent),
+  }));
+---
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <MetaTags
+    title={pageTitle}
+    description={pageDescription}
+    canonical={`/recits/${recit.slug}/`}
+    type="article"
+  />
+</head>
+
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <Header />
+
+    <main class="flex-1 max-w-4xl mx-auto px-4 py-12 space-y-8">
+      <div class="flex flex-wrap gap-3 text-sm">
+        <a href="/recits/" class="badge-link badge-link--neutral badge-link--back">Tous les récits</a>
+      </div>
+
+      <header class="space-y-2">
+        <p class="mk-kicker">Récit</p>
+        <h1 class="text-4xl font-bold text-slate-900 dark:text-slate-50">{recit.data.title}</h1>
+        {recit.data.summary && <p class="mk-lead  text-slate-500 dark:text-slate-300">{recit.data.summary}</p>}
+
+        {(recit.data.era || recit.data.importance) && (
+          <div class="chip-row flex flex-wrap gap-2 sm:gap-2.5 py-1 w-full max-w-full box-border text-xs text-slate-600 dark:text-slate-200 mt-2">
+            {recit.data.era && <span class="px-2 py-1 rounded-full border border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-800/80">{recit.data.era}</span>}
+            {recit.data.importance && (
+              <span class="px-2 py-1 rounded-full border border-indigo-200 bg-indigo-50 uppercase tracking-wide text-indigo-700 dark:border-indigo-300/60 dark:bg-indigo-900/40 dark:text-indigo-100">
+                {recit.data.importance}
+              </span>
+            )}
+          </div>
+        )}
+      </header>
+
+      {(recit.data.main_entities?.length || recit.data.opponents?.length) && (
+        <section class="space-y-4">
+          {mainEntities.length > 0 && (
+            <div class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3">
+              <div class="strip-header">
+                <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Protagonistes</h2>
+              </div>
+              <div class="chip-row flex flex-wrap gap-3 sm:gap-3.5 py-2 w-full max-w-full box-border">
+                {mainEntities.map((ent) => (
+                  <a
+                    href={`/entites/${ent.id}/`}
+                    class={`chip mk-chip inline-flex items-center gap-2 rounded-full px-3 py-2 text-[0.95rem] font-semibold transition hover:-translate-y-[1px] ${
+                      ent.img ? '' : ''
+                    }`}
+                  >
+                    {ent.img && (
+                      <img
+                        src={ent.img}
+                        alt={`Portrait de ${ent.title}`}
+                        loading="lazy"
+                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0 dark:border-slate-600"
+                      />
+                    )}
+                    <span class="whitespace-nowrap">{ent.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+          {opponentEntities.length > 0 && (
+            <div class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3">
+              <div class="strip-header">
+                <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Antagonistes</h2>
+              </div>
+              <div class="chip-row flex flex-wrap gap-3 sm:gap-3.5 py-2 w-full max-w-full box-border">
+                {opponentEntities.map((ent) => (
+                  <a
+                    href={`/entites/${ent.id}/`}
+                    class={`chip mk-chip inline-flex items-center gap-2 rounded-full px-3 py-2 text-[0.95rem] font-semibold transition hover:-translate-y-[1px] ${
+                      ent.img ? '' : ''
+                    }`}
+                  >
+                    {ent.img && (
+                      <img
+                        src={ent.img}
+                        alt={`Portrait de ${ent.title}`}
+                        loading="lazy"
+                        class="w-12 h-12 rounded-full object-cover border border-black/5 flex-shrink-0 dark:border-slate-600"
+                      />
+                    )}
+                    <span class="whitespace-nowrap">{ent.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {recitImageUrl && (
+        <div class="recit-hero my-4">
+          <img
+            src={recitImageUrl}
+            alt={`Illustration du récit ${recit.data.title}`}
+            loading="lazy"
+            class="w-full rounded-xl object-cover shadow-lg border border-slate-200 dark:border-slate-700"
+          />
+        </div>
+      )}
+
+      <article class="mk-prose-card max-w-none p-2">
+        <Content />
+      </article>
+
+      {tagList.length > 0 && (
+        <section class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3 shadow-sm">
+          <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Thèmes abordés</h2>
+          <div class="flex flex-wrap gap-2">
+            {tagList.map((tag) => (
+              <a
+                href={`/recits/?tag=${encodeURIComponent(tag.label)}`}
+                class="chip mk-chip inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-900 transition hover:-translate-y-[1px]"
+              >
+                {tag.label}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
+
+    <Footer />
+  </body>
+</html>

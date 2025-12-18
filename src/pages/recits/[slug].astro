@@ -6,10 +6,11 @@ import '../../styles/global.css';
 import { getCollection, getEntry } from 'astro:content';
 import fs from 'node:fs';
 import path from 'node:path';
+import { isPublishedEntry } from '../../utils/content-filters';
 
 export async function getStaticPaths() {
-  const recits = await getCollection('recits');
-  const entites = await getCollection('entites');
+  const recits = await getCollection('recits', isPublishedEntry);
+  const entites = await getCollection('entites', isPublishedEntry);
   const entiteById = new Map(entites.map((e) => [e.data.id, e]));
 
   return recits.map((recit) => ({

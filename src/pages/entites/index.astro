@@ -5,8 +5,9 @@ import '../../styles/global.css';
 import { getCollection, getEntry } from 'astro:content';
 import fs from 'node:fs';
 import path from 'node:path';
+import { isPublishedEntry } from '../../utils/content-filters';
 
-const entites = await getCollection('entites');
+const entites = await getCollection('entites', isPublishedEntry);
 const publicDir = path.resolve(process.cwd(), 'public');
 const natureEntry = await getEntry('data', 'natures-entites');
 const natureLabelMap = new Map<string, { fr?: Record<string, string> }>();

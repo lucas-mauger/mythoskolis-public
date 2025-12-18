@@ -10,9 +10,10 @@ import { getRecitsForEntity } from '../../utils/recits';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isPublishedEntry } from '../../utils/content-filters';
 
 export async function getStaticPaths() {
-  const all = await getCollection('entites');
+  const all = await getCollection('entites', isPublishedEntry);
   return all.map((entry) => ({
     params: { slug: entry.data.id ?? entry.slug },
     props: { entry },
@@ -33,7 +34,7 @@ const {
 } = entry.data;
 const { Content, headings } = await entry.render();
 const entityId = (frontId ?? entry.data.id ?? entry.slug).toString();
-const allEntries = await getCollection('entites');
+const allEntries = await getCollection('entites', isPublishedEntry);
 const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 const yamlEntity = getEntityById(entityId) ?? getEntityBySlug(entityId) ?? getEntityBySlug(entry.slug);
 const genealogie = getGraphDisplayData(entityId);

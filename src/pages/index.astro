@@ -6,8 +6,9 @@ import '../styles/global.css';
 import { getCollection } from 'astro:content';
 import fs from 'node:fs';
 import path from 'node:path';
+import { isPublishedEntry } from '../utils/content-filters';
 
-const entites = await getCollection('entites');
+const entites = await getCollection('entites', isPublishedEntry);
 const publicDir = path.resolve(process.cwd(), 'public');
 
 function findFirstExistingFace(slug: string, id?: string, culture?: string): string | null {
@@ -150,7 +151,7 @@ const serializedEntites = JSON.stringify(entitesAvecPortrait);
         </div>
           <p class="text-slate-700 dark:text-slate-200">
             Mythoskolis est un projet personnel conçu avec Astro et Tailwind.
-            Il sert de vitrine culturelle et surtout de démonstration technique : modélisation de données complexes, structuration YAML, et visualisation dynamique via l’HoloGraph.
+            Il sert de vitrine culturelle mais également de démonstration technique : modélisation de données complexes, structuration YAML, et visualisation dynamique via l’HoloGraph.
             Toutes les fiches et relations sont versionnées, sourcées, et générées à partir de données organisées.
           </p>
           <a 

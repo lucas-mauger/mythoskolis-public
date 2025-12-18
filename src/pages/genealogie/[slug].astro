@@ -7,13 +7,14 @@ import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import { getEgoGraphById, getEntityById, getEntityBySlug } from '../../lib/genealogie';
 import MetaTags from '../../components/MetaTags.astro';
+import { isPublishedEntry } from '../../utils/content-filters';
 
 interface Props {
   entry: CollectionEntry<'entites'>;
 }
 
 export async function getStaticPaths() {
-  const entites = await getCollection('entites');
+  const entites = await getCollection('entites', isPublishedEntry);
 
   return entites.map((entry) => ({
     params: { slug: entry.data.id ?? entry.slug },
@@ -27,7 +28,7 @@ const yamlEntity = getEntityById(centralId) ?? getEntityBySlug(centralId) ?? get
 const egoGraph = getEgoGraphById(centralId) ?? getEgoGraphById(entry.slug) ?? getEgoGraphById(yamlEntity?.id ?? '');
 const hasData = Boolean(egoGraph);
 const entityName = yamlEntity?.name ?? entry.data.title;
-const allEntries = await getCollection('entites');
+const allEntries = await getCollection('entites', isPublishedEntry);
 const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 ---
 

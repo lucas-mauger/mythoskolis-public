@@ -1,6 +1,6 @@
 import http from "node:http";
-import { readFile, writeFile, readdir } from "node:fs/promises";
-import { resolve } from "node:path";
+import { readFile, writeFile, readdir, rename, mkdir } from "node:fs/promises";
+import { resolve, dirname } from "node:path";
 import { load as loadYaml, dump as dumpYaml } from "js-yaml";
 import matter from "gray-matter";
 
@@ -13,6 +13,7 @@ const mdDirs = {
   recit: resolve(root, "src/content/recits"),
 };
 const port = process.env.PORT || 4323;
+const previewOrigin = (process.env.ASTRO_PREVIEW_ORIGIN || "http://localhost:4321").replace(/\/+$/, "");
 
 async function readYaml() {
   const raw = await readFile(yamlPath, "utf8");
@@ -176,20 +177,115 @@ function formatFrontmatter(data, type = "entity") {
 
 async function listMdEntities(type = "entity") {
   const dir = getMdDir(type);
-  const files = await readdir(dir);
-  const mdFiles = files.filter((f) => f.endsWith(".md"));
-  const result = [];
-  for (const file of mdFiles) {
-    const raw = await readFile(resolve(dir, file), "utf8");
-    const parsed = matter(raw);
-    result.push({
-      file,
-      slug: file.replace(/\\.md$/, ""),
-      frontmatter: parsed.data || {},
-      content: parsed.content || "",
-    });
+
+  async function walk(currentDir, prefix = "") {
+    const entries = await readdir(currentDir, { withFileTypes: true });
+    const acc = [];
+    for (const entry of entries) {
+      const relPath = prefix ? `${prefix}/${entry.name}` : entry.name;
+      const fullPath = resolve(currentDir, entry.name);
+      if (entry.isDirectory()) {
+        acc.push(...(await walk(fullPath, relPath)));
+      } else if (entry.isFile() && entry.name.endsWith(".md")) {
+        const raw = await readFile(fullPath, "utf8");
+        const parsed = matter(raw);
+        acc.push({
+          file: relPath,
+          slug: relPath.replace(/\.md$/, ""),
+          status: relPath.startsWith("unpublished/") ? "unpublished" : "published",
+          frontmatter: parsed.data || {},
+          content: parsed.content || "",
+        });
+      }
+    }
+    return acc;
   }
-  return result;
+
+  return walk(dir);
+}
+
+function servePreview(res, type, slug) {
+  if (!slug) {
+    res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    return res.end("Paramètre slug manquant");
+  }
+  const basePath = type === "recit" ? "recits" : "entites";
+  const safeSlug = slug
+    .split("/")
+    .filter(Boolean)
+    .map((s) => encodeURIComponent(s))
+    .join("/");
+  const target = `${previewOrigin}/${basePath}/${safeSlug}/`;
+  const html = `<!doctype html>
+  <html lang="fr">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Aperçu ${slug}</title>
+      <style>
+        body, html { margin:0; padding:0; height:100%; }
+        .bar {
+          position: fixed;
+          top: 0;
+          right: 0;
+          padding: 12px;
+          z-index: 10;
+        }
+        .quit {
+          background: #7c3aed;
+          color: #fff;
+          padding: 16px 22px;
+          border-radius: 16px;
+          text-decoration: none;
+          font-weight: 900;
+          font-size: 1.05rem;
+          letter-spacing: 0.02em;
+          text-transform: uppercase;
+          box-shadow:
+            0 14px 30px rgba(124, 58, 237, 0.45),
+            0 4px 10px rgba(0, 0, 0, 0.12);
+          border: 0;
+          cursor: pointer;
+        }
+        .quit:hover { filter: brightness(1.05); transform: translateY(-1px); }
+        .quit:active { transform: translateY(0); filter: brightness(0.98); }
+        .quit:focus { outline: 4px solid rgba(124, 58, 237, 0.35); outline-offset: 3px; }
+        .banner {
+          position: fixed;
+          left: 0;
+          top: 0;
+          padding: 34px 42px;
+          z-index: 10;
+          background: rgba(124, 58, 237, 0.24);
+          color: #3b0764;
+          border-bottom-right-radius: 34px;
+          border: 6px solid rgba(124, 58, 237, 0.45);
+          border-left: 0;
+          border-top: 0;
+          font-weight: 900;
+          font-size: 2.4rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          backdrop-filter: blur(8px);
+          box-shadow:
+            0 22px 55px rgba(124, 58, 237, 0.38),
+            0 10px 22px rgba(0, 0, 0, 0.14);
+        }
+        iframe { width:100%; height:100%; border:0; }
+      </style>
+    </head>
+    <body>
+      <div class="banner">Mode aperçu</div>
+      <div class="bar">
+        <button class="quit" type="button" onclick="try{window.close()}catch(e){}; setTimeout(()=>{ location.href='/md-inspector' }, 150);">
+          Quitter l'aperçu
+        </button>
+      </div>
+      <iframe src="${target}" allowfullscreen></iframe>
+    </body>
+  </html>`;
+  res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+  res.end(html);
 }
 
 function ensureMdFilename(name) {
@@ -267,6 +363,24 @@ async function createMdEntity(payload) {
   const next = matter.stringify("\n", fm, { lineWidth: 0 });
   await writeFile(path, next, "utf8");
   return file;
+}
+
+async function togglePublishMdEntity({ file, type = "entity" }) {
+  if (!file) throw new Error("file requis");
+  const dir = getMdDir(type);
+
+  if (!file.startsWith("unpublished/") && file.includes("/")) {
+    throw new Error("Déplacement non supporté pour les sous-dossiers (hors unpublished/).");
+  }
+
+  const from = resolve(dir, file);
+  const nextFile = file.startsWith("unpublished/") ? file.slice("unpublished/".length) : `unpublished/${file}`;
+  const to = resolve(dir, nextFile);
+
+  await mkdir(dirname(to), { recursive: true });
+  await rename(from, to);
+
+  return { file: nextFile, status: nextFile.startsWith("unpublished/") ? "unpublished" : "published" };
 }
 
 async function addRelation(req, res) {
@@ -681,8 +795,29 @@ const server = http.createServer((req, res) => {
     })();
     return;
   }
+  if (req.method === "POST" && req.url.startsWith("/md/toggle-publish")) {
+    (async () => {
+      try {
+        let body = "";
+        for await (const chunk of req) body += chunk.toString();
+        const payload = { ...(JSON.parse(body || "{}") || {}) };
+        if (!payload.file) throw new Error("file requis");
+        const out = await togglePublishMdEntity({ file: payload.file, type: payload.type || typeParam });
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ ok: true, ...out }));
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    })();
+    return;
+  }
   if (req.url.startsWith("/md-inspector")) {
     return serveMdInspector(res);
+  }
+  if (req.method === "GET" && req.url.startsWith("/md/preview")) {
+    const slug = parsedUrl.searchParams.get("slug") || "";
+    return servePreview(res, typeParam, slug);
   }
   return serveHtml(res);
 });
