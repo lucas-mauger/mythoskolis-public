@@ -2,9 +2,9 @@
   (function () {
     const THEME_KEY = "mythos-theme";
     const saved = (localStorage.getItem(THEME_KEY) || "").toLowerCase().trim();
-    const hasManualChoice = saved === "dark" || saved === "light";
+    const savedMode = saved === "dark" || saved === "light" || saved === "auto" ? saved : "auto";
     const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
-    const initialTheme = hasManualChoice ? saved : prefersDark ? "dark" : "light";
+    const initialTheme = savedMode === "auto" ? (prefersDark ? "dark" : "light") : savedMode;
     const isDark = initialTheme === "dark";
     const root = document.documentElement;
     const body = document.body;
@@ -13,6 +13,8 @@
     };
     reset(root);
     reset(body);
+    root.setAttribute("data-theme-mode", savedMode);
+    body.setAttribute("data-theme-mode", savedMode);
     if (isDark) {
       root.classList.add("theme-dark", "dark");
       body.classList.add("theme-dark", "dark");
@@ -49,7 +51,18 @@
         </li>
         <li>
           <a class="text-slate-700 hover:text-black dark:text-slate-200 dark:hover:text-white inline-flex items-center gap-2" href="/recits/">
-            <img src="/icons/recits.webp" alt="" class="menu-icon h-4 w-4 object-contain shrink-0 dark:invert dark:brightness-90" loading="lazy" />
+            <img
+              src="/icons/recits_clear.webp"
+              alt=""
+              class="menu-icon h-4 w-4 object-contain shrink-0 dark:hidden"
+              loading="lazy"
+            />
+            <img
+              src="/icons/recits_dark.webp"
+              alt=""
+              class="menu-icon hidden h-4 w-4 object-contain shrink-0 dark:block"
+              loading="lazy"
+            />
             Récits
           </a>
         </li>
@@ -67,19 +80,30 @@
         </li>
         <li>
           <a class="text-slate-700 hover:text-black dark:text-slate-200 dark:hover:text-white inline-flex items-center gap-2" href="/contact/">
-            <span class="menu-icon inline-block h-4 w-4 text-center leading-4" aria-hidden="true">✉️</span>
+            <img
+              src="/icons/mail_clear.webp"
+              alt=""
+              class="menu-icon h-4 w-4 object-contain shrink-0 dark:hidden"
+              loading="lazy"
+            />
+            <img
+              src="/icons/mail_dark.webp"
+              alt=""
+              class="menu-icon hidden h-4 w-4 object-contain shrink-0 dark:block"
+              loading="lazy"
+            />
             Contact
           </a>
         </li>
       </ul>
       <button
         id="theme-toggle"
-        class="theme-toggle ml-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate- text-sm font-semibold text-white shadow-sm transition hover:border-slate-300 hover:shadow order-1 md:order-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-slate-400"
+        class="theme-toggle ml-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:shadow order-1 md:order-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-slate-400"
         type="button"
-        aria-label="Basculer thème clair/sombre"
+        aria-label="Choisir le thème : clair, auto, sombre"
       >
         <div class="toggle-track relative h-8 w-16 rounded-full bg-gradient-to-r from-amber-100 to-amber-200 transition-colors duration-200 dark:from-slate-800 dark:to-slate-900">
-          <div class="toggle-thumb absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-base text-amber-500 shadow transition-transform duration-200 dark:translate-x-8 dark:bg-slate-700 dark:text-amber-100">
+          <div class="toggle-thumb absolute left-1 top-1 flex h-6 w-6 translate-x-4 items-center justify-center rounded-full bg-white text-base text-amber-500 shadow transition-transform duration-200 dark:bg-slate-700 dark:text-amber-100">
             <span class="toggle-icon leading-none" aria-hidden="true"></span>
           </div>
         </div>
@@ -112,7 +136,18 @@
       </li>
       <li>
         <a class="flex items-center gap-2 border border-slate-200 bg-white px-4 py-3 text-slate-800 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800" href="/recits/">
-          <img src="/icons/recits.webp" alt="" class="menu-icon h-4 w-4 object-contain shrink-0 dark:invert dark:brightness-90" loading="lazy" />
+          <img
+            src="/icons/recits_clear.webp"
+            alt=""
+            class="menu-icon h-4 w-4 object-contain shrink-0 dark:hidden"
+            loading="lazy"
+          />
+          <img
+            src="/icons/recits_dark.webp"
+            alt=""
+            class="menu-icon hidden h-4 w-4 object-contain shrink-0 dark:block"
+            loading="lazy"
+          />
           Récits
         </a>
       </li>
@@ -130,7 +165,18 @@
       </li>
       <li>
         <a class="flex items-center gap-2 border border-slate-200 bg-white px-4 py-3 text-slate-800 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800" href="/contact/">
-          <span class="menu-icon inline-block h-4 w-4 text-center leading-4" aria-hidden="true">✉️</span>
+          <img
+            src="/icons/mail_clear.webp"
+            alt=""
+            class="menu-icon h-4 w-4 object-contain shrink-0 dark:hidden"
+            loading="lazy"
+          />
+          <img
+            src="/icons/mail_dark.webp"
+            alt=""
+            class="menu-icon hidden h-4 w-4 object-contain shrink-0 dark:block"
+            loading="lazy"
+          />
           Contact
         </a>
       </li>
@@ -143,6 +189,7 @@
   const root = document.documentElement;
   const btn = document.getElementById("theme-toggle");
   const iconSpan = btn?.querySelector(".toggle-icon");
+  const thumb = btn?.querySelector(".toggle-thumb");
   const mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 
   const applyTheme = (theme) => {
@@ -158,30 +205,62 @@
     }
     root.setAttribute("data-theme", isDark ? "dark" : "light");
     document.body.setAttribute("data-theme", isDark ? "dark" : "light");
-    iconSpan!.textContent = isDark ? "🌙" : "☀️";
-    console.debug("[theme] apply", theme, {
-      rootClasses: root.className,
-      bodyClasses: document.body.className,
-    });
   };
 
-  const saved = (localStorage.getItem(THEME_KEY) || "").toLowerCase().trim();
-  let hasManualChoice = saved === "dark" || saved === "light";
+  const normalizeMode = (value) => {
+    const v = (value || "").toLowerCase().trim();
+    return v === "dark" || v === "light" || v === "auto" ? v : "auto";
+  };
+
   const getSystemTheme = () => (mql?.matches ? "dark" : "light");
-  const initialTheme = hasManualChoice ? saved : getSystemTheme();
-  applyTheme(initialTheme);
+  const getEffectiveTheme = (mode) => (mode === "auto" ? getSystemTheme() : mode);
+
+  const setThumbPosition = (mode) => {
+    if (!thumb) return;
+    const positions = {
+      light: "translate-x-0",
+      auto: "translate-x-4",
+      dark: "translate-x-8",
+    };
+    thumb.classList.remove(...Object.values(positions));
+    thumb.classList.add(positions[mode] ?? positions.auto);
+  };
+
+  const updateA11y = (mode) => {
+    if (!btn) return;
+    const label =
+      mode === "auto"
+        ? "Thème : auto (suit le thème de l’appareil)"
+        : mode === "dark"
+          ? "Thème : sombre"
+          : "Thème : clair";
+    btn.setAttribute("aria-label", label);
+  };
+
+  const applyMode = (mode) => {
+    const effectiveTheme = getEffectiveTheme(mode);
+    root.setAttribute("data-theme-mode", mode);
+    document.body.setAttribute("data-theme-mode", mode);
+    setThumbPosition(mode);
+    updateA11y(mode);
+    if (iconSpan) iconSpan.textContent = mode === "auto" ? "🌗" : effectiveTheme === "dark" ? "🌙" : "☀️";
+    applyTheme(effectiveTheme);
+    console.debug("[theme] apply", { mode, effectiveTheme });
+  };
+
+  let mode = normalizeMode(localStorage.getItem(THEME_KEY));
+  applyMode(mode);
 
   btn?.addEventListener("click", () => {
-    const next = root.classList.contains("theme-dark") ? "light" : "dark";
-    hasManualChoice = true;
+    const next = mode === "light" ? "auto" : mode === "auto" ? "dark" : "light";
+    mode = next;
     localStorage.setItem(THEME_KEY, next);
-    applyTheme(next);
+    applyMode(next);
   });
 
   mql?.addEventListener?.("change", (event) => {
-    if (hasManualChoice) return;
-    const systemTheme = event.matches ? "dark" : "light";
-    applyTheme(systemTheme);
+    if (mode !== "auto") return;
+    applyMode(mode);
   });
 
   const mobileMenu = document.querySelector("[data-mobile-menu]");

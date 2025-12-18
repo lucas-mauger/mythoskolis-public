@@ -6,93 +6,47 @@ type: "ressource"
 description: 'Cadre éditorial de Mythoskolis, hiérarchie des sources et usage du badge "non consensuel".'
 ---
 
-# Positionnement éditorial et usage des sources
+# Positionnement éditorial de Mythoskolis
 
-## 1. Objet du projet
+## Une proposition de lecture, pas une vérité
 
-Mythoskolis est un site de médiation culturelle consacré à la mythologie grecque. Son objectif n’est ni de produire un travail universitaire, ni d’imposer une version unique et définitive des mythes, mais de rendre **lisibles**, **compréhensibles** et **navigables** des traditions anciennes souvent fragmentaires, contradictoires et issues de strates culturelles différentes.
+Mythoskolis est un projet de médiation autour de la mythologie grecque. Il ne prétend ni à l’exhaustivité, ni à l’autorité académique. Il propose une **lecture possible** des récits mythologiques, issue du travail personnel de son auteur, de ses lectures, de ses croisements de sources et de son désir de rendre cet univers plus lisible, plus navigable et plus agréable à explorer.
 
-Le projet cherche à trouver un équilibre entre rigueur intellectuelle et clarté pédagogique, en assumant des choix éditoriaux explicites.
+La mythologie grecque n’est pas un système clos et parfaitement cohérent. Elle est faite de traditions locales, de récits concurrents, de contradictions assumées et de strates successives. Mythoskolis ne cherche pas à résoudre ces tensions, mais à les **rendre visibles**.
 
----
+## Deux niveaux de lecture complémentaires (HoloGraph)
 
-## 2. Nature des sources antiques
+La distinction entre **mode de base** et **mode avancé** s’applique spécifiquement à l’**HoloGraph**, l’outil de visualisation généalogique au cœur de Mythoskolis. Elle concerne un domaine particulier par nature complexe : les relations de filiation, d’ascendance et de parenté.
 
-La mythologie grecque ne repose pas sur un corpus canonique unique. Elle est constituée :
-- de poèmes fondateurs,
-- de récits épiques,
-- de compilations tardives,
-- de traditions locales,
-- de commentaires, scholies et réécritures.
+Le **mode de base** de l’HoloGraph propose une vision structurée et accessible de la généalogie mythologique. Il met en avant les relations retenues comme principales, celles qui permettent à un lecteur, même néophyte, de se repérer rapidement et de naviguer sans se heurter d’emblée aux contradictions internes des sources.
 
-Ces sources peuvent se compléter, se contredire ou refléter des usages régionaux et cultuels distincts. Toute tentative de « vérité unique » serait donc artificielle.
+Le **mode avancé** de l’HoloGraph ouvre une lecture plus critique et comparative. Il donne accès aux variantes, aux filiations concurrentes, aux traditions alternatives et aux désaccords entre sources. Il ne vise pas à corriger le mode de base ni à imposer une lecture savante, mais à expliciter les choix opérés et à montrer que d’autres récits coexistent.
 
-Mythoskolis prend acte de cette réalité.
+Cette logique ne s’étend pas de manière systématique aux autres contenus du site. Les fiches d’entités et les récits peuvent mentionner ponctuellement l’existence de variantes ou de traditions divergentes, mais sans chercher à les inventorier exhaustivement. L’HoloGraph reste le lieu privilégié où cette complexité est rendue visible et manipulable.
 
----
+Ces deux niveaux de lecture n’établissent pas de hiérarchie entre les lecteurs. Ils proposent simplement **des profondeurs d’exploration différentes**, selon l’intérêt, la curiosité ou le temps que chacun souhaite consacrer à la généalogie mythologique.
 
-## 3. Hiérarchie des sources retenue
+## Un consensus éditorial assumé
 
-Sans prétendre à l’exhaustivité académique, Mythoskolis s’appuie sur une hiérarchie des sources assumée, destinée à structurer la présentation des données :
+Dans Mythoskolis, le terme de « consensus » ne désigne ni une unanimité absolue des sources antiques, ni une vérité établie par une autorité savante. Il correspond à un **choix éditorial assumé** : une version retenue comme point d’entrée principal, parce qu’elle permet une lecture fluide, reconnaissable et navigable de la généalogie.
 
-- **Hésiode** constitue le socle principal lorsqu’il est explicite, en particulier pour les généalogies et la cosmogonie.
-- **Homère** est considéré comme une référence majeure et stable, même lorsque ses récits entrent en tension avec ceux d’Hésiode.
-- **Apollodore** offre une synthèse précieuse et structurante, bien que plus tardive.
-- **Autres auteurs** (Ovide, Pausanias, scholies, traditions locales, sources orphiques, etc.) enrichissent et complexifient la tradition, sans toujours en fixer la version dominante.
+Ce choix n’est pas fondé sur une connaissance exhaustive ou encyclopédique de l’ensemble des traditions antiques, mais sur une démarche pragmatique et personnelle : proposer une structure suffisamment stable pour être parcourue sans se perdre d’emblée dans la complexité des variantes.
 
-Cette hiérarchie n’exclut aucune source, mais elle guide leur poids relatif dans la présentation.
+Lorsqu’un lien est présenté comme consensuel, cela signifie qu’il est utilisé comme **repère de navigation**, non qu’il exclut l’existence d’autres traditions ni qu’il prétend les invalider. Ces autres lectures, lorsqu’elles sont connues et documentées, sont rendues visibles dans le mode avancé de l’HoloGraph.
 
----
+Les cas où aucune filiation ne fait consensus sont explicitement signalés et documentés dans le mode avancé.
 
-## 4. Usage des notions de « consensuel » et de « non consensuel »
+## Une cartographie plutôt qu’un catalogue
 
-Sur Mythoskolis, la notion de *consensuel* n’est **pas affichée explicitement** au visiteur. Elle relève d’un choix éditorial interne, utilisé pour structurer les données et guider leur présentation.
+Mythoskolis n’est pas un dictionnaire exhaustif ni une base de données universitaire. C’est une **cartographie interactive** : un outil pensé pour permettre des parcours non linéaires, des découvertes par rebond, des associations d’idées.
 
-Concrètement :
-- **ce qui n’est pas signalé comme non consensuel est considéré comme relevant de la version dominante du mythe**,
-- cette version correspond à ce que la tradition a le plus largement retenu, sans prétendre à une démonstration académique formelle.
+Certaines figures très connues peuvent ainsi apparaître comme des points d’ancrage majeurs, tandis que d’autres, pourtant plus anciennes ou plus théoriquement « fondatrices », occupent une place plus discrète. Ce déséquilibre n’est pas une erreur : il reflète la manière dont la mythologie grecque est réellement transmise, reçue et vécue.
 
-Une relation, une filiation ou une union est ainsi considérée comme *consensuelle* lorsqu’elle correspond :
-- à un récit solidement attesté par les sources majeures,
-- ou à une tradition suffisamment stabilisée dans la mémoire culturelle collective,
-- même si cette tradition repose sur une source principale unique.
+## Une démarche transparente et évolutive
 
-À l’inverse, lorsqu’une relation est signalée par le badge **NON CONSENSUEL** dans la généalogie détaillée, cela signifie qu’elle relève d’une variante clairement identifiée :
-- attestée par une ou plusieurs sources,
-- mais minoritaire, locale, tardive ou contradictoire par rapport à la tradition dominante.
+Mythoskolis est un projet en évolution constante. Les données peuvent être enrichies, précisées ou réorganisées au fil du temps. Lorsque des sources sont mentionnées, elles le sont comme **points d’appui**, non comme arguments d’autorité définitifs.
 
-Le badge *NON CONSENSUEL* ne remet pas en cause la validité du récit concerné. Il indique simplement au lecteur qu’il s’agit **d’une version parmi d’autres**, et non de la forme la plus largement transmise du mythe.
+L’objectif n’est pas de trancher les débats mythographiques, mais de donner au lecteur les outils nécessaires pour comprendre qu’ils existent, et, s’il le souhaite, pour aller plus loin par lui-même.
 
----
+Mythoskolis est avant tout une invitation : à la curiosité, à la lecture, à la comparaison des récits, et au plaisir de se perdre dans la richesse foisonnante des mythes grecs.
 
-## 5. Variantes, contradictions et pluralité
-
-Mythoskolis ne cherche pas à résoudre les contradictions internes de la mythologie grecque. Il les **expose**, les **contextualise** et les **rend visibles**.
-
-Les variantes sont présentées comme telles, avec leurs sources, afin de montrer :
-- la richesse du matériau mythologique,
-- l’évolution des récits dans le temps,
-- et la diversité des traditions.
-
-Cette approche privilégie la compréhension à la simplification.
-
----
-
-## 6. Une démarche de médiation, pas d’érudition normative
-
-Mythoskolis s’inscrit dans une démarche de médiation culturelle :
-- rigoureuse dans ses sources,
-- honnête dans ses choix,
-- lisible pour un public non spécialiste.
-
-Le site ne prétend pas se substituer aux travaux universitaires, mais offrir un cadre structuré et accessible pour explorer la mythologie grecque, ses figures, ses récits et ses généalogies.
-
-Cette note d’intention vise à rendre ces choix explicites, afin que le lecteur comprenne **comment** et **pourquoi** les informations sont présentées de cette manière.
-
----
-
-## 7. Conclusion
-
-La mythologie grecque est un ensemble vivant de récits pluriels. Mythoskolis assume cette pluralité tout en proposant une structure claire, fondée sur des sources identifiées et des choix éditoriaux transparents.
-
-L’ambition du projet est simple : permettre de naviguer dans cette complexité sans la trahir, et sans prétendre la clore.
