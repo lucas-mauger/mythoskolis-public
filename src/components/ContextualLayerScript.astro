@@ -1,0 +1,367 @@
+---
+type ContextualEntry = {
+  name: string;
+  definition?: string;
+  type?: "glossary" | "entity";
+  title?: string;
+  role?: string;
+  image?: string | null;
+};
+
+type Props = {
+  entries: ContextualEntry[];
+  scopeSelector: string;
+  toggleSelector?: string;
+};
+
+const {
+  entries = [],
+  scopeSelector,
+  toggleSelector = "[data-contextual-toggle]",
+}: Props = Astro.props;
+---
+
+<script
+  is:inline
+  data-contextual-entries={JSON.stringify(entries)}
+  data-contextual-scope={scopeSelector}
+  data-contextual-toggle={toggleSelector}
+>
+  (() => {
+    const script = document.currentScript;
+    if (!script) return;
+    const entriesRaw = script.dataset.contextualEntries ?? "[]";
+    const scopeSelector = script.dataset.contextualScope ?? "";
+    const toggleSelector = script.dataset.contextualToggle ?? "[data-contextual-toggle]";
+    const entries = JSON.parse(entriesRaw);
+    if (!Array.isArray(entries) || entries.length === 0) return;
+
+    const highlightClasses = [
+      "underline",
+      "decoration-amber-400",
+      "decoration-2",
+      "underline-offset-2",
+      "cursor-pointer",
+    ];
+
+    const skipTags = new Set(["A", "BUTTON", "CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA", "INPUT", "SELECT", "OPTION", "MARK"]);
+
+    const mapByKey = new Map(
+      entries.map((entry) => [
+        (entry?.name ?? "").toLocaleLowerCase("fr"),
+        {
+          name: entry?.name ?? "",
+          definition: entry?.definition ?? "",
+          type: entry?.type ?? "glossary",
+          title: entry?.title ?? entry?.name ?? "",
+          role: entry?.role ?? "",
+          image: entry?.image ?? null,
+        },
+      ]),
+    );
+
+    const terms = Array.from(mapByKey.values())
+      .map((entry) => entry.name)
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length);
+
+    if (terms.length === 0) return;
+
+    const escapedTerms = terms.map((term) =>
+      term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&"),
+    );
+    // Autorise les apostrophes et ponctuations autour du mot (ex: l’hubris)
+    const boundary = `[\\s.,;:!?()\\[\\]{}"“”'’«»-]`;
+    const pattern = new RegExp(`(^|${boundary})(${escapedTerms.join("|")})(?=($|${boundary}))`, "giu");
+
+    const scope = document.querySelector(scopeSelector);
+    if (!scope) return;
+    const toggle = scope.querySelector(toggleSelector);
+    if (!toggle) return;
+    const contentRoot = scope.querySelector("[data-contextual-body]") || scope;
+
+    let processed = false;
+    let active = false;
+    let markers = [];
+    let currentAnchor = null;
+    let hideTimer = null;
+
+    const tooltip = createTooltip();
+
+    const activeBtnClasses = [
+      "border-amber-400",
+      "bg-amber-50",
+      "text-amber-900",
+      "shadow-md",
+      "dark:border-amber-400/80",
+      "dark:bg-amber-900/30",
+      "dark:text-amber-100",
+    ];
+    const inactiveBtnClasses = [
+      "border-slate-200",
+      "bg-white",
+      "text-slate-900",
+      "shadow-sm",
+      "dark:border-slate-700",
+      "dark:bg-slate-900",
+      "dark:text-slate-100",
+    ];
+
+    function applyState(isActive) {
+      active = isActive;
+      toggle.setAttribute("aria-pressed", String(isActive));
+      const indicator = toggle.querySelector("[data-contextual-indicator]");
+
+      activeBtnClasses.forEach((cls) => toggle.classList[isActive ? "add" : "remove"](cls));
+      inactiveBtnClasses.forEach((cls) => toggle.classList[isActive ? "remove" : "add"](cls));
+      toggle.classList.toggle("ring-2", isActive);
+      toggle.classList.toggle("ring-amber-300", isActive);
+      toggle.classList.toggle("dark:ring-amber-400/50", isActive);
+
+      if (indicator) {
+        indicator.classList.toggle("bg-amber-400", isActive);
+        indicator.classList.toggle("border-amber-500/80", isActive);
+        indicator.classList.toggle("bg-transparent", !isActive);
+        indicator.classList.toggle("border-slate-400", !isActive);
+      }
+
+      markers.forEach((marker) => {
+        highlightClasses.forEach((cls) => marker.classList[isActive ? "add" : "remove"](cls));
+        marker.tabIndex = isActive ? 0 : -1;
+        marker.setAttribute("aria-pressed", "false");
+      });
+
+      if (!isActive) hideTooltip();
+    }
+
+    function init() {
+      applyState(false);
+      toggle.addEventListener("click", () => {
+        if (!processed) {
+            try {
+              markers = wrapContent(contentRoot);
+            } catch (err) {
+              console.error("[ContextualLayer] wrap error", err);
+              markers = [];
+            }
+            processed = true;
+        }
+        applyState(!active);
+      });
+
+      toggle.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          toggle.click();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!active) return;
+        const target = event.target;
+        if (tooltip.contains(target)) return;
+        if (target?.closest && target.closest("[data-context-term]")) return;
+        hideTooltip();
+      });
+    }
+
+    function wrapContent(root) {
+      const collected = [];
+      const walker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode(node) {
+            if (!node || !node.textContent || !node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+            const parent = node.parentElement;
+            if (!parent) return NodeFilter.FILTER_REJECT;
+            if (parent.closest("[data-context-term]")) return NodeFilter.FILTER_REJECT;
+            if (skipTags.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          },
+        },
+      );
+
+      const textNodes = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        textNodes.push(node);
+      }
+
+      textNodes.forEach((textNode) => {
+        const newMarkers = wrapTextNode(textNode);
+        collected.push(...newMarkers);
+      });
+
+      return collected;
+    }
+
+    function wrapTextNode(node) {
+      const text = node.textContent || "";
+      pattern.lastIndex = 0;
+      let match;
+      let lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      const locals = [];
+      let found = false;
+
+      while ((match = pattern.exec(text))) {
+        const start = match.index;
+        const end = pattern.lastIndex;
+        const prefix = match[1] ?? "";
+        const matchedText = match[2] || match[0];
+        const key = matchedText.toLocaleLowerCase("fr");
+        const glossaryEntry = mapByKey.get(key);
+
+        if (start > lastIndex) {
+          frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
+        }
+
+        if (prefix) {
+          frag.appendChild(document.createTextNode(prefix));
+        }
+
+        if (!glossaryEntry) {
+          frag.appendChild(document.createTextNode(matchedText));
+        } else {
+          const marker = createMarker(matchedText, glossaryEntry);
+          frag.appendChild(marker);
+          locals.push(marker);
+        }
+
+        lastIndex = end;
+        found = true;
+      }
+
+      if (!found) return [];
+
+      if (lastIndex < text.length) {
+        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+      }
+
+      if (node.parentNode) {
+        node.parentNode.replaceChild(frag, node);
+      }
+
+      return locals;
+    }
+
+    function createMarker(label, entry) {
+      const span = document.createElement("span");
+      span.textContent = label;
+      span.dataset.contextTerm = label;
+      span.className = "mk-context-term relative inline-flex items-center";
+      // attach data for tooltip rendering
+      // @ts-ignore - custom property on DOM node
+      span.__contextEntry = entry;
+      span.tabIndex = -1;
+      span.setAttribute("role", "button");
+      span.setAttribute("aria-label", label + " : définition disponible");
+      span.addEventListener("mouseenter", () => {
+        if (!active) return;
+        clearTimeout(hideTimer);
+        showTooltip(span);
+      });
+      span.addEventListener("mouseleave", () => {
+        if (!active) return;
+        hideTimer = window.setTimeout(hideTooltip, 120);
+      });
+      span.addEventListener("click", (event) => {
+        if (!active) return;
+        event.preventDefault();
+        event.stopPropagation();
+        clearTimeout(hideTimer);
+        showTooltip(span);
+      });
+      span.addEventListener("keydown", (event) => {
+        if (!active) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          showTooltip(span);
+        }
+      });
+      return span;
+    }
+
+    function createTooltip() {
+      const el = document.createElement("div");
+      el.className =
+        "mk-context-tooltip fixed z-50 max-w-xs rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-900 shadow-xl transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";
+      el.style.display = "none";
+      el.style.pointerEvents = "auto";
+      document.body.appendChild(el);
+      return el;
+    }
+
+    function escapeHtml(str = "") {
+      return str.replace(/[&<>"']/g, (ch) => {
+        switch (ch) {
+          case "&":
+            return "&amp;";
+          case "<":
+            return "&lt;";
+          case ">":
+            return "&gt;";
+          case '"':
+            return "&quot;";
+          case "'":
+            return "&#39;";
+          default:
+            return ch;
+        }
+      });
+    }
+
+    function renderTooltip(entry) {
+      const type = entry?.type || "glossary";
+      if (type === "entity") {
+        const title = escapeHtml(entry?.title || entry?.name || "");
+        const role = escapeHtml(entry?.role || "");
+        const img = entry?.image
+          ? `<div class="flex-shrink-0 w-12 h-12 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"><img src="${entry.image}" alt="${title}" class="w-full h-full object-cover" loading="lazy" /></div>`
+          : "";
+        const roleHtml = role ? `<div class="text-sm text-slate-700 dark:text-slate-200">${role}</div>` : "";
+        return `<div class="flex items-start gap-3">${img}<div><div class="font-semibold text-slate-900 dark:text-slate-50">${title}</div>${roleHtml}</div></div>`;
+      }
+      const def = escapeHtml(entry?.definition || "");
+      return `<div class="text-sm text-slate-800 dark:text-slate-100">${def}</div>`;
+    }
+
+    function showTooltip(marker) {
+      // @ts-ignore - custom property on DOM node
+      const entry = marker.__contextEntry || null;
+      if (!entry) return;
+      currentAnchor = marker;
+      tooltip.innerHTML = renderTooltip(entry);
+      tooltip.style.display = "block";
+      positionTooltip(marker);
+    }
+
+    function hideTooltip() {
+      tooltip.style.display = "none";
+      currentAnchor = null;
+    }
+
+    function positionTooltip(marker) {
+      const rect = marker.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      const margin = 10;
+      let top = rect.bottom + margin;
+      let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+
+      if (top + tooltipRect.height + margin > window.innerHeight) {
+        top = rect.top - tooltipRect.height - margin;
+      }
+
+      if (left < 12) left = 12;
+      if (left + tooltipRect.width > window.innerWidth - 12) {
+        left = window.innerWidth - tooltipRect.width - 12;
+      }
+
+      tooltip.style.top = top + "px";
+      tooltip.style.left = left + "px";
+    }
+
+    init();
+  })();
+</script>

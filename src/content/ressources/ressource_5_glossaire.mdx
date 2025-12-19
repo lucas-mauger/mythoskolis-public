@@ -1,0 +1,36 @@
+---
+title: "Glossaire mythologique"
+slug: "glossaire-mythologique"
+id: "ressource-glossaire-mythologique"
+type: "ressource"
+description: "Un glossaire simple réunissant les termes essentiels pour comprendre la mythologie grecque et ses concepts fondamentaux."
+---
+
+import { getGlossaryByInitial } from "../../lib/glossaire";
+export const glossaryByInitial = getGlossaryByInitial();
+
+# Glossaire mythologique
+
+Ce glossaire rassemble les termes les plus courants de la mythologie grecque. Il offre des définitions courtes et précises pour faciliter la lecture des récits, des études et des généalogies.
+
+{glossaryByInitial.length === 0 ? (
+  <p>Le glossaire sera bientôt disponible.</p>
+) : (
+  glossaryByInitial.map(({ letter, entries }) => (
+    <section key={letter} id={`lettre-${letter}`} className="mt-10 first:mt-6">
+      <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50">{letter}</h2>
+      <dl className="mt-4 space-y-4">
+        {entries.map((entry) => (
+          <div key={entry.name} className="space-y-1">
+            <dt className="font-semibold text-slate-900 dark:text-slate-50">{entry.name}</dt>
+            <dd className="text-slate-700 dark:text-slate-200">{entry.definition}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  ))
+)}
+
+## Conclusion
+
+Ce glossaire constitue une base solide pour naviguer dans les récits et la structure de la mythologie grecque. Il pourra être complété au fil du développement du site et de l'ajout de nouveaux contenus.

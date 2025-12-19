@@ -4,6 +4,8 @@ import Footer from '../../components/Footer.astro';
 import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
 import { getCollection, getEntry } from 'astro:content';
+import { getGlossaryEntries } from '../../lib/glossaire';
+import ContextualLayerScript from '../../components/ContextualLayerScript.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 import { isPublishedEntry } from '../../utils/content-filters';
@@ -53,6 +55,26 @@ const mainEntities = (recit.data.main_entities || [])
     title: ent.data.title,
     img: getFaceForEntity(ent),
   }));
+
+const glossaryEntries = getGlossaryEntries();
+const entityLayerEntries = Array.from(entiteById.values())
+  .map((ent) => {
+    const id = ent?.data?.id;
+    const title = ent?.data?.title?.toString().trim();
+    if (!title) return null;
+    return {
+      type: 'entity',
+      name: title,
+      title,
+      role: ent?.data?.role?.toString() ?? '',
+      image: getFaceForEntity(ent),
+    };
+  })
+  .filter(Boolean);
+const layerEntries = [
+  ...glossaryEntries.map((g) => ({ type: 'glossary', name: g.name, definition: g.definition })),
+  ...entityLayerEntries,
+];
 
 const opponentEntities = (recit.data.opponents || [])
   .map((id) => entiteById.get(id))
@@ -171,16 +193,33 @@ const opponentEntities = (recit.data.opponents || [])
         </div>
       )}
 
-      <article class="mk-prose-card max-w-none p-2">
-        <Content />
+      <article class="mk-prose-card max-w-none p-2" data-contextual-scope="recit">
+        <div class="flex justify-end">
+          <button
+            type="button"
+            data-contextual-toggle
+            aria-pressed="false"
+            class="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition hover:-translate-y-px hover:shadow-lg border-slate-200 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+          >
+            <span
+              aria-hidden="true"
+              data-contextual-indicator
+              class="inline-block h-3 w-3 rounded-full border border-slate-400 bg-transparent transition"
+            ></span>
+            <span data-contextual-label>Lecture contextuelle</span>
+          </button>
+        </div>
+        <div data-contextual-body>
+          <Content />
+        </div>
       </article>
 
       {tagList.length > 0 && (
-        <section class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3 shadow-sm">
-          <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Thèmes abordés</h2>
-          <div class="flex flex-wrap gap-2">
-            {tagList.map((tag) => (
-              <a
+      <section class="entity-strip mk-card w-full max-w-full box-border rounded-2xl p-4 space-y-3 shadow-sm">
+        <h2 class="text-[1.05rem] font-bold text-slate-900 dark:text-slate-50">Thèmes abordés</h2>
+        <div class="flex flex-wrap gap-2">
+          {tagList.map((tag) => (
+            <a
                 href={`/recits/?tag=${encodeURIComponent(tag.label)}`}
                 class="chip mk-chip inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-900 transition hover:-translate-y-[1px]"
               >
@@ -190,6 +229,8 @@ const opponentEntities = (recit.data.opponents || [])
           </div>
         </section>
       )}
+
+      <ContextualLayerScript entries={layerEntries} scopeSelector="[data-contextual-scope='recit']" />
     </main>
 
     <Footer />
