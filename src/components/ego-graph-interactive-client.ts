@@ -355,6 +355,7 @@ class EgoGraphController {
   };
   private advancedMode = false;
   private advancedToggle?: HTMLButtonElement;
+  private advancedHelpButton?: HTMLButtonElement;
   private searchInput?: HTMLInputElement;
   private searchResults?: HTMLElement;
   private searchField?: HTMLElement;
@@ -389,6 +390,7 @@ class EgoGraphController {
       }
     });
     this.advancedToggle = scope?.querySelector<HTMLButtonElement>('[data-ego-advanced-toggle]');
+    this.advancedHelpButton = scope?.querySelector<HTMLButtonElement>("[data-ego-advanced-help-open]");
     if (this.advancedToggle) {
       this.advancedToggle.setAttribute("aria-disabled", "false");
       this.advancedToggle.addEventListener("click", () => {
@@ -459,6 +461,18 @@ class EgoGraphController {
 
   getCurrentSlug(): string | null {
     return this.currentSlug;
+  }
+
+  clearFocus() {
+    this.clearActiveNode();
+    this.selectedConsortSlug = null;
+    this.focusedConsortSlug = null;
+    this.focusedChildSlug = null;
+    this.childrenOrder = null;
+    this.consortOrder = null;
+    if (this.currentGraph) {
+      void this.renderGraph(this.currentGraph);
+    }
   }
 
   private normalizeText(value: string) {
@@ -1245,7 +1259,12 @@ class EgoGraphController {
   private updateAdvancedToggleUI() {
     if (!this.advancedToggle) return;
     this.advancedToggle.setAttribute("aria-pressed", this.advancedMode ? "true" : "false");
-    this.advancedToggle.textContent = this.advancedMode ? "Mode avancé activé" : "Mode avancé";
+    this.advancedToggle.textContent = "Mode avancé";
+    this.advancedToggle.setAttribute("aria-label", this.advancedMode ? "Mode avancé (activé)" : "Mode avancé (désactivé)");
+    if (this.advancedHelpButton) {
+      this.advancedHelpButton.classList.toggle("hidden", !this.advancedMode);
+      this.advancedHelpButton.classList.toggle("inline-flex", this.advancedMode);
+    }
   }
 
   private getSectionOrder(section: RelationSection): string[] {
@@ -1521,6 +1540,7 @@ class EgoGraphController {
     const columnIndex =
       containerRect && columnWidth ? Math.max(0, Math.min(columns - 1, Math.floor((centerX - containerRect.left) / columnWidth))) : null;
     let targetLeft = rawLeft;
+    const nudge = 34; // renforce le décalage latéral pour éviter les collisions avec les bords
     if (isMobile) {
       const role = el.dataset.role;
       if (role === "consort") {
@@ -1532,12 +1552,15 @@ class EgoGraphController {
       const role = el.dataset.role;
       // Décale horizontalement pour les extrêmes : consorts à droite -> bulle vers la gauche ; enfants à gauche -> bulle vers la droite.
       if (role === "consort" && columnIndex === columns - 1) {
-        targetLeft = rawLeft - (half - rect.width / 2);
+        targetLeft = rawLeft - (half - rect.width / 2) - nudge;
       } else if (role === "child" && columnIndex === 0) {
-        targetLeft = rawLeft + (half - rect.width / 2);
+        targetLeft = rawLeft + (half - rect.width / 2) + nudge;
       }
     }
-    const clampedLeft = Math.min(Math.max(targetLeft, margin + half), window.innerWidth - margin - half);
+    const useWindowClamp = !containerRect || tooltipRect.width + margin * 2 > (containerRect?.width ?? Infinity);
+    const clampMin = useWindowClamp ? margin + half : containerRect.left + margin + half;
+    const clampMax = useWindowClamp ? window.innerWidth - margin - half : containerRect.right - margin - half;
+    const clampedLeft = Math.min(Math.max(targetLeft, clampMin), clampMax);
     tooltip.style.left = `${clampedLeft}px`;
     tooltip.style.top = `${top}px`;
   }

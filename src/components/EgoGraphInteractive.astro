@@ -28,16 +28,26 @@ const searchInputId = `${componentId}-search`;
   </div>
 
   <div class="ego-controls-bar">
-    <button
-      type="button"
-      data-ego-advanced-toggle
-      aria-pressed="false"
-      aria-disabled="true"
-      class="ego-advanced-toggle"
-      title="Affichera les variantes non consensuelles (bientôt)"
-    >
-      Mode avancé
-    </button>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        data-ego-advanced-toggle
+        aria-pressed="false"
+        aria-disabled="true"
+        class="ego-advanced-toggle"
+      >
+        Mode avancé
+      </button>
+      <button
+        type="button"
+        data-ego-advanced-help-open
+        class="hidden h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:focus:ring-offset-slate-900"
+        aria-label="Aide vidéo : mode avancé"
+        title="Aide vidéo"
+      >
+        ?
+      </button>
+    </div>
     <button
       type="button"
       data-ego-demo-toggle
@@ -46,6 +56,46 @@ const searchInputId = `${componentId}-search`;
     >
       Comment faire
     </button>
+  </div>
+
+  <div data-ego-advanced-help-modal hidden aria-hidden="true" class="fixed inset-0 z-50 overflow-y-auto">
+    <div class="absolute inset-0 bg-slate-900/55 backdrop-blur-sm" data-ego-advanced-help-overlay></div>
+    <div class="relative z-10 flex min-h-full items-center justify-center p-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${componentId}-advanced-help-title`}
+        data-ego-advanced-help-panel
+        class="flex w-full max-w-3xl max-h-[85vh] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900"
+      >
+        <div class="flex items-center justify-between gap-4 border-b border-slate-200 px-4 py-3 dark:border-slate-700">
+          <h2 id={`${componentId}-advanced-help-title`} class="text-base font-semibold text-slate-900 dark:text-slate-100">
+            Mode avancé — guide vidéo
+          </h2>
+          <button
+            type="button"
+            data-ego-advanced-help-close
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:focus:ring-offset-slate-900"
+            aria-label="Fermer"
+            title="Fermer"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="p-4 overflow-y-auto" data-ego-advanced-help-body>
+          <video
+            data-ego-advanced-help-video
+            data-src="/medias/advanced-mode-demo.mp4"
+            class="w-full max-h-[62vh] rounded-xl border border-slate-200 bg-black/5 object-contain shadow-sm dark:border-slate-700 dark:bg-black/20"
+            controls
+            playsinline
+            preload="metadata"
+          >
+            Votre navigateur ne supporte pas la lecture vidéo.
+          </video>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="relative border border-dashed border-indigo-100 rounded-2xl bg-indigo-50/50 overflow-hidden flex justify-center">
@@ -563,6 +613,75 @@ import { FileWatcherEventKind } from "typescript";
   })();
 </script>
 
+<script>
+  (() => {
+    const openButtons = document.querySelectorAll<HTMLButtonElement>("[data-ego-advanced-help-open]");
+    openButtons.forEach((openBtn) => {
+      const scope = openBtn.closest("section");
+      const modal = scope?.querySelector<HTMLElement>("[data-ego-advanced-help-modal]");
+      const overlay = scope?.querySelector<HTMLElement>("[data-ego-advanced-help-overlay]");
+      const closeBtn = scope?.querySelector<HTMLButtonElement>("[data-ego-advanced-help-close]");
+      const video = scope?.querySelector<HTMLVideoElement>("[data-ego-advanced-help-video]");
+
+      if (!scope || !modal || !overlay || !closeBtn || !video) return;
+
+      const videoSrc = video.dataset.src;
+      if (!videoSrc) return;
+
+      let previousFocus: HTMLElement | null = null;
+
+      const open = () => {
+        const graph = scope.querySelector<HTMLElement>("[data-ego-graph-container]");
+        const controller = (graph as unknown as { __egoController?: { clearFocus?: () => void } }).__egoController;
+        if (controller?.clearFocus) {
+          controller.clearFocus();
+        } else {
+          graph?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        }
+
+        previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("overflow-hidden");
+
+        if (!video.getAttribute("src")) {
+          video.setAttribute("src", videoSrc);
+          video.load();
+        }
+
+        closeBtn.focus();
+      };
+
+      const close = () => {
+        video.pause();
+        try {
+          video.currentTime = 0;
+        } catch {}
+        modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("overflow-hidden");
+        previousFocus?.focus?.();
+      };
+
+      openBtn.addEventListener("click", open);
+      closeBtn.addEventListener("click", close);
+      overlay.addEventListener("click", close);
+      const panel = scope.querySelector<HTMLElement>("[data-ego-advanced-help-panel]");
+      modal.addEventListener("click", (event) => {
+        const target = event.target as Node | null;
+        if (!target || !panel) return;
+        if (panel.contains(target)) return;
+        close();
+      });
+      modal.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        event.preventDefault();
+        close();
+      });
+    });
+  })();
+</script>
+
 <style is:global>
   @font-face {
     font-family: 'Dalek';
@@ -574,8 +693,8 @@ import { FileWatcherEventKind } from "typescript";
 
 .ego-graph-sky {
   position: relative;
-  width: min(80vw, 1100px);
-  aspect-ratio: 16 / 9;
+  width: min(95vw, 1180px);
+  height: min(75vh, 820px);
   border-radius: 1.5rem;
   overflow: visible;
   padding: 0;
@@ -980,6 +1099,22 @@ import { FileWatcherEventKind } from "typescript";
   transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
+.ego-advanced-toggle::after {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(100, 116, 139, 0.65);
+  background: rgba(148, 163, 184, 0.25);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.dark .ego-advanced-toggle::after {
+  border-color: rgba(226, 232, 240, 0.5);
+  background: rgba(148, 163, 184, 0.12);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
 .ego-advanced-toggle:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 26px rgba(15, 23, 42, 0.16);
@@ -1000,10 +1135,22 @@ import { FileWatcherEventKind } from "typescript";
   color: rgb(67 20 7);
 }
 
+.ego-advanced-toggle[aria-pressed="true"]::after {
+  border-color: rgba(251, 191, 36, 0.95);
+  background: rgba(251, 191, 36, 0.95);
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.35);
+}
+
 .dark .ego-advanced-toggle[aria-pressed="true"] {
   background: linear-gradient(135deg, rgba(67, 56, 202, 0.22), rgba(251, 191, 36, 0.16));
   border-color: rgba(251, 191, 36, 0.6);
   color: rgb(253 230 138);
+}
+
+.dark .ego-advanced-toggle[aria-pressed="true"]::after {
+  border-color: rgba(251, 191, 36, 0.9);
+  background: rgba(251, 191, 36, 0.85);
+  box-shadow: 0 6px 18px rgba(251, 191, 36, 0.25);
 }
 
 .demo-nav[aria-disabled="false"]:hover {
@@ -1069,12 +1216,13 @@ import { FileWatcherEventKind } from "typescript";
     position: relative;
     width: 100%;
     height: 100%;
-    max-height: 380px;
-    padding: 4rem 1.25rem 1.25rem;
+    min-height: 0;
+    max-height: none;
+    padding: 1.5rem 1rem 2.5rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-auto-rows: 120px;
-    gap: 1rem;
+    grid-auto-rows: 90px;
+    gap: 2.5rem;
     align-items: center;
     justify-items: center;
     align-content: flex-start;
@@ -1083,6 +1231,7 @@ import { FileWatcherEventKind } from "typescript";
     overflow-y: auto;
     overflow-x: visible;
     overscroll-behavior: contain;
+    scroll-padding-bottom: 2.5rem;
     scrollbar-width: none;
     cursor: grab;
     grid-auto-flow: row dense;
@@ -1107,8 +1256,16 @@ import { FileWatcherEventKind } from "typescript";
   }
 
   @media (max-width: 640px) {
+    .ego-graph-sky {
+      width: 100%;
+      height: auto;
+    }
     .ego-quadrant-content {
-      max-height: 320px;
+      max-height: 360px;
+      min-height: 280px;
+      align-content: flex-start;
+      padding: 1.25rem 0.9rem 2rem;
+      grid-auto-rows: 95px;
     }
     .ego-quadrant-content.is-compact-parents {
       grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -1391,11 +1548,33 @@ import { FileWatcherEventKind } from "typescript";
   .ego-node.is-related.is-non-consensus::before {
     border-color: rgba(59, 130, 246, 0.7);
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.55), 0 0 22px rgba(59, 130, 246, 0.35);
+    animation: ego-glow-blue 1.6s ease-in-out infinite;
   }
 
   .ego-node.is-sibling.is-non-consensus::before {
     border-color: rgba(16, 185, 129, 0.8);
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.55), 0 0 22px rgba(16, 185, 129, 0.35);
+    animation: ego-glow-green 1.6s ease-in-out infinite;
+  }
+
+  /* Mixed consensus: halo bleu (évite le fond orange par défaut) */
+  .ego-node.is-active.is-mixed-consensus::before {
+    border-color: rgba(59, 130, 246, 0.7);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.55), 0 0 22px rgba(59, 130, 246, 0.35);
+  }
+
+  /* Exception : un consort focusé reste en halo orange même en mixed */
+  .ego-node[data-role="consort"].is-active.is-mixed-consensus::before {
+    border-color: rgba(249, 115, 22, 0.65);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.55), 0 0 18px rgba(249, 115, 22, 0.35);
+    animation: ego-glow 1.6s ease-in-out infinite;
+  }
+
+  /* Même logique pour les enfants mixed : halo orange quand focus */
+  .ego-node[data-role="child"].is-active.is-mixed-consensus::before {
+    border-color: rgba(249, 115, 22, 0.65);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.55), 0 0 18px rgba(249, 115, 22, 0.35);
+    animation: ego-glow 1.6s ease-in-out infinite;
   }
 
   .dark .ego-node.is-active::after,
@@ -1475,8 +1654,10 @@ import { FileWatcherEventKind } from "typescript";
     transition: opacity 140ms ease, transform 140ms ease;
     z-index: 220;
     white-space: normal;
-    max-width: min(240px, 70vw);
-    text-align: center;
+    width: auto;
+    max-width: min(120px, 70vw);
+    min-width: min(100px, 70vw);
+    text-align: left;
   }
 
   .ego-node.is-active .ego-non-consensus-tooltip {
@@ -1499,6 +1680,8 @@ import { FileWatcherEventKind } from "typescript";
 
 .ego-tooltip-author {
     font-weight: 1000;
+    display: inline-block;
+    white-space: nowrap;
   }
 
   .ego-tooltip-author-consensus {
@@ -1510,10 +1693,16 @@ import { FileWatcherEventKind } from "typescript";
   }
 
   .ego-tooltip-row {
-    padding: 0.45rem 0.75rem;
+    padding: 0.4rem 0.6rem;
     display: block;
     text-align: left;
     margin: 0;
+    line-height: 1.35;
+  }
+
+  .ego-tooltip-row br {
+    flex-basis: 100%;
+    height: 0;
   }
 
   .ego-tooltip-row + .ego-tooltip-row {
@@ -1537,6 +1726,9 @@ import { FileWatcherEventKind } from "typescript";
     font-weight: 900;
     font-size: 0.78rem;
     box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
+    vertical-align: middle;
+    margin-right: 0.35rem;
+    flex-shrink: 0;
   }
 
   .dark .ego-tooltip-index {
@@ -1784,6 +1976,31 @@ import { FileWatcherEventKind } from "typescript";
     border-color: rgba(16, 185, 129, 0.8);
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.55), 0 0 22px rgba(16, 185, 129, 0.35);
     opacity: 1;
+    animation: ego-glow-green 1.6s ease-in-out infinite;
+  }
+
+  /* Priorise la couleur de relation (bleu/vert) même si la source est non consensuelle */
+  .ego-node.is-related.is-non-consensus::before {
+    border-color: rgba(59, 130, 246, 0.7);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.55), 0 0 22px rgba(59, 130, 246, 0.35);
+    animation: ego-glow-blue 1.6s ease-in-out infinite;
+  }
+
+  .ego-node.is-sibling.is-non-consensus::before {
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.55), 0 0 22px rgba(16, 185, 129, 0.35);
+    animation: ego-glow-green 1.6s ease-in-out infinite;
+  }
+
+  .ego-node.is-active.is-related.is-non-consensus::before {
+    border-color: rgba(59, 130, 246, 0.7);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.55), 0 0 22px rgba(59, 130, 246, 0.35);
+    animation: ego-glow-blue 1.6s ease-in-out infinite;
+  }
+
+  .ego-node.is-active.is-sibling.is-non-consensus::before {
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.55), 0 0 22px rgba(16, 185, 129, 0.35);
     animation: ego-glow-green 1.6s ease-in-out infinite;
   }
 

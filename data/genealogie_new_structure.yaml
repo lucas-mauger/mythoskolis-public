@@ -8,13 +8,13 @@ entities:
         - id: grecque-cronos
           consensus: true
           sources:
-            - author: 'Source : Hésiode'
+            - author: Hésiode
               work: Théogonie — v.453–458
               passage: ''
         - id: grecque-rhea
           consensus: true
           sources:
-            - author: 'Source : Hésiode'
+            - author: Hésiode
               work: Théogonie — v.453–458
               passage: ''
       children:
@@ -477,7 +477,7 @@ entities:
         - id: grecque-zeus
           consensus: true
           sources:
-            - author: 'Source : Hésiode'
+            - author: Hésiode
               work: Théogonie — v.453–458
               passage: ''
       siblings:
@@ -606,7 +606,7 @@ entities:
         - id: grecque-zeus
           consensus: true
           sources:
-            - author: 'Source : Hésiode'
+            - author: Hésiode
               work: Théogonie — v.453–458
               passage: ''
       siblings:
