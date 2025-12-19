@@ -6,16 +6,22 @@ import '../../styles/global.css';
 import { getCollection } from 'astro:content';
 
 const ressources = await getCollection('ressources');
+const slugForPath = (res: (typeof ressources)[number]) => res.data.slug ?? res.slug;
 const sorted = ressources.slice().sort((a, b) => a.data.title.localeCompare(b.data.title, 'fr', { sensitivity: 'base' }));
 
 // slug de la note d'intention (frontmatter), différent du nom de fichier
-const intentionSlug = 'positionnement-editorial-sources';
-const intention = ressources.find((r) => r.slug === intentionSlug || r.data.slug === intentionSlug);
+const intentionSlugs = ['politique-editoriale-sources', 'positionnement-editorial-sources'];
+const intention = ressources.find(
+  (r) =>
+    intentionSlugs.includes(slugForPath(r)) ||
+    intentionSlugs.includes(r.slug) ||
+    (r.data.slug && intentionSlugs.includes(r.data.slug)),
+);
 
 // Force la carte de la note d'intention en tête de la grille
-const prioritized = intention ?? sorted.find((r) => r.slug === intentionSlug || r.data.slug === intentionSlug);
-const prioritizedSlug = prioritized?.slug ?? intentionSlug;
-const otherRessources = sorted.filter((r) => r.slug !== prioritizedSlug);
+const prioritized = intention ?? sorted.find((r) => intentionSlugs.includes(slugForPath(r)));
+const prioritizedSlug = prioritized ? slugForPath(prioritized) : intentionSlugs[0];
+const otherRessources = sorted.filter((r) => slugForPath(r) !== prioritizedSlug);
 const ressourcesList = prioritized ? [prioritized, ...otherRessources] : sorted;
 ---
 
@@ -49,7 +55,7 @@ const ressourcesList = prioritized ? [prioritized, ...otherRessources] : sorted;
         <div class="grid gap-4 sm:grid-cols-2">
           {ressourcesList.map((res) => (
             <a
-              href={`/ressources/${res.slug}/`}
+              href={`/ressources/${slugForPath(res)}/`}
               class="mk-card block rounded-xl p-5 shadow-sm hover:shadow-md transition dark:hover:shadow-lg"
             >
               <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-50">{res.data.title}</h2>

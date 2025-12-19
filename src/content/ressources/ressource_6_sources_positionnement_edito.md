@@ -1,7 +1,7 @@
 ---
-title: "Positionnement éditorial et usage des sources"
-slug: "positionnement-editorial-sources"
-id: "ressource-positionnement-editorial-sources"
+title: "Politique éditoriale et usage des sources"
+slug: "politique-editoriale-sources"
+id: "ressource-politique-editorials-sources"
 type: "ressource"
 description: 'Cadre éditorial de Mythoskolis, hiérarchie des sources et usage du badge "non consensuel".'
 ---

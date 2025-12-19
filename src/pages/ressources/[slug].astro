@@ -7,16 +7,34 @@ import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const ressources = await getCollection('ressources');
-  return ressources.map((res) => ({
-    params: { slug: res.slug },
-    props: { ressource: res },
-  }));
+  return ressources.flatMap((res) => {
+    const frontmatterSlug = res.data.slug;
+    const canonicalSlug = frontmatterSlug || res.slug;
+
+    const entries = [
+      {
+        params: { slug: canonicalSlug },
+        props: { ressource: res, canonicalSlug },
+      },
+    ];
+
+    // Conserve l'ancien slug dérivé du nom de fichier pour éviter de casser des liens existants.
+    if (frontmatterSlug && frontmatterSlug !== res.slug) {
+      entries.push({
+        params: { slug: res.slug },
+        props: { ressource: res, canonicalSlug },
+      });
+    }
+
+    return entries;
+  });
 }
 
-const { ressource } = Astro.props;
+const { ressource, canonicalSlug } = Astro.props;
 const { Content } = await ressource.render();
 const pageTitle = `${ressource.data.title} | Mythoskolis`;
 const pageDescription = ressource.data.description ?? ressource.data.title;
+const slugForPath = canonicalSlug ?? ressource.data.slug ?? ressource.slug;
 ---
 
 <html lang="fr">
@@ -26,7 +44,7 @@ const pageDescription = ressource.data.description ?? ressource.data.title;
   <MetaTags
     title={pageTitle}
     description={pageDescription}
-    canonical={`/ressources/${ressource.slug}/`}
+    canonical={`/ressources/${slugForPath}/`}
     type="article"
   />
 </head>

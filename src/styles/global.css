@@ -63,6 +63,16 @@
   .mk-card-subtitle {
     @apply text-xs md:text-sm uppercase tracking-wide text-slate-500 dark:text-slate-400;
   }
+  /* Carte média (image + contenu) pour pages de ressources */
+  .mk-card-media {
+    @apply rounded-xl border border-slate-200 bg-white/90 text-slate-900 shadow-sm backdrop-blur-sm dark:border-slate-600 dark:bg-slate-900/80 dark:text-slate-100 flex flex-col gap-4 md:flex-row md:items-start p-4 md:p-5;
+  }
+  .mk-card-media-img {
+    @apply w-full md:w-48 rounded-lg object-cover border border-slate-200 dark:border-slate-700;
+  }
+  .mk-card-media-body {
+    @apply flex-1 text-slate-800 dark:text-slate-100 space-y-3;
+  }
   .mk-kicker {
     @apply text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400;
   }

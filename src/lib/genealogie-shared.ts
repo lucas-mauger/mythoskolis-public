@@ -74,7 +74,7 @@ export interface GenealogieStore {
   getEgoGraphBySlug(slug: string): EgoGraph | undefined;
   getEgoGraphById(id: string): EgoGraph | undefined;
   getGraphDisplayData(slug: string): GraphDisplayData | undefined;
-  hasParent(childSlug: string, parentSlug: string): boolean;
+  hasParent(childSlug: string, parentSlug: string, includeNonConsensus?: boolean): boolean;
   hasSibling(entitySlug: string, otherSlug: string): boolean;
 }
 
@@ -190,13 +190,16 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
     getEgoGraphBySlug,
     getEgoGraphById,
     getGraphDisplayData,
-    hasParent: (childSlug: string, parentSlug: string) => {
+    hasParent: (childSlug: string, parentSlug: string, includeNonConsensus = true) => {
       const child = entityBySlug.get(childSlug);
       const parent = entityBySlug.get(parentSlug);
       if (!child || !parent) return false;
       return data.relations.some(
         (relation) =>
-          relation.type === "parent" && relation.source_id === parent.id && relation.target_id === child.id,
+          relation.type === "parent" &&
+          relation.source_id === parent.id &&
+          relation.target_id === child.id &&
+          (includeNonConsensus || relation.consensus !== false),
       );
     },
     hasSibling: (entitySlug: string, otherSlug: string) => {

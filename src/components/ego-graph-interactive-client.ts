@@ -732,8 +732,8 @@ class EgoGraphController {
           .filter(
             (child) =>
               displayedChildren.has(child.entity.slug) &&
-              this.store.hasParent(child.entity.slug, this.focusedConsortSlug!) &&
-              this.store.hasParent(child.entity.slug, graph.central.slug),
+              this.store.hasParent(child.entity.slug, this.focusedConsortSlug!, this.advancedMode) &&
+              this.store.hasParent(child.entity.slug, graph.central.slug, this.advancedMode),
           )
           .map((child) => ({
             targetSlug: child.entity.slug,
@@ -757,7 +757,8 @@ class EgoGraphController {
         const relations = allParents
           .filter(
             (parent) =>
-              displayedConsorts.has(parent.entity.slug) && this.store.hasParent(this.focusedChildSlug!, parent.entity.slug),
+              displayedConsorts.has(parent.entity.slug) &&
+              this.store.hasParent(this.focusedChildSlug!, parent.entity.slug, this.advancedMode),
           )
           .map((parent) => ({
             targetSlug: parent.entity.slug,
@@ -807,11 +808,11 @@ class EgoGraphController {
       const shouldResetScroll =
         section === "consorts" &&
         this.focusedChildSlug !== null &&
-        (graph.consorts ?? []).some((c) => this.store.hasParent(this.focusedChildSlug!, c.entity.slug));
+        (graph.consorts ?? []).some((c) => this.store.hasParent(this.focusedChildSlug!, c.entity.slug, this.advancedMode));
       const shouldResetChildren =
         section === "children" &&
         this.focusedConsortSlug !== null &&
-        (graph.children ?? []).some((child) => this.store.hasParent(child.entity.slug, this.focusedConsortSlug!));
+        (graph.children ?? []).some((child) => this.store.hasParent(child.entity.slug, this.focusedConsortSlug!, this.advancedMode));
       const restoreScroll = shouldResetScroll || shouldResetChildren ? 0 : prevScroll;
       container.innerHTML = "";
       const isMobile = window.matchMedia("(max-width: 640px)").matches;
@@ -829,7 +830,7 @@ class EgoGraphController {
       }
       if (section === "children") {
         if (this.focusedConsortSlug) {
-          const { prioritized, rest } = prioritizeChildren(nodes, this.focusedConsortSlug, this.store);
+          const { prioritized, rest } = prioritizeChildren(nodes, this.focusedConsortSlug, this.store, this.advancedMode);
           nodes = [...prioritized, ...rest];
           this.childrenOrder = nodes.map((n) => n.entity.slug);
         } else if (this.focusedChildSlug) {
@@ -843,7 +844,7 @@ class EgoGraphController {
           nodes = sortByOrder(nodes, this.consortOrder);
         }
         if (this.focusedChildSlug) {
-          const { prioritized, rest } = prioritizeConsorts(nodes, this.focusedChildSlug, this.store);
+          const { prioritized, rest } = prioritizeConsorts(nodes, this.focusedChildSlug, this.store, this.advancedMode);
           nodes = [...prioritized, ...rest];
           this.consortOrder = nodes.map((n) => n.entity.slug);
         }
@@ -852,9 +853,13 @@ class EgoGraphController {
         const isConsort = SECTION_ROLE[section] === "consort";
         const isChild = SECTION_ROLE[section] === "child";
         const isRelatedChild =
-          isChild && this.focusedConsortSlug !== null && this.store.hasParent(item.entity.slug, this.focusedConsortSlug);
+          isChild &&
+          this.focusedConsortSlug !== null &&
+          this.store.hasParent(item.entity.slug, this.focusedConsortSlug, this.advancedMode);
         const isRelatedConsort =
-          isConsort && this.focusedChildSlug !== null && this.store.hasParent(this.focusedChildSlug, item.entity.slug);
+          isConsort &&
+          this.focusedChildSlug !== null &&
+          this.store.hasParent(this.focusedChildSlug, item.entity.slug, this.advancedMode);
         const isSibling =
           isChild &&
           this.focusedChildSlug !== null &&
@@ -896,10 +901,10 @@ class EgoGraphController {
           (isConsort && this.selectedConsortSlug && this.selectedConsortSlug !== item.entity.slug) ||
           (isConsort &&
             this.focusedChildSlug !== null &&
-            !this.store.hasParent(this.focusedChildSlug, item.entity.slug)) ||
+            !this.store.hasParent(this.focusedChildSlug, item.entity.slug, this.advancedMode)) ||
           (isChild &&
             this.focusedConsortSlug !== null &&
-            !this.store.hasParent(item.entity.slug, this.focusedConsortSlug)) ||
+            !this.store.hasParent(item.entity.slug, this.focusedConsortSlug, this.advancedMode)) ||
           (isChild &&
             this.focusedChildSlug !== null &&
             !this.isSiblingOfFocused(item.entity.slug, this.focusedChildSlug) &&
@@ -1616,6 +1621,7 @@ function prioritizeChildren(
   nodes: RelatedNode[],
   consortSlug: string,
   store: GenealogieStore,
+  includeNonConsensus: boolean,
 ): {
   prioritized: RelatedNode[];
   rest: RelatedNode[];
@@ -1624,7 +1630,7 @@ function prioritizeChildren(
   const rest: RelatedNode[] = [];
 
   nodes.forEach((child) => {
-    if (store.hasParent(child.entity.slug, consortSlug)) {
+    if (store.hasParent(child.entity.slug, consortSlug, includeNonConsensus)) {
       prioritized.push(child);
     } else {
       rest.push(child);
@@ -1638,6 +1644,7 @@ function prioritizeConsorts(
   nodes: RelatedNode[],
   childSlug: string,
   store: GenealogieStore,
+  includeNonConsensus: boolean,
 ): {
   prioritized: RelatedNode[];
   rest: RelatedNode[];
@@ -1646,7 +1653,7 @@ function prioritizeConsorts(
   const rest: RelatedNode[] = [];
 
   nodes.forEach((consort) => {
-    if (store.hasParent(childSlug, consort.entity.slug)) {
+    if (store.hasParent(childSlug, consort.entity.slug, includeNonConsensus)) {
       prioritized.push(consort);
     } else {
       rest.push(consort);
