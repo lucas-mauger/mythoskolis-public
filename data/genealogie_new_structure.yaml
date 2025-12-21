@@ -19287,13 +19287,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.280–290
-      children:
-        - id: grecque-geryon
-          consensus: true
-          sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.287–294
+      children: []
       siblings:
         - id: grecque-chrysaor
           consensus: true
@@ -19326,7 +19320,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.280–290
-      children: []
+      children:
+        - id: grecque-geryon
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.287–294
       siblings:
         - id: grecque-pegase
           consensus: true
@@ -19368,7 +19368,7 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.287–294
-        - id: grecque-pegase
+        - id: grecque-chrysaor
           consensus: true
           sources:
             - author: Hésiode

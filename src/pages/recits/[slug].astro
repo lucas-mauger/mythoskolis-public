@@ -194,20 +194,129 @@ const opponentEntities = (recit.data.opponents || [])
       )}
 
       <article class="mk-prose-card max-w-none p-2" data-contextual-scope="recit">
-        <div class="flex justify-end">
-          <button
-            type="button"
+        <div class="sticky top-4 z-40 w-full relative" data-contextual-floater>
+          <div class="flex items-center justify-end gap-2" data-context-controls>
+            <button
+              type="button"
+              aria-label="Réglages lecture contextuelle"
+              data-contextual-settings
+              class="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white/80 text-slate-900 backdrop-blur transition hover:-translate-y-px hover:shadow-sm dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100"
+            >
+              <span class="sr-only">Réglages lecture contextuelle</span>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                class="h-5 w-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm8.5 2.5a8.48 8.48 0 0 0-.12-1.4l1.93-1.51a.5.5 0 0 0 .11-.65l-1.83-3.17a.5.5 0 0 0-.62-.2l-2.27.92a8.54 8.54 0 0 0-2.44-1.4l-.34-2.43A.5.5 0 0 0 13.5 2h-3a.5.5 0 0 0-.5.42l-.34 2.43a8.54 8.54 0 0 0-2.44 1.4l-2.27-.92a.5.5 0 0 0-.62.2L2.5 8.5a.5.5 0 0 0 .11.65l1.93 1.51a8.48 8.48 0 0 0 0 2.8l-1.93 1.51a.5.5 0 0 0-.11.65l1.83 3.17a.5.5 0 0 0 .62.2l2.27-.92a8.54 8.54 0 0 0 2.44 1.4l.34 2.43a.5.5 0 0 0 .5.42h3a.5.5 0 0 0 .5-.42l.34-2.43a8.54 8.54 0 0 0 2.44-1.4l2.27.92a.5.5 0 0 0 .62-.2l1.83-3.17a.5.5 0 0 0-.11-.65l-1.93-1.51c.08-.46.12-.93.12-1.4Z"
+                />
+              </svg>
+            </button>
+            <div
+              data-contextual-settings-panel
+              class="absolute right-0 top-full mt-2 min-w-[15rem] w-max rounded-xl border border-slate-200 bg-white/90 p-3 text-sm shadow-lg backdrop-blur transition dark:border-slate-700 dark:bg-slate-900/90 hidden"
+            >
+              <div class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">
+                Options
+              </div>
+              <div class="space-y-3">
+                <div class="space-y-2">
+                  <p class="text-xs font-semibold text-slate-600 dark:text-slate-200">Répétitions</p>
+                  <div class="flex gap-2">
+                    <button
+                      type="button"
+                      data-context-density="all"
+                      class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 transition hover:-translate-y-[1px] hover:shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    >
+                      Tout
+                    </button>
+                    <button
+                      type="button"
+                      data-context-density="first"
+                      class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 transition hover:-translate-y-[1px] hover:shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    >
+                      1ère fois
+                    </button>
+                  </div>
+                </div>
+              <div class="space-y-2 border-t border-slate-200 pt-3 mt-3 dark:border-slate-700">
+                <p class="text-xs font-semibold text-slate-600 dark:text-slate-200">Surligner</p>
+                <div class="flex flex-col gap-2 text-sm text-slate-800 dark:text-slate-100">
+                  <label class="inline-flex items-center gap-2">
+                    <input type="checkbox" data-context-entities checked class="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-300 dark:border-slate-600 dark:bg-slate-900" />
+                    <span>Entités</span>
+                  </label>
+                  <label class="inline-flex items-center gap-2">
+                    <input type="checkbox" data-context-glossary checked class="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-300 dark:border-slate-600 dark:bg-slate-900" />
+                    <span>Mots-clés</span>
+                  </label>
+                </div>
+              </div>
+              <div class="space-y-2 border-t border-slate-200 pt-3 mt-3 dark:border-slate-700">
+                <p class="text-xs font-semibold text-slate-600 dark:text-slate-200">Flottant</p>
+                <button
+                  type="button"
+                  data-context-float
+                  class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 transition hover:-translate-y-[1px] hover:shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Activer
+                </button>
+              </div>
+              <div class="space-y-2 border-t border-slate-200 pt-3 mt-3 sm:hidden dark:border-slate-700">
+                <p class="text-xs font-semibold text-slate-600 dark:text-slate-200">Latéralité</p>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    data-context-handed="left"
+                    class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 transition hover:-translate-y-[1px] hover:shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    Gaucher
+                  </button>
+                  <button
+                    type="button"
+                    data-context-handed="right"
+                    class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 transition hover:-translate-y-[1px] hover:shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    Droitier
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <button
+          type="button"
             data-contextual-toggle
             aria-pressed="false"
-            class="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition hover:-translate-y-px hover:shadow-lg border-slate-200 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+            class="inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full border px-3 text-sm font-semibold leading-none transition hover:-translate-y-px hover:shadow-sm border-slate-200 bg-white/80 text-slate-900 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100"
           >
             <span
               aria-hidden="true"
               data-contextual-indicator
               class="inline-block h-3 w-3 rounded-full border border-slate-400 bg-transparent transition"
             ></span>
-            <span data-contextual-label>Lecture contextuelle</span>
+            <span data-contextual-label>Lecture contextualisée</span>
+            <img
+              src="/icons/contextual_clear.webp"
+              alt=""
+              aria-hidden="true"
+              class="block h-5 w-5 shrink-0 object-contain dark:hidden"
+              loading="lazy"
+            />
+            <img
+              src="/icons/contextual_dark.webp"
+              alt=""
+              aria-hidden="true"
+              class="hidden block h-5 w-5 shrink-0 object-contain dark:block"
+              loading="lazy"
+            />
           </button>
+          </div>
         </div>
         <div data-contextual-body>
           <Content />

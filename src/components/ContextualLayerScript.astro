@@ -46,6 +46,14 @@ const {
 
     const skipTags = new Set(["A", "BUTTON", "CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA", "INPUT", "SELECT", "OPTION", "MARK"]);
 
+    const settings = {
+      density: "all", // "all" | "first"
+      showEntities: true,
+      showGlossary: true,
+      float: true,
+      handedness: "right", // "right" | "left"
+    };
+
     const mapByKey = new Map(
       entries.map((entry) => [
         (entry?.name ?? "").toLocaleLowerCase("fr"),
@@ -85,6 +93,20 @@ const {
     let markers = [];
     let currentAnchor = null;
     let hideTimer = null;
+    let collapsed = false;
+    let settingsPanelOpen = false;
+    let settingsButton = null;
+    let settingsPanel = null;
+    let densityButtons = [];
+    let entitiesCheckbox = null;
+    let glossaryCheckbox = null;
+    let floatToggle = null;
+    let handedButtons = [];
+    const floatUpdaters = [];
+    let controlsContainer = null;
+
+    const STORAGE_KEY = "mk-contextual-mode";
+    const SETTINGS_KEY = "mk-contextual-settings";
 
     const tooltip = createTooltip();
 
@@ -107,16 +129,37 @@ const {
       "dark:text-slate-100",
     ];
 
+    function persistState(isActive) {
+      try {
+        localStorage.setItem(STORAGE_KEY, isActive ? "on" : "off");
+      } catch (_) {
+        // ignore
+      }
+    }
+
+    function readInitialState() {
+      try {
+        return localStorage.getItem(STORAGE_KEY) === "on";
+      } catch (_) {
+        return false;
+      }
+    }
+
     function applyState(isActive) {
       active = isActive;
       toggle.setAttribute("aria-pressed", String(isActive));
       const indicator = toggle.querySelector("[data-contextual-indicator]");
 
-      activeBtnClasses.forEach((cls) => toggle.classList[isActive ? "add" : "remove"](cls));
-      inactiveBtnClasses.forEach((cls) => toggle.classList[isActive ? "remove" : "add"](cls));
-      toggle.classList.toggle("ring-2", isActive);
-      toggle.classList.toggle("ring-amber-300", isActive);
-      toggle.classList.toggle("dark:ring-amber-400/50", isActive);
+      const primaryButtons = [toggle];
+      if (settingsButton) primaryButtons.push(settingsButton);
+
+      primaryButtons.forEach((btn) => {
+        activeBtnClasses.forEach((cls) => btn.classList[isActive ? "add" : "remove"](cls));
+        inactiveBtnClasses.forEach((cls) => btn.classList[isActive ? "remove" : "add"](cls));
+        btn.classList.toggle("ring-2", isActive && btn === toggle);
+        btn.classList.toggle("ring-amber-300", isActive && btn === toggle);
+        btn.classList.toggle("dark:ring-amber-400/50", isActive && btn === toggle);
+      });
 
       if (indicator) {
         indicator.classList.toggle("bg-amber-400", isActive);
@@ -126,8 +169,13 @@ const {
       }
 
       markers.forEach((marker) => {
-        highlightClasses.forEach((cls) => marker.classList[isActive ? "add" : "remove"](cls));
-        marker.tabIndex = isActive ? 0 : -1;
+        const enabled = isActive && isMarkerEnabled(marker);
+        highlightClasses.forEach((cls) => marker.classList[enabled ? "add" : "remove"](cls));
+        marker.tabIndex = enabled ? 0 : -1;
+        marker.setAttribute("aria-disabled", enabled ? "false" : "true");
+        if (!enabled && currentAnchor === marker) {
+          hideTooltip();
+        }
         marker.setAttribute("aria-pressed", "false");
       });
 
@@ -135,7 +183,31 @@ const {
     }
 
     function init() {
-      applyState(false);
+      settingsButton = scope.querySelector("[data-contextual-settings]");
+      settingsPanel = scope.querySelector("[data-contextual-settings-panel]");
+      densityButtons = Array.from(scope.querySelectorAll("[data-context-density]"));
+      entitiesCheckbox = scope.querySelector("[data-context-entities]");
+      glossaryCheckbox = scope.querySelector("[data-context-glossary]");
+      floatToggle = scope.querySelector("[data-context-float]");
+      handedButtons = Array.from(scope.querySelectorAll("[data-context-handed]"));
+      controlsContainer = scope.querySelector("[data-context-controls]");
+
+      loadSettings();
+      syncSettingsUI();
+      applyHandedness();
+
+      const initialActive = readInitialState();
+      if (initialActive && !processed) {
+        try {
+          markers = wrapContent(contentRoot);
+          processed = true;
+        } catch (err) {
+          console.error("[ContextualLayer] wrap error", err);
+          markers = [];
+        }
+      }
+      applyState(initialActive);
+
       toggle.addEventListener("click", () => {
         if (!processed) {
             try {
@@ -146,7 +218,9 @@ const {
             }
             processed = true;
         }
-        applyState(!active);
+        const next = !active;
+        applyState(next);
+        persistState(next);
       });
 
       toggle.addEventListener("keydown", (event) => {
@@ -156,17 +230,98 @@ const {
         }
       });
 
+      if (settingsButton && settingsPanel) {
+        settingsButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          toggleSettingsPanel();
+        });
+        settingsButton.setAttribute("aria-expanded", "false");
+        settingsButton.setAttribute("aria-haspopup", "true");
+      }
+
+      densityButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const val = btn.dataset.contextDensity === "first" ? "first" : "all";
+          settings.density = val;
+          syncSettingsUI();
+          refreshMarkersHighlight();
+          saveSettings();
+        });
+      });
+
+      if (entitiesCheckbox) {
+        entitiesCheckbox.addEventListener("change", () => {
+          settings.showEntities = !!entitiesCheckbox.checked;
+          refreshMarkersHighlight();
+          saveSettings();
+        });
+      }
+      if (glossaryCheckbox) {
+        glossaryCheckbox.addEventListener("change", () => {
+          settings.showGlossary = !!glossaryCheckbox.checked;
+          refreshMarkersHighlight();
+          saveSettings();
+        });
+      }
+      if (floatToggle) {
+        floatToggle.addEventListener("click", () => {
+          settings.float = !settings.float;
+          syncSettingsUI();
+          floatUpdaters.forEach((fn) => fn());
+          updateCollapsed(true);
+          saveSettings();
+        });
+      }
+      handedButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const val = btn.dataset.contextHanded === "left" ? "left" : "right";
+          settings.handedness = val;
+          syncSettingsUI();
+          applyHandedness();
+          saveSettings();
+        });
+      });
+
       document.addEventListener("click", (event) => {
-        if (!active) return;
         const target = event.target;
+
+        if (settingsPanelOpen) {
+          const insidePanel = target?.closest && target.closest("[data-contextual-settings-panel]");
+          const onButton = target?.closest && target.closest("[data-contextual-settings]");
+          if (!insidePanel && !onButton) {
+            hideSettingsPanel();
+          }
+        }
+
+        if (!active) return;
         if (tooltip.contains(target)) return;
         if (target?.closest && target.closest("[data-context-term]")) return;
         hideTooltip();
       });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          hideTooltip();
+          hideSettingsPanel();
+        }
+      });
+
+      window.addEventListener("scroll", () => {
+        updateTooltipPosition();
+        updateCollapsed();
+      }, { passive: true, capture: true });
+      window.addEventListener("resize", () => {
+        updateTooltipPosition();
+        updateCollapsed(true);
+      }, { passive: true });
+
+      setupFloating(scope);
+      updateCollapsed(true);
     }
 
     function wrapContent(root) {
       const collected = [];
+      const occurrenceCount = new Map();
       const walker = document.createTreeWalker(
         root,
         NodeFilter.SHOW_TEXT,
@@ -189,14 +344,14 @@ const {
       }
 
       textNodes.forEach((textNode) => {
-        const newMarkers = wrapTextNode(textNode);
+        const newMarkers = wrapTextNode(textNode, occurrenceCount);
         collected.push(...newMarkers);
       });
 
       return collected;
     }
 
-    function wrapTextNode(node) {
+    function wrapTextNode(node, occurrenceCount) {
       const text = node.textContent || "";
       pattern.lastIndex = 0;
       let match;
@@ -224,7 +379,9 @@ const {
         if (!glossaryEntry) {
           frag.appendChild(document.createTextNode(matchedText));
         } else {
-          const marker = createMarker(matchedText, glossaryEntry);
+          const count = occurrenceCount.get(key) || 0;
+          const marker = createMarker(matchedText, glossaryEntry, count === 0);
+          occurrenceCount.set(key, count + 1);
           frag.appendChild(marker);
           locals.push(marker);
         }
@@ -246,10 +403,12 @@ const {
       return locals;
     }
 
-    function createMarker(label, entry) {
+    function createMarker(label, entry, isFirst) {
       const span = document.createElement("span");
       span.textContent = label;
       span.dataset.contextTerm = label;
+      span.dataset.contextType = entry?.type || "glossary";
+      span.dataset.contextFirst = isFirst ? "1" : "0";
       span.className = "mk-context-term relative inline-flex items-center";
       // attach data for tooltip rendering
       // @ts-ignore - custom property on DOM node
@@ -346,11 +505,13 @@ const {
       const rect = marker.getBoundingClientRect();
       const tooltipRect = tooltip.getBoundingClientRect();
       const margin = 10;
-      let top = rect.bottom + margin;
+      // position préférée : au-dessus, sinon en dessous
+      let top = rect.top - tooltipRect.height - margin;
       let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
 
-      if (top + tooltipRect.height + margin > window.innerHeight) {
-        top = rect.top - tooltipRect.height - margin;
+      // si ça dépasse en haut, on passe en dessous
+      if (top < margin) {
+        top = rect.bottom + margin;
       }
 
       if (left < 12) left = 12;
@@ -362,6 +523,281 @@ const {
       tooltip.style.left = left + "px";
     }
 
+    function updateTooltipPosition() {
+      if (!active || !currentAnchor) return;
+      positionTooltip(currentAnchor);
+    }
+
+    function toggleSettingsPanel() {
+      if (!settingsPanel || !settingsButton) return;
+      if (settingsPanelOpen) {
+        hideSettingsPanel();
+      } else {
+        settingsPanel.classList.remove("hidden");
+        settingsButton.setAttribute("aria-expanded", "true");
+        settingsPanelOpen = true;
+      }
+    }
+
+    function hideSettingsPanel() {
+      if (!settingsPanel || !settingsButton) return;
+      if (!settingsPanelOpen) return;
+      settingsPanel.classList.add("hidden");
+      settingsButton.setAttribute("aria-expanded", "false");
+      settingsPanelOpen = false;
+    }
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          settings.density = parsed.density === "first" ? "first" : "all";
+          settings.showEntities = parsed.showEntities !== false;
+          settings.showGlossary = parsed.showGlossary !== false;
+          settings.float = parsed.float !== false;
+          settings.handedness = parsed.handedness === "left" ? "left" : "right";
+        }
+      } catch (_) {
+        // ignore
+      }
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      } catch (_) {
+        // ignore
+      }
+    }
+
+    function applyHandedness() {
+      if (controlsContainer) {
+        controlsContainer.classList.remove("justify-end", "justify-start", "flex-row-reverse");
+        if (settings.handedness === "right") {
+          controlsContainer.classList.add("justify-end");
+        } else {
+          controlsContainer.classList.add("justify-end", "flex-row-reverse");
+        }
+        controlsContainer.dataset.hand = settings.handedness;
+      }
+      if (settingsPanel) {
+        settingsPanel.classList.remove("right-0", "left-0", "right-auto", "left-auto");
+        if (settings.handedness === "right") {
+          settingsPanel.classList.add("right-0", "left-auto");
+        } else {
+          settingsPanel.classList.add("left-0", "right-auto");
+        }
+      }
+    }
+
+    function isMarkerEnabled(marker) {
+      const type = marker.dataset.contextType || "glossary";
+      const isFirst = marker.dataset.contextFirst === "1";
+      if (type === "entity" && !settings.showEntities) return false;
+      if (type !== "entity" && !settings.showGlossary) return false;
+      if (settings.density === "first" && !isFirst) return false;
+      return true;
+    }
+
+    function refreshMarkersHighlight() {
+      applyState(active);
+    }
+
+    function syncSettingsUI() {
+      densityButtons.forEach((btn) => {
+        const isActive = btn.dataset.contextDensity === settings.density;
+        btn.classList.toggle("border-amber-400", isActive);
+        btn.classList.toggle("bg-amber-50", isActive);
+        btn.classList.toggle("text-amber-900", isActive);
+        btn.classList.toggle("dark:border-amber-300/70", isActive);
+        btn.classList.toggle("dark:bg-amber-900/30", isActive);
+        btn.classList.toggle("dark:text-amber-50", isActive);
+        btn.classList.toggle("border-slate-200", !isActive);
+        btn.classList.toggle("bg-white", !isActive);
+        btn.classList.toggle("text-slate-800", !isActive);
+        btn.classList.toggle("dark:border-slate-700", !isActive);
+        btn.classList.toggle("dark:bg-slate-900", !isActive);
+        btn.classList.toggle("dark:text-slate-100", !isActive);
+      });
+      if (entitiesCheckbox) entitiesCheckbox.checked = settings.showEntities;
+      if (glossaryCheckbox) glossaryCheckbox.checked = settings.showGlossary;
+      if (floatToggle) {
+        const isActive = settings.float;
+        floatToggle.classList.toggle("border-amber-400", isActive);
+        floatToggle.classList.toggle("bg-amber-50", isActive);
+        floatToggle.classList.toggle("text-amber-900", isActive);
+        floatToggle.classList.toggle("dark:border-amber-300/70", isActive);
+        floatToggle.classList.toggle("dark:bg-amber-900/30", isActive);
+        floatToggle.classList.toggle("dark:text-amber-50", isActive);
+        floatToggle.classList.toggle("border-slate-200", !isActive);
+        floatToggle.classList.toggle("bg-white", !isActive);
+        floatToggle.classList.toggle("text-slate-800", !isActive);
+        floatToggle.classList.toggle("dark:border-slate-700", !isActive);
+        floatToggle.classList.toggle("dark:bg-slate-900", !isActive);
+        floatToggle.classList.toggle("dark:text-slate-100", !isActive);
+      }
+      handedButtons.forEach((btn) => {
+        const isActive = btn.dataset.contextHanded === settings.handedness;
+        btn.classList.toggle("border-amber-400", isActive);
+        btn.classList.toggle("bg-amber-50", isActive);
+        btn.classList.toggle("text-amber-900", isActive);
+        btn.classList.toggle("dark:border-amber-300/70", isActive);
+        btn.classList.toggle("dark:bg-amber-900/30", isActive);
+        btn.classList.toggle("dark:text-amber-50", isActive);
+        btn.classList.toggle("border-slate-200", !isActive);
+        btn.classList.toggle("bg-white", !isActive);
+        btn.classList.toggle("text-slate-800", !isActive);
+        btn.classList.toggle("dark:border-slate-700", !isActive);
+        btn.classList.toggle("dark:bg-slate-900", !isActive);
+        btn.classList.toggle("dark:text-slate-100", !isActive);
+      });
+    }
+
+    function updateCollapsed(force = false) {
+      const threshold = 100;
+      const floater = toggle.closest?.("[data-contextual-floater]");
+      let next = false;
+
+      if (!settings.float) {
+        if (collapsed) {
+          collapsed = false;
+          toggle.classList.remove("contextual-collapsed");
+        }
+        return;
+      }
+
+      if (floater && settings.float) {
+        const shouldFloat = floater.dataset.ctxFloating === "1";
+        const triggerTop = parseFloat(floater.dataset.ctxTrigger || "0");
+        const margin = parseFloat(floater.dataset.ctxMargin || "0");
+        const distance = window.scrollY + margin - triggerTop;
+        next = shouldFloat && distance > threshold;
+      } else {
+        next = window.scrollY > threshold;
+      }
+
+      if (!force && next === collapsed) return;
+      collapsed = next;
+      toggle.classList.toggle("contextual-collapsed", collapsed);
+    }
+
+    function setupFloating(root) {
+      const floaters = Array.from(root.querySelectorAll("[data-contextual-floater]"));
+      if (!floaters.length) return;
+
+      floaters.forEach((floater) => {
+        if (floater.dataset.floatingInit) return;
+        floater.dataset.floatingInit = "1";
+
+        const placeholder = document.createElement("div");
+        placeholder.style.height = "0px";
+        placeholder.style.width = "100%";
+        placeholder.style.pointerEvents = "none";
+
+        floater.parentElement?.insertBefore(placeholder, floater);
+        const margin = 16;
+
+        const resetStyles = () => {
+          floater.style.position = "";
+          floater.style.top = "";
+          floater.style.left = "";
+          floater.style.width = "";
+          floater.style.zIndex = "";
+        };
+
+        const updateFloating = () => {
+          if (!settings.float) {
+            placeholder.style.height = "0px";
+            floater.style.position = "relative";
+            floater.style.top = "";
+            floater.style.left = "";
+            floater.style.width = "";
+            floater.style.zIndex = "";
+            floater.dataset.ctxFloating = "0";
+            floater.dataset.ctxTrigger = "0";
+            floater.dataset.ctxMargin = String(margin);
+            return;
+          }
+
+          floater.style.position = "";
+          const placeholderRect = placeholder.getBoundingClientRect();
+          const floaterRect = floater.getBoundingClientRect();
+          const triggerTop = placeholderRect.top + window.scrollY;
+          const shouldFloat = window.scrollY + margin > triggerTop;
+
+          floater.dataset.ctxFloating = shouldFloat ? "1" : "0";
+          floater.dataset.ctxTrigger = String(triggerTop);
+          floater.dataset.ctxMargin = String(margin);
+
+          if (shouldFloat) {
+            placeholder.style.height = `${floaterRect.height}px`;
+            floater.style.position = "fixed";
+            floater.style.top = `${margin}px`;
+            floater.style.left = `${placeholderRect.left}px`;
+            floater.style.width = `${placeholderRect.width}px`;
+            floater.style.zIndex = "60";
+          } else {
+            placeholder.style.height = "0px";
+            resetStyles();
+          }
+        };
+
+        const handleResize = () => {
+          placeholder.style.height = "0px";
+          resetStyles();
+          requestAnimationFrame(updateFloating);
+        };
+
+        window.addEventListener("scroll", updateFloating, { passive: true });
+        window.addEventListener("resize", handleResize, { passive: true });
+        updateFloating();
+        floatUpdaters.push(updateFloating);
+      });
+    }
+
     init();
   })();
 </script>
+
+<style is:global>
+  [data-contextual-toggle] {
+    transition:
+      padding 160ms ease,
+      gap 160ms ease,
+      background-color 140ms ease,
+      border-color 140ms ease,
+      box-shadow 140ms ease;
+  }
+  [data-contextual-toggle] [data-contextual-label] {
+    display: inline-flex;
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 180ms ease, opacity 160ms ease, margin 160ms ease;
+  }
+  [data-contextual-toggle].contextual-collapsed {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    gap: 0.35rem !important;
+  }
+  [data-contextual-toggle].contextual-collapsed [data-contextual-label] {
+    max-width: 0;
+    opacity: 0;
+    margin: 0;
+  }
+
+  [data-context-controls] > * {
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+  [data-context-controls][data-hand="left"] > :first-child {
+    transform: translateX(8px);
+  }
+  [data-context-controls][data-hand="left"] > :nth-child(2) {
+    transform: translateX(-8px);
+  }
+  [data-context-controls][data-hand="right"] > * {
+    transform: translateX(0);
+  }
+</style>
