@@ -49,7 +49,7 @@ Dans la pensée grecque, Japet incarne :
 - la **transgression créatrice** (Prométhée),  
 - la **maladresse irréfléchie** (Épiméthée),  
 - le **fardeau cosmique** (Atlas),  
-- la **punition de l’hybris** (Ménoétios).
+- la **punition de l’hubris** (Ménoétios).
 
 Sa lignée est l’une des rares où le destin des dieux et celui des hommes sont étroitement imbriqués.
 

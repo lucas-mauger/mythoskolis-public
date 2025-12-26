@@ -1,9 +1,21 @@
 ---
-title: "Adrastée, la gardienne de l’inévitable"
-slug: "adrastee-gardienne-destin"
-id: "adrastee-gardienne-destin"
-type: "recit"
-
+title: 'Adrastée, la gardienne de l’inévitable'
+slug: adrastee-gardienne-destin
+id: adrastee-gardienne-destin
+type: recit
+era: Cycle de l’enfance de Zeus
+importance: mineur
+summary: >
+  Adrastée, nymphe nourricière du jeune Zeus, veille sur sa croissance et son
+  éducation. Son nom, lié à l’inévitabilité du destin, annonce déjà la chute de
+  Cronos et l’avènement d’un ordre nouveau.
+tags:
+  - destin
+  - fatalite
+  - protection
+  - enfance-divine
+  - transmission
+  - justice-divine
 main_entities:
   - grecque-adrastee
   - grecque-zeus
@@ -14,34 +26,17 @@ places:
   - Crète
   - Mont Ida
 artifacts: []
-
-era: "Cycle de l’enfance de Zeus"
-importance: "mineur"
-summary: >
-  Adrastée, nymphe nourricière du jeune Zeus, veille sur sa croissance et son
-  éducation. Son nom, lié à l’inévitabilité du destin, annonce déjà la chute de
-  Cronos et l’avènement d’un ordre nouveau.
-
-tags:
-  - destin
-  - fatalite
-  - protection
-  - enfance-divine
-  - transmission
-  - justice-divine
-
 sources:
   - author: Apollodore
     work: Bibliothèque
-    note: "I, 1, 6"
+    note: 'I, 1, 6'
   - author: Diodore de Sicile
     work: Bibliothèque historique
-    note: "V, 70"
+    note: 'V, 70'
   - author: Callimaque
     work: Hymne à Zeus
-    note: "Allusions"
+    note: Allusions
 ---
-
 # Adrastée, la gardienne de l’inévitable
 
 ## Une nourrice au nom chargé de destin
@@ -93,7 +88,7 @@ Lorsque Zeus quitte l’enfance et s’engage sur la voie de l’affrontement av
 père, Adrastée disparaît des récits. Elle n’accompagne ni la Titanomachie ni
 l’établissement de l’ordre olympien.
 
-Son rôle est achevé. Elle a protégé, formé, contenu. Elle s’efface au moment précis
+Son rôle est achevé : elle a protégé, formé, contenu. Elle s’efface au moment précis
 où le destin peut enfin se manifester sans retenue. Cette disparition n’est pas
 un oubli, mais l’aboutissement de sa fonction.
 

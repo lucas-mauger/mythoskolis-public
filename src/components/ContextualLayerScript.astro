@@ -47,11 +47,11 @@ const {
     const skipTags = new Set(["A", "BUTTON", "CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA", "INPUT", "SELECT", "OPTION", "MARK"]);
 
     const settings = {
-      density: "all", // "all" | "first"
+      density: "first", // "all" | "first"
       showEntities: true,
       showGlossary: true,
       float: true,
-      handedness: "right", // "right" | "left"
+      position: "hd", // hd | hg | bd | bg
     };
 
     const mapByKey = new Map(
@@ -101,9 +101,11 @@ const {
     let entitiesCheckbox = null;
     let glossaryCheckbox = null;
     let floatToggle = null;
-    let handedButtons = [];
+    let positionButtons = [];
     const floatUpdaters = [];
     let controlsContainer = null;
+    let floaterContainer = null;
+    const mobileMedia = window.matchMedia("(max-width: 768px)");
 
     const STORAGE_KEY = "mk-contextual-mode";
     const SETTINGS_KEY = "mk-contextual-settings";
@@ -139,9 +141,11 @@ const {
 
     function readInitialState() {
       try {
-        return localStorage.getItem(STORAGE_KEY) === "on";
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored === null) return true;
+        return stored === "on";
       } catch (_) {
-        return false;
+        return true;
       }
     }
 
@@ -189,12 +193,13 @@ const {
       entitiesCheckbox = scope.querySelector("[data-context-entities]");
       glossaryCheckbox = scope.querySelector("[data-context-glossary]");
       floatToggle = scope.querySelector("[data-context-float]");
-      handedButtons = Array.from(scope.querySelectorAll("[data-context-handed]"));
+      positionButtons = Array.from(scope.querySelectorAll("[data-context-position]"));
       controlsContainer = scope.querySelector("[data-context-controls]");
+      floaterContainer = scope.querySelector("[data-contextual-floater]");
 
       loadSettings();
       syncSettingsUI();
-      applyHandedness();
+      applyPosition();
 
       const initialActive = readInitialState();
       if (initialActive && !processed) {
@@ -272,12 +277,15 @@ const {
           saveSettings();
         });
       }
-      handedButtons.forEach((btn) => {
+      positionButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
-          const val = btn.dataset.contextHanded === "left" ? "left" : "right";
-          settings.handedness = val;
+          const val = (btn.dataset.contextPosition || "hd").toLowerCase();
+          settings.position = ["hd", "hg", "bd", "bg"].includes(val) ? val : "hd";
           syncSettingsUI();
-          applyHandedness();
+          applyPosition();
+          applyControlsLayout(floaterContainer?.dataset.ctxMode || "");
+          floatUpdaters.forEach((fn) => fn());
+          positionSettingsPanel();
           saveSettings();
         });
       });
@@ -309,10 +317,12 @@ const {
       window.addEventListener("scroll", () => {
         updateTooltipPosition();
         updateCollapsed();
+        positionSettingsPanel();
       }, { passive: true, capture: true });
       window.addEventListener("resize", () => {
         updateTooltipPosition();
         updateCollapsed(true);
+        positionSettingsPanel();
       }, { passive: true });
 
       setupFloating(scope);
@@ -417,23 +427,32 @@ const {
       span.setAttribute("role", "button");
       span.setAttribute("aria-label", label + " : définition disponible");
       span.addEventListener("mouseenter", () => {
-        if (!active) return;
+        if (!active || !isMarkerEnabled(span)) return;
+        clearTimeout(hideTimer);
+        showTooltip(span);
+      });
+      span.addEventListener("focus", () => {
+        if (!active || !isMarkerEnabled(span)) return;
         clearTimeout(hideTimer);
         showTooltip(span);
       });
       span.addEventListener("mouseleave", () => {
-        if (!active) return;
+        if (!active || !isMarkerEnabled(span)) return;
+        hideTimer = window.setTimeout(hideTooltip, 120);
+      });
+      span.addEventListener("blur", () => {
+        if (!active || !isMarkerEnabled(span)) return;
         hideTimer = window.setTimeout(hideTooltip, 120);
       });
       span.addEventListener("click", (event) => {
-        if (!active) return;
+        if (!active || !isMarkerEnabled(span)) return;
         event.preventDefault();
         event.stopPropagation();
         clearTimeout(hideTimer);
         showTooltip(span);
       });
       span.addEventListener("keydown", (event) => {
-        if (!active) return;
+        if (!active || !isMarkerEnabled(span)) return;
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           showTooltip(span);
@@ -487,6 +506,10 @@ const {
     }
 
     function showTooltip(marker) {
+      if (!active || !isMarkerEnabled(marker)) {
+        hideTooltip();
+        return;
+      }
       // @ts-ignore - custom property on DOM node
       const entry = marker.__contextEntry || null;
       if (!entry) return;
@@ -528,6 +551,71 @@ const {
       positionTooltip(currentAnchor);
     }
 
+    function resetSettingsPanelPosition() {
+      if (!settingsPanel) return;
+      const props = ["position", "top", "left", "right", "bottom", "transform", "zIndex"];
+      props.forEach((prop) => {
+        // @ts-ignore
+        settingsPanel.style[prop] = "";
+      });
+    }
+
+    function positionSettingsPanel() {
+      if (!settingsPanel || !settingsButton || !settingsPanelOpen) return;
+      const isVerticalFloat = floaterContainer && floaterContainer.dataset.ctxMode === "vertical" && mobileMedia.matches;
+      if (!isVerticalFloat) {
+        resetSettingsPanelPosition();
+        return;
+      }
+      const margin = 12;
+      const toggleRect = toggle?.getBoundingClientRect();
+      const settingsRect = settingsButton?.getBoundingClientRect();
+      const anchorRect = (() => {
+        const rects = [toggleRect, settingsRect].filter(Boolean);
+        if (rects.length === 0) return floaterContainer.getBoundingClientRect();
+        const left = Math.min(...rects.map((r) => r.left));
+        const right = Math.max(...rects.map((r) => r.right));
+        const top = Math.min(...rects.map((r) => r.top));
+        const bottom = Math.max(...rects.map((r) => r.bottom));
+        return {
+          left,
+          right,
+          top,
+          bottom,
+          width: right - left,
+          height: bottom - top,
+        };
+      })();
+      const panelRect = settingsPanel.getBoundingClientRect();
+
+      const centerY = anchorRect.top + anchorRect.height / 2;
+      let top = centerY - panelRect.height / 2;
+      top = Math.max(margin, Math.min(window.innerHeight - panelRect.height - margin, top));
+
+      const preferredHand = floaterContainer.dataset.hand === "left" ? "left" : "right";
+      const spaceLeft = anchorRect.left - margin;
+      const spaceRight = window.innerWidth - anchorRect.right - margin;
+      let side = preferredHand;
+      if (side === "left" && panelRect.width > spaceLeft) {
+        side = "right";
+      } else if (side === "right" && panelRect.width > spaceRight) {
+        side = "left";
+      }
+
+      let left =
+        side === "left"
+          ? anchorRect.left - panelRect.width - margin
+          : anchorRect.right + margin;
+      left = Math.max(margin, Math.min(window.innerWidth - panelRect.width - margin, left));
+
+      settingsPanel.style.position = "fixed";
+      settingsPanel.style.top = `${top}px`;
+      settingsPanel.style.left = `${left}px`;
+      settingsPanel.style.right = "auto";
+      settingsPanel.style.bottom = "auto";
+      settingsPanel.style.zIndex = "70";
+    }
+
     function toggleSettingsPanel() {
       if (!settingsPanel || !settingsButton) return;
       if (settingsPanelOpen) {
@@ -536,6 +624,7 @@ const {
         settingsPanel.classList.remove("hidden");
         settingsButton.setAttribute("aria-expanded", "true");
         settingsPanelOpen = true;
+        positionSettingsPanel();
       }
     }
 
@@ -545,6 +634,7 @@ const {
       settingsPanel.classList.add("hidden");
       settingsButton.setAttribute("aria-expanded", "false");
       settingsPanelOpen = false;
+      resetSettingsPanelPosition();
     }
 
     function loadSettings() {
@@ -557,7 +647,9 @@ const {
           settings.showEntities = parsed.showEntities !== false;
           settings.showGlossary = parsed.showGlossary !== false;
           settings.float = parsed.float !== false;
-          settings.handedness = parsed.handedness === "left" ? "left" : "right";
+          const legacyHand = parsed.handedness === "left" ? "hg" : "hd";
+          const pos = (parsed.position || "").toLowerCase();
+          settings.position = ["hd", "hg", "bd", "bg"].includes(pos) ? pos : legacyHand;
         }
       } catch (_) {
         // ignore
@@ -572,24 +664,64 @@ const {
       }
     }
 
-    function applyHandedness() {
+    function applyPosition() {
+      const isVertical = controlsContainer?.dataset.ctxMode === "vertical";
+      const side = settings.position.endsWith("g") ? "left" : "right";
       if (controlsContainer) {
+        controlsContainer.dataset.hand = isVertical ? "center" : side;
         controlsContainer.classList.remove("justify-end", "justify-start", "flex-row-reverse");
-        if (settings.handedness === "right") {
-          controlsContainer.classList.add("justify-end");
-        } else {
-          controlsContainer.classList.add("justify-end", "flex-row-reverse");
+        if (!isVertical) {
+          if (side === "right") {
+            controlsContainer.classList.add("justify-end");
+          } else {
+            controlsContainer.classList.add("justify-end", "flex-row-reverse");
+          }
         }
-        controlsContainer.dataset.hand = settings.handedness;
       }
+      if (floaterContainer) {
+        floaterContainer.dataset.hand = side;
+      }
+      floatUpdaters.forEach((fn) => fn());
+      positionSettingsPanel();
       if (settingsPanel) {
         settingsPanel.classList.remove("right-0", "left-0", "right-auto", "left-auto");
-        if (settings.handedness === "right") {
+        if (side === "right") {
           settingsPanel.classList.add("right-0", "left-auto");
         } else {
           settingsPanel.classList.add("left-0", "right-auto");
         }
       }
+    }
+
+    function applyControlsLayout(mode) {
+      const vertical = mode === "vertical";
+      if (controlsContainer) {
+        controlsContainer.dataset.ctxMode = vertical ? "vertical" : "";
+        const side = settings.position.endsWith("g") ? "left" : "right";
+        controlsContainer.dataset.hand = vertical ? "center" : side;
+        const props = ["display", "gridAutoFlow", "alignItems", "justifyItems", "justifyContent", "rowGap", "width", "alignSelf", "marginInline"];
+        props.forEach((prop) => {
+          // @ts-ignore
+          controlsContainer.style[prop] = "";
+        });
+        if (vertical) {
+          controlsContainer.style.display = "grid";
+          controlsContainer.style.gridAutoFlow = "row";
+          controlsContainer.style.alignItems = "center";
+          controlsContainer.style.justifyItems = "center";
+          controlsContainer.style.justifyContent = "center";
+          controlsContainer.style.rowGap = "0.5rem";
+        }
+      }
+      if (toggle) {
+        toggle.style.order = vertical ? "1" : "";
+        toggle.style.alignSelf = vertical ? "center" : "";
+      }
+      if (settingsButton) {
+        settingsButton.style.order = vertical ? "2" : "";
+        settingsButton.style.alignSelf = vertical ? "center" : "";
+      }
+      positionSettingsPanel();
     }
 
     function isMarkerEnabled(marker) {
@@ -606,6 +738,20 @@ const {
     }
 
     function syncSettingsUI() {
+      const basePositionBtnClasses = [
+        "inline-flex",
+        "items-center",
+        "justify-center",
+        "rounded-full",
+        "border",
+        "px-3",
+        "py-1.5",
+        "text-sm",
+        "font-semibold",
+        "transition",
+        "hover:-translate-y-[1px]",
+        "hover:shadow-sm",
+      ];
       densityButtons.forEach((btn) => {
         const isActive = btn.dataset.contextDensity === settings.density;
         btn.classList.toggle("border-amber-400", isActive);
@@ -638,20 +784,28 @@ const {
         floatToggle.classList.toggle("dark:bg-slate-900", !isActive);
         floatToggle.classList.toggle("dark:text-slate-100", !isActive);
       }
-      handedButtons.forEach((btn) => {
-        const isActive = btn.dataset.contextHanded === settings.handedness;
-        btn.classList.toggle("border-amber-400", isActive);
-        btn.classList.toggle("bg-amber-50", isActive);
-        btn.classList.toggle("text-amber-900", isActive);
-        btn.classList.toggle("dark:border-amber-300/70", isActive);
-        btn.classList.toggle("dark:bg-amber-900/30", isActive);
-        btn.classList.toggle("dark:text-amber-50", isActive);
-        btn.classList.toggle("border-slate-200", !isActive);
-        btn.classList.toggle("bg-white", !isActive);
-        btn.classList.toggle("text-slate-800", !isActive);
-        btn.classList.toggle("dark:border-slate-700", !isActive);
-        btn.classList.toggle("dark:bg-slate-900", !isActive);
-        btn.classList.toggle("dark:text-slate-100", !isActive);
+      positionButtons.forEach((btn) => {
+        const btnPos = (btn.dataset.contextPosition || "").toLowerCase();
+        const isActive = btnPos === settings.position;
+        const activeClasses = [
+          "border-amber-400",
+          "bg-amber-50",
+          "text-amber-900",
+          "dark:border-amber-300/70",
+          "dark:bg-amber-900/30",
+          "dark:text-amber-50",
+        ];
+        const inactiveClasses = [
+          "border-slate-200",
+          "bg-white",
+          "text-slate-800",
+          "dark:border-slate-700",
+          "dark:bg-slate-900",
+          "dark:text-slate-100",
+        ];
+        btn.className = "";
+        btn.classList.add(...basePositionBtnClasses, ...(isActive ? activeClasses : inactiveClasses));
+        btn.setAttribute("aria-pressed", String(isActive));
       });
     }
 
@@ -659,8 +813,17 @@ const {
       const threshold = 100;
       const floater = toggle.closest?.("[data-contextual-floater]");
       let next = false;
+      const isBottomPosition = settings.position.startsWith("b");
 
       if (!settings.float) {
+        if (collapsed) {
+          collapsed = false;
+          toggle.classList.remove("contextual-collapsed");
+        }
+        return;
+      }
+
+      if (isBottomPosition) {
         if (collapsed) {
           collapsed = false;
           toggle.classList.remove("contextual-collapsed");
@@ -695,6 +858,7 @@ const {
         placeholder.style.height = "0px";
         placeholder.style.width = "100%";
         placeholder.style.pointerEvents = "none";
+        placeholder.dataset.contextualPlaceholder = "1";
 
         floater.parentElement?.insertBefore(placeholder, floater);
         const margin = 16;
@@ -703,45 +867,96 @@ const {
           floater.style.position = "";
           floater.style.top = "";
           floater.style.left = "";
+          floater.style.right = "";
+          floater.style.bottom = "";
           floater.style.width = "";
           floater.style.zIndex = "";
+          floater.dataset.ctxFloating = "0";
+          floater.dataset.ctxMode = "";
+          floater.dataset.ctxTrigger = "0";
+          floater.dataset.ctxMargin = String(margin);
+          applyControlsLayout("");
         };
 
         const updateFloating = () => {
+          const prevRect = floater.getBoundingClientRect();
+          const wasFloating = floater.dataset.ctxFloating === "1";
+          floater.style.position = "";
+          const placeholderRect = placeholder.getBoundingClientRect();
+          const floaterRect = floater.getBoundingClientRect();
+          const collapsedHeight = toggle?.getBoundingClientRect().height || floaterRect.height;
+          const expandedHeight = controlsContainer?.getBoundingClientRect().height || floaterRect.height;
+          const side = settings.position.endsWith("g") ? "left" : "right";
+          const isBottom = settings.position.startsWith("b");
+          const baseTrigger = placeholderRect.top + window.scrollY;
+          const triggerTop = isBottom ? baseTrigger : baseTrigger - margin;
+          const shouldFloat = settings.float && window.scrollY >= triggerTop;
+          const verticalMode = isBottom && shouldFloat;
+
           if (!settings.float) {
-            placeholder.style.height = "0px";
+            const idleHeight = verticalMode ? expandedHeight : 0;
+            placeholder.style.height = `${idleHeight}px`;
             floater.style.position = "relative";
             floater.style.top = "";
             floater.style.left = "";
             floater.style.width = "";
             floater.style.zIndex = "";
             floater.dataset.ctxFloating = "0";
+            floater.dataset.ctxMode = "";
             floater.dataset.ctxTrigger = "0";
             floater.dataset.ctxMargin = String(margin);
+            applyControlsLayout("");
             return;
           }
-
-          floater.style.position = "";
-          const placeholderRect = placeholder.getBoundingClientRect();
-          const floaterRect = floater.getBoundingClientRect();
-          const triggerTop = placeholderRect.top + window.scrollY;
-          const shouldFloat = window.scrollY + margin > triggerTop;
 
           floater.dataset.ctxFloating = shouldFloat ? "1" : "0";
           floater.dataset.ctxTrigger = String(triggerTop);
           floater.dataset.ctxMargin = String(margin);
+          floater.dataset.hand = side;
 
-          if (shouldFloat) {
-            placeholder.style.height = `${floaterRect.height}px`;
-            floater.style.position = "fixed";
-            floater.style.top = `${margin}px`;
-            floater.style.left = `${placeholderRect.left}px`;
-            floater.style.width = `${placeholderRect.width}px`;
-            floater.style.zIndex = "60";
-          } else {
-            placeholder.style.height = "0px";
-            resetStyles();
+          if (!verticalMode) {
+            updateCollapsed(true);
           }
+
+          const baseFloatHeight = floaterRect.height || collapsedHeight;
+          placeholder.style.height = shouldFloat ? `${baseFloatHeight}px` : "0px";
+
+          if (verticalMode) {
+            floater.style.position = "fixed";
+            floater.style.zIndex = "60";
+            floater.style.top = "auto";
+            floater.style.bottom = `calc(30vh + env(safe-area-inset-bottom, 0px))`;
+            floater.style.width = "auto";
+            floater.style.left = side === "left" ? "1rem" : "auto";
+            floater.style.right = side === "right" ? "1rem" : "auto";
+            floater.dataset.ctxMode = "vertical";
+            applyControlsLayout("vertical");
+          } else {
+            floater.dataset.ctxMode = "";
+            applyControlsLayout("");
+            // HD/HG : revenir en fixed pour suivre le scroll, avec hauteur compacte constante.
+            if (shouldFloat) {
+              floater.style.position = "fixed";
+              floater.style.top = `${margin}px`;
+              floater.style.bottom = "";
+              floater.style.width = `${placeholderRect.width || floaterRect.width}px`;
+              floater.style.left = `${placeholderRect.left}px`;
+              floater.style.right = "";
+              floater.style.zIndex = "60";
+            } else {
+              floater.style.position = "relative";
+              floater.style.top = "";
+              floater.style.left = "";
+              floater.style.right = "";
+              floater.style.bottom = "";
+              floater.style.width = "100%";
+              floater.style.zIndex = "";
+            }
+          }
+
+          void prevRect;
+          void wasFloating;
+          positionSettingsPanel();
         };
 
         const handleResize = () => {
@@ -788,16 +1003,57 @@ const {
     margin: 0;
   }
 
-  [data-context-controls] > * {
-    transition: transform 220ms ease, opacity 220ms ease;
-  }
-  [data-context-controls][data-hand="left"] > :first-child {
-    transform: translateX(8px);
-  }
-  [data-context-controls][data-hand="left"] > :nth-child(2) {
-    transform: translateX(-8px);
-  }
   [data-context-controls][data-hand="right"] > * {
     transform: translateX(0);
+  }
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-controls] > *,
+  [data-contextual-controls][data-ctx-mode="vertical"] > * {
+    transform: none !important;
+  }
+
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-controls],
+  [data-contextual-controls][data-ctx-mode="vertical"] {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-controls][data-hand="left"],
+  [data-contextual-controls][data-ctx-mode="vertical"][data-hand="left"] {
+    align-items: center;
+  }
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-toggle],
+  [data-contextual-controls][data-ctx-mode="vertical"] [data-contextual-toggle] {
+    order: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    padding: 0.3rem 0.5rem;
+    gap: 0.1rem;
+    width: 2.75rem;
+    min-width: 2.75rem;
+    line-height: 1;
+  }
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-toggle].contextual-collapsed,
+  [data-contextual-controls][data-ctx-mode="vertical"] [data-contextual-toggle].contextual-collapsed {
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
+    gap: 0.1rem !important;
+  }
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-settings],
+  [data-contextual-controls][data-ctx-mode="vertical"] [data-contextual-settings] {
+    order: 2;
+    align-self: center;
+  }
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-toggle] [data-contextual-label],
+  [data-contextual-controls][data-ctx-mode="vertical"] [data-contextual-toggle] [data-contextual-label] {
+    display: none;
+  }
+  [data-contextual-floater][data-ctx-mode="vertical"] [data-contextual-toggle] img,
+  [data-contextual-controls][data-ctx-mode="vertical"] [data-contextual-toggle] img {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
   }
 </style>
