@@ -72,7 +72,12 @@ const entityLayerEntries = Array.from(entiteById.values())
   })
   .filter(Boolean);
 const layerEntries = [
-  ...glossaryEntries.map((g) => ({ type: 'glossary', name: g.name, definition: g.definition })),
+  ...glossaryEntries.map((g) => ({
+    type: 'glossary',
+    name: g.name,
+    definition: g.definition,
+    matchTerms: g.matchTerms,
+  })),
   ...entityLayerEntries,
 ];
 

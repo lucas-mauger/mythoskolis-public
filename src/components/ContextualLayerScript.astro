@@ -6,6 +6,8 @@ type ContextualEntry = {
   title?: string;
   role?: string;
   image?: string | null;
+  matchTerms?: string[];
+  match_terms?: string[];
 };
 
 type Props = {
@@ -54,24 +56,54 @@ const {
       position: "hd", // hd | hg | bd | bg
     };
 
-    const mapByKey = new Map(
-      entries.map((entry) => [
-        (entry?.name ?? "").toLocaleLowerCase("fr"),
-        {
-          name: entry?.name ?? "",
+    const normalizedEntries = entries
+      .map((entry) => {
+        const name = (entry?.name ?? "").toString().trim();
+        if (!name) return null;
+        const matchTermsRaw = Array.isArray(entry?.matchTerms)
+          ? entry.matchTerms
+          : Array.isArray(entry?.match_terms)
+            ? entry.match_terms
+            : [];
+        const matchTerms = matchTermsRaw
+          .map((term) => (term ?? "").toString().trim())
+          .filter(Boolean);
+        const termsExact = [name, ...matchTerms];
+        return {
+          name,
           definition: entry?.definition ?? "",
           type: entry?.type ?? "glossary",
-          title: entry?.title ?? entry?.name ?? "",
+          title: entry?.title ?? name ?? "",
           role: entry?.role ?? "",
           image: entry?.image ?? null,
-        },
-      ]),
-    );
+          matchTerms,
+          termsExact,
+        };
+      })
+      .filter(Boolean);
 
-    const terms = Array.from(mapByKey.values())
-      .map((entry) => entry.name)
-      .filter(Boolean)
-      .sort((a, b) => b.length - a.length);
+    const mapByKey = new Map();
+    const termKeySet = new Set();
+    const terms = [];
+
+    function addTerm(term, entry) {
+      const cleaned = (term ?? "").toString().trim();
+      if (!cleaned) return;
+      const key = cleaned.toLocaleLowerCase("fr");
+      if (!termKeySet.has(key)) {
+        termKeySet.add(key);
+        terms.push(cleaned);
+      }
+      if (!mapByKey.has(key)) mapByKey.set(key, []);
+      mapByKey.get(key).push(entry);
+    }
+
+    normalizedEntries.forEach((entry) => {
+      addTerm(entry.name, entry);
+      entry.matchTerms.forEach((term) => addTerm(term, entry));
+    });
+
+    terms.sort((a, b) => b.length - a.length);
 
     if (terms.length === 0) return;
 
@@ -376,7 +408,8 @@ const {
         const prefix = match[1] ?? "";
         const matchedText = match[2] || match[0];
         const key = matchedText.toLocaleLowerCase("fr");
-        const glossaryEntry = mapByKey.get(key);
+        const candidates = mapByKey.get(key) || [];
+        const glossaryEntry = selectEntryForMatch(matchedText, candidates);
 
         if (start > lastIndex) {
           frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
@@ -389,9 +422,10 @@ const {
         if (!glossaryEntry) {
           frag.appendChild(document.createTextNode(matchedText));
         } else {
-          const count = occurrenceCount.get(key) || 0;
+          const entryKey = (glossaryEntry?.name ?? matchedText).toLocaleLowerCase("fr");
+          const count = occurrenceCount.get(entryKey) || 0;
           const marker = createMarker(matchedText, glossaryEntry, count === 0);
-          occurrenceCount.set(key, count + 1);
+          occurrenceCount.set(entryKey, count + 1);
           frag.appendChild(marker);
           locals.push(marker);
         }
@@ -459,6 +493,18 @@ const {
         }
       });
       return span;
+    }
+
+    function selectEntryForMatch(matchedText, candidates) {
+      if (!candidates || candidates.length === 0) return null;
+      const exactMatch = candidates.find(
+        (entry) =>
+          entry?.type === "entity" &&
+          Array.isArray(entry?.termsExact) &&
+          entry.termsExact.includes(matchedText),
+      );
+      if (exactMatch) return exactMatch;
+      return candidates.find((entry) => entry?.type !== "entity") || null;
     }
 
     function createTooltip() {

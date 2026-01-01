@@ -7,7 +7,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { isPublishedEntry } from '../../utils/content-filters';
 
-const entites = await getCollection('entites', isPublishedEntry);
+const entites = (await getCollection('entites', isPublishedEntry))
+  .slice()
+  .sort((a, b) => (a.data.title ?? a.slug).toString().localeCompare((b.data.title ?? b.slug).toString(), 'fr'));
 const publicDir = path.resolve(process.cwd(), 'public');
 const natureEntry = await getEntry('data', 'natures-entites');
 const natureLabelMap = new Map<string, { fr?: Record<string, string> }>();

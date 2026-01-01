@@ -1,28 +1,13 @@
 ---
-title: "L’enlèvement de Perséphone"
-slug: "enlevement-persephone"
-id: "enlevement-persephone"
-type: "recit"
-
-main_entities:
-  - grecque-persephone
-  - grecque-hades
-  - grecque-demeter
-  - grecque-zeus
-opponents:
-  - grecque-hades
-places:
-  - Plaine de Nysa
-  - Enfers
-  - Éleusis
-artifacts: []
-
-era: "Cycle démétriaque"
-importance: "majeur"
+title: L’enlèvement de Perséphone
+slug: enlevement-persephone
+id: enlevement-persephone
+type: recit
+era: Cycle démétriaque
+importance: majeur
 summary: >
-  L’enlèvement de Perséphone par Hadès déclenche le deuil cosmique de Déméter
-  et fonde l’origine mythique des saisons.
-
+  L’enlèvement de Perséphone par Hadès déclenche le deuil cosmique de Déméter et
+  fonde l’origine mythique des saisons.
 tags:
   - rivalite
   - jalousie
@@ -34,14 +19,26 @@ tags:
   - justice-divine
   - initiation
   - rites-sacres
-
+main_entities:
+  - grecque-persephone
+  - grecque-hades
+  - grecque-demeter
+  - grecque-zeus
+  - grecque-hecate
+opponents:
+  - grecque-hades
+places:
+  - Plaine de Nysa
+  - Enfers
+  - Éleusis
+artifacts: []
 sources:
   - author: Hymne homérique à Déméter
     work: Hymne n°2
-    note: "Référence principale du mythe"
+    note: Référence principale du mythe
   - author: Hésiode
     work: Théogonie
-    note: "Allusions complémentaires"
+    note: Allusions complémentaires
 ---
 ## Le prétexte : une clairière, des fleurs, un destin suspendu
 Perséphone, fille de Déméter et de Zeus, cueille des fleurs en compagnie de nymphes

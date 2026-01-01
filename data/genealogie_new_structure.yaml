@@ -180,6 +180,12 @@ entities:
             - author: Orphica
               work: Hymnes orphiques
               passage: '30'
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (attribué à Muséus)
       siblings:
         - id: grecque-hestia
           consensus: true
@@ -290,6 +296,12 @@ entities:
             - author: Homère
               work: Iliade
               passage: XVIII
+        - id: grecque-asteria
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (d’après Muséus)
   - name: Léto
     slug: leto
     culture: grecque
@@ -1429,6 +1441,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.211–232
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Bacchylide
+              work: fragment 1B
+              passage: ''
       siblings:
         - id: grecque-erebe
           consensus: true
@@ -1864,6 +1882,12 @@ entities:
             - author: Pausanias
               work: Description de la Grèce
               passage: VIII, 25, 4–8
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: ''
+              work: Fragments orphiques
+              passage: ''
       siblings:
         - id: grecque-zeus
           consensus: true
@@ -4150,6 +4174,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.270–335
+        - id: grecque-scylla
+          consensus: false
+          sources:
+            - author: Apollonios de Rhodes
+              work: Argonautiques
+              passage: IV.827
       siblings:
         - id: grecque-neree
           consensus: true
@@ -4182,6 +4212,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.270–335
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Apollonios de Rhodes
+              work: Argonautiques
+              passage: IV.827
   - name: Céto
     slug: ceto
     culture: grecque
@@ -21336,7 +21372,19 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.404–410
-      children: []
+      children:
+        - id: grecque-hecate
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.400
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (attribué à Muséus)
       siblings:
         - id: grecque-leto
           consensus: true
@@ -21344,7 +21392,19 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.404–410
-      consorts: []
+      consorts:
+        - id: grecque-perses
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.400
+        - id: grecque-zeus
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (d’après Muséus)
   - name: Astréos
     slug: astreos
     culture: grecque
@@ -21429,7 +21489,19 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.375–377
-      children: []
+      children:
+        - id: grecque-hecate
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.400
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Hymne homérique à Déméter
+              passage: v.24
       siblings:
         - id: grecque-astreos
           consensus: true
@@ -21443,7 +21515,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.375–377
-      consorts: []
+      consorts:
+        - id: grecque-asteria
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.400
   - name: Hélios
     slug: helios
     culture: grecque
@@ -23768,4 +23846,337 @@ entities:
             - author: ollodore
               work: Bibliothèque
               passage: I.9.27 ; III.1.2
+      consorts: []
+  - name: Hécate
+    slug: hecate
+    culture: grecque
+    id: grecque-hecate
+    relations:
+      parents:
+        - id: grecque-perses
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.400
+        - id: grecque-asteria
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.400
+        - id: grecque-perses
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Hymne homérique à Déméter
+              passage: v.24
+        - id: grecque-nyx
+          consensus: false
+          sources:
+            - author: Bacchylide
+              work: fragment 1B
+              passage: ''
+        - id: grecque-aristee
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (attribué à Phérécyde)
+        - id: grecque-zeus
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (attribué à Muséus)
+        - id: grecque-asteria
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (attribué à Muséus)
+        - id: grecque-demeter
+          consensus: false
+          sources:
+            - author: ''
+              work: Fragments orphiques
+              passage: ''
+      children:
+        - id: grecque-scylla
+          consensus: false
+          sources:
+            - author: Apollonios de Rhodes
+              work: Argonautiques
+              passage: IV.827
+        - id: grecque-circe
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-medee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aigialee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-circe
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-medee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aigialee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+      siblings: []
+      consorts:
+        - id: grecque-phorcys
+          consensus: false
+          sources:
+            - author: Apollonios de Rhodes
+              work: Argonautiques
+              passage: IV.827
+        - id: grecque-aeetes
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+  - name: Aristée
+    slug: aristee
+    culture: grecque
+    id: grecque-aristee
+    relations:
+      parents: []
+      children:
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: Scholies à Apollonios de Rhodes - Argonautiques
+              passage: III.467 (attribué à Phérécyde)
+      siblings: []
+      consorts: []
+  - name: Scylla
+    slug: scylla
+    culture: grecque
+    id: grecque-scylla
+    relations:
+      parents:
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Apollonios de Rhodes
+              work: Argonautiques
+              passage: IV.827
+        - id: grecque-phorcys
+          consensus: false
+          sources:
+            - author: Apollonios de Rhodes
+              work: Argonautiques
+              passage: IV.827
+      children: []
+      siblings: []
+      consorts: []
+  - name: Æétès
+    slug: aeetes
+    culture: grecque
+    id: grecque-aeetes
+    relations:
+      parents: []
+      children:
+        - id: grecque-circe
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-medee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aigialee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+      siblings: []
+      consorts:
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+  - name: Circé
+    slug: circe
+    culture: grecque
+    id: grecque-circe
+    relations:
+      parents:
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aeetes
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+      children: []
+      siblings:
+        - id: grecque-medee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aigialee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-medee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aigialee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+      consorts: []
+  - name: Médée
+    slug: medee
+    culture: grecque
+    id: grecque-medee
+    relations:
+      parents:
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aeetes
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+      children: []
+      siblings:
+        - id: grecque-circe
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aigialee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-circe
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aigialee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+      consorts: []
+  - name: Aigialée
+    slug: aigialee
+    culture: grecque
+    id: grecque-aigialee
+    relations:
+      parents:
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-hecate
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-aeetes
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+      children: []
+      siblings:
+        - id: grecque-circe
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-medee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-circe
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
+        - id: grecque-medee
+          consensus: false
+          sources:
+            - author: Diodore de Sicile
+              work: Bibliothèque historique
+              passage: IV.45.1
       consorts: []
