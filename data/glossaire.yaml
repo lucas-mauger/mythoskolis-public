@@ -4,27 +4,27 @@ word:
   - name: "Apothéose"
     match_terms:
       - "apothéoses"
-    definition: "Transformation d'un mortel en dieu. Exemple célèbre : Héraclès."
+    definition: "[Transformation|Transformation] d'un mortel en dieu."
   - name: "Catabasis"
-    definition: "Descente volontaire d’un dieu ou d’un héros dans le monde des morts. La catabasis est un motif majeur des mythes initiatiques et de renaissance. Exemples notables : Orphée, Héraclès, et Dionysos lors du retour de Sémélé."
+    definition: "Descente volontaire d’un dieu ou d’un héros dans le monde des morts. La catabasis est un motif majeur des mythes initiatiques et de renaissance."
   - name: "Chthonien"
     match_terms:
       - "chtonienne"
       - "chtoniens"
       - "chtoniennes"
-    definition: "Relatif au monde souterrain. Désigne les divinités liées à la terre, aux morts, aux forces profondes."
+    definition: "[Relatif|Relative|Relatifs|Relatives] au monde souterrain. Désigne les divinités liées à la terre, aux morts, aux forces profondes."
   - name: "Cosmogonie"
     match_terms:
       - "cosmogonies"
-    definition: "Récit décrivant la naissance du monde. En Grèce, la Théogonie d'Hésiode en est l'exemple majeur."
+    definition: "[Récit|Récits] décrivant la naissance du monde. En Grèce, la Théogonie d'Hésiode en est l'exemple majeur."
   - name: "Démone"
     match_terms:
       - "démones"
-    definition: "Être intermédiaire entre les dieux et les mortels. Souvent porteur de message ou de destin."
+    definition: "[Être intermédiaire|Êtres intermédiaires] entre les dieux et les mortels. Souvent [porteur|porteurs] de message ou de destin."
   - name: "Poliade"
     match_terms:
       - "poliades"
-    definition: "Se dit d'une divinité protectrice d'une cité. Athéna est la déesse poliade d'Athènes."
+    definition: "Se dit [d'une divinité protectrice|de divinités protectrices] d'une cité."
   - name: "Épiclèse"
     definition: "Nom ou qualificatif associé à une divinité selon un lieu, une fonction ou un aspect particulier. Exemple : Zeus Kéraunos signifie Zeus de la foudre."
   - name: "Enfers"
@@ -33,11 +33,11 @@ word:
     match_terms:
       - "héroïne"
       - "héroïnes"
-    definition: "Mortel(le) exceptionnel(le), parfois demi-dieu, qui accomplit exploits ou quêtes."
+    definition: "[Mortel|Mortelle|Mortelles] [exceptionnel|exceptionnelle|exceptionnelles], parfois demi-[dieu|déesse|déesses], qui [accomplit|accomplissent|accomplissent] exploits ou quêtes."
   - name: "Hiérogamie"
     match_terms:
     - "hiérogamies"
-    definition: "Union sacrée entre deux divinités symbolisant la cohésion cosmique."
+    definition: "[Union sacrée|Unions sacrées] entre deux divinités symbolisant la cohésion cosmique."
   - name: "Hubris"
     definition: "Démesure orgueilleuse qui pousse un mortel à dépasser sa condition et à défier l’ordre divin. L’hubris appelle presque toujours un châtiment exemplaire infligé par les dieux. Exemples célèbres : Niobé, Icare, Achille dans certaines traditions."
     match_terms:
@@ -45,7 +45,7 @@ word:
   - name: "Métamorphose"    
     match_terms:
     - "métamorphoses"
-    definition: "Transformation d'un être en un autre. Thème fréquent dans les mythes."
+    definition: "[Transformation|Transformations] d'un être en un autre. Thème fréquent dans les mythes."
   - name: "Moirai"
     match_terms:
       - "Moires"
@@ -53,25 +53,25 @@ word:
   - name: "Nymphe"
     match_terms:
       - "nymphes"
-    definition: "Esprit féminin lié à un lieu naturel. Il existe plusieurs types : naïades, dryades, oréades, néréides."
+    definition: "[Esprit féminin lié|Esprits féminins liés] à un lieu naturel. Il existe plusieurs types : naïades, dryades, oréades, néréides."
   - name: "Oracle"
     match_terms:
       - "oracles"
-    definition: "Révélation divine donnée par un sanctuaire ou un prophète. Delphes est le plus célèbre."
+    definition: "[Révélation divine donnée|Révélations divines données] par un sanctuaire ou un prophète. Delphes est le plus célèbre."
   - name: "Panthéon"
     match_terms:
       - "panthéons"
-    definition: "Ensemble des dieux d'une civilisation. Le panthéon grec regroupe primordiaux, titans, olympiens et divinités mineures."
+    definition: "[Ensemble|Ensembles] des dieux d'une civilisation. Le panthéon grec regroupe primordiaux, titans, olympiens et divinités mineures."
   - name: "Psychopompe"
     match_terms:
       - "psychopompes"
-    definition: "Qualité d'une divinité chargée de guider les âmes des morts. Hermès remplit souvent cette fonction."
+    definition: "Qualité [d'une divinité chargée|de divinités chargées] de guider les âmes des morts. Hermès remplit souvent cette fonction."
   - name: "Titanomachie"
     definition: "Combat entre les Titans et les Olympiens qui aboutit à l'établissement de la souveraineté de Zeus."
   - name: "Théogonie"
-    definition: "Récit des origines des dieux et de leur succession."
     match_terms:
       - "théogonies"
+    definition: "[Récit|Récits] des origines des dieux et de leur succession."
   - name: "Iliade"
     definition: "Poème épique attribué à Homère, centré sur un épisode de la guerre de Troie et sur la colère d’Achille. Il met en scène les héros grecs et troyens, les interventions divines et les valeurs guerrières de l’aristocratie héroïque grecque."
   - name: "Odyssée"
@@ -85,31 +85,31 @@ word:
   - name: "Cosmique"
     match_terms:
       - "cosmiques"
-    definition: "Relatif à l’ordre du monde et à sa structure fondamentale. Qualifie ce qui concerne l’équilibre, l’organisation et les forces qui régissent l’univers dans sa totalité."
+    definition: "[Relatif|Relatifs] à l’ordre du monde et à sa structure fondamentale. Qualifie ce qui concerne l’équilibre, l’organisation et les forces qui régissent l’univers dans sa totalité."
   - name: "Théologie"
     match_terms:
       - "théologies"
-    definition: "Discours et réflexion portant sur la nature des dieux, leurs attributs, leurs relations et leur place dans l’ordre du monde. Dans le contexte grec, la théologie est implicite et se déploie principalement à travers les mythes et les récits."
+    definition: "Discours et [réflexion|réflexions] portant sur la nature des dieux, leurs attributs, leurs relations et leur place dans l’ordre du monde. Dans le contexte grec, la théologie est implicite et se déploie principalement à travers les mythes et les récits."
   - name: "Mystérique"
     match_terms:
       - "mystériques"
-    definition: "Relatif aux mystères religieux, en particulier aux cultes initiatiques réservés à des adeptes et fondés sur le secret, l’expérience rituelle et la révélation progressive d’un savoir sacré."
+    definition: "[Relatif|Relatifs] aux mystères religieux, en particulier aux cultes initiatiques réservés à des adeptes et fondés sur le secret, l’expérience rituelle et la révélation progressive d’un savoir sacré."
   - name: "Mythe"
     match_terms:
       - "mythes"
-    definition: "Récit traditionnel mettant en scène dieux, héros ou forces primordiales, destiné à expliquer l’origine du monde, des pratiques humaines ou de l’ordre cosmique, sans prétention historique."
+    definition: "[Récit traditionnel|Récits traditionnels] mettant en scène dieux, héros ou forces primordiales, [destiné|destinés] à expliquer l’origine du monde, des pratiques humaines ou de l’ordre cosmique, sans prétention historique."
   - name: "Délire sacré"
     match_terms:
       - "délires sacrés"
-    definition: "État d’exaltation ou de transe considéré comme une manifestation de l’inspiration divine. Dans le contexte grec, il désigne une perte de contrôle rationnel perçue non comme une folie pathologique, mais comme un accès privilégié au divin."
+    definition: "[État d’exaltation ou de transe considéré|États d’exaltation ou de transe considérés] comme une manifestation de l’inspiration divine. Dans le contexte grec, [il désigne|ils désignent] une perte de contrôle rationnel perçue non comme une folie pathologique, mais comme un accès privilégié au divin."
   - name: "Transe"
     match_terms:
       - "transes"
-    definition: "État modifié de conscience marqué par une altération de la perception, du contrôle de soi et du rapport au réel, souvent associé à des pratiques rituelles, musicales ou religieuses."
+    definition: "[État modifié|États modifiés] de conscience marqué par une altération de la perception, du contrôle de soi et du rapport au réel, souvent [associé|associés] à des pratiques rituelles, musicales ou religieuses."
   - name: "Extase"
     match_terms:
       - "extases"
-    definition: "État de sortie de soi caractérisé par une suspension partielle de la conscience ordinaire et un sentiment d’union avec une réalité supérieure ou divine."
+    definition: "[État|États] de sortie de soi [caractérisé|caractérisés] par une suspension partielle de la conscience ordinaire et un sentiment d’union avec une réalité supérieure ou divine."
   - name: "Pétase"
     definition: "Chapeau à large bord, souvent représenté avec des ailes, attribut caractéristique d’Hermès. Il symbolise le voyage, la mobilité et la fonction de messager divin."
   - name: "Caducée"
@@ -117,52 +117,52 @@ word:
   - name: "Cyclope"
     match_terms:
       - "cyclopes"
-    definition: "Être mythique à l’œil unique. Dans la tradition grecque, le terme désigne soit des forgerons divins associés à Zeus et à la fabrication de la foudre, soit des géants sauvages et violents, vivant en marge de l’ordre civilisé."
+    definition: "[Être mythique|Êtres mythiques] à l’œil unique. Dans la tradition grecque, le terme désigne soit des forgerons divins associés à Zeus et à la fabrication de la foudre, soit des géants sauvages et violents, vivant en marge de l’ordre civilisé."
   - name: "Géants"
     definition: "Êtres nés du sang d’Ouranos tombé sur Gaïa, incarnant des forces violentes et archaïques opposées à l’ordre olympien. Ils sont principalement associés à la Gigantomachie, affrontement contre les dieux de l’Olympe."
   - name: "Océanide"
     match_terms:
       - "océanides"
-    definition: "Nymphe aquatique, fille d’Océan et de Téthys. Les Océanides incarnent les eaux douces du monde, sources, rivières, sources souterraines ou aspects nourriciers de la nature."
+    definition: "[Nymphe aquatique, fille|Nymphes aquatiques, filles] d’Océan et de Téthys. Les Océanides incarnent les eaux douces du monde, sources, rivières, sources souterraines ou aspects nourriciers de la nature."
   - name: "Néréide"
     match_terms:
       - "néréides"
-    definition: "Nymphe marine, fille de Nérée et de Doris. Les Néréides personnifient les aspects bienveillants et féconds de la mer, en particulier son calme et sa protection."
+    definition: "[Nymphe marine, fille|Nymphes marines, filles] de Nérée et de Doris. Les Néréides personnifient les aspects bienveillants et féconds de la mer, en particulier son calme et sa protection."
   - name: "Dryade"
     match_terms:
       - "dryades"
-    definition: "Nymphe marine, fille de Nérée et de Doris. Les Néréides personnifient les aspects bienveillants et féconds de la mer, en particulier son calme et sa protection."
+    definition: "[Nymphe marine, fille|Nymphes marines, filles] de Nérée et de Doris. Les Néréides personnifient les aspects bienveillants et féconds de la mer, en particulier son calme et sa protection."
   - name: "Naïade"
     match_terms:
       - "naïades"
-    definition: "Nymphe des eaux douces, associée aux sources, rivières, fontaines ou lacs. Elle incarne la vitalité, la pureté et la fécondité de l’eau naturelle."
+    definition: "[Nymphe des eaux douces, associée|Nymphes des eaux douces, associées] aux sources, rivières, fontaines ou lacs. [Elle incarne|Elles incarnent] la vitalité, la pureté et la fécondité de l’eau naturelle."
   - name: "Oréade"
     match_terms:
       - "oréades"
-    definition: "Nymphe des montagnes et des reliefs escarpés. Elle personnifie la nature sauvage, élevée et parfois hostile des hauteurs."
+    definition: "[Nymphe|Nymphes] des montagnes et des reliefs escarpés. [Elle personnifie|Elles personnifient] la nature sauvage, élevée et parfois hostile des hauteurs."
   - name: "Cosmos"
     definition: "Ensemble ordonné du monde, conçu comme un tout structuré et cohérent. Dans la pensée grecque, le cosmos s’oppose au chaos et désigne un univers régi par des lois et des équilibres."
   - name: "Prophétie"
     match_terms:
       - "prophéties"
-    definition: "Annonce d’un événement à venir d’origine divine, révélant un destin inéluctable ou conditionnel. Elle exprime la volonté des dieux et structure le rapport des mortels au destin."
+    definition: "[Annonce|Annonces] d’un événement à venir d’origine divine, révélant un destin inéluctable ou conditionnel. [Elle exprime|Elles expriment] la volonté des dieux et [structure|structurent] le rapport des mortels au destin."
   - name: "Apotropaïque"
     match_terms:
       - "apotropaïques"
-    definition: "Qui a pour fonction d’éloigner le mal, le danger ou les influences néfastes. Désigne des rites, objets, symboles ou représentations destinés à protéger par dissuasion ou neutralisation du mal."
+    definition: "Qui [a|ont] pour fonction d’éloigner le mal, le danger ou les influences néfastes. Désigne des rites, objets, symboles ou représentations destinés à protéger par dissuasion ou neutralisation du mal."
   - name: "Gorgoneion"
     definition: "Représentation de la tête de Gorgone, utilisée comme symbole apotropaïque. Elle est destinée à repousser le mal et à protéger par la terreur qu’inspire son regard figé."
   - name: "Primordial"
     match_terms:
-      - "primordiales"
-      - "primordiaux"
       - "primordiale"
-    definition: "Qui appartient aux origines du monde. Qualifie les divinités ou forces premières issues du chaos initial, antérieures à l’ordre cosmique et aux dieux olympiens."
+      - "primordiaux"
+      - "primordiales"
+    definition: "Qui [appartient|appartient|appartiennent|appartiennent] aux origines du monde. Qualifie les divinités ou forces premières issues du chaos initial, antérieures à l’ordre cosmique et aux dieux olympiens."
   - name: "Liminal"
     match_terms:
-      - "liminaux"
       - "liminale"
+      - "liminaux"
       - "liminales"
-    definition: "Relatif à un seuil ou à un état intermédiaire. Qualifie ce qui se situe entre deux mondes, deux statuts ou deux phases, notamment entre vie et mort, humain et divin, ordre et chaos."
+    definition: "[Relatif|Relative|Relatifs|Relatives] à un seuil ou à un état intermédiaire. Qualifie ce qui se situe entre deux mondes, deux statuts ou deux phases, notamment entre vie et mort, humain et divin, ordre et chaos."
   - name: "chaos"
     definition: "État de désordre, d’indétermination ou d’absence de structure. Le terme désigne une rupture de l’ordre établi ou un monde livré à des forces incontrôlées, sans référence directe à l’entité primordiale grecque."

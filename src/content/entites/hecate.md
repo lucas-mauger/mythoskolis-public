@@ -5,13 +5,14 @@ id: grecque-hecate
 nature:
   - divinite
   - titanide
-  - chthonienne
+  - chthonien
 gender: f
-role: Déesse liminale, des seuils, des carrefours et des passages entre les mondes
+role: 'Déesse liminale, des seuils, des carrefours et des passages entre les mondes'
 description: >
-  Divinité archaïque aux multiples visages, Hécate incarne les zones de transition
-  entre ciel, terre et monde souterrain. Gardienne des seuils et des passages,
-  elle est à la fois protectrice, initiatrice et redoutable puissance nocturne.
+  Divinité archaïque aux multiples visages, Hécate incarne les zones de
+  transition entre ciel, terre et monde souterrain. Gardienne des seuils et des
+  passages, elle est à la fois protectrice, initiatrice et redoutable puissance
+  nocturne.
 domains:
   - seuils et carrefours
   - monde souterrain
@@ -23,8 +24,8 @@ symbols:
   - chiens
   - clés
   - carrefours
+type: entity
 ---
-
 ## Nature et essence
 Hécate est une divinité profondément archaïque, issue des couches les plus anciennes
 de la mythologie grecque. Selon la tradition la plus répandue, elle est fille de

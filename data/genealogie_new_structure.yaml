@@ -60,12 +60,6 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.940–942
-        - id: grecque-aphrodite
-          consensus: true
-          sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.176–200
         - id: grecque-clio_2
           consensus: true
           sources:
@@ -186,6 +180,18 @@ entities:
             - author: Anonyme
               work: Scholies à Apollonios de Rhodes - Argonautiques
               passage: III.467 (attribué à Muséus)
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Homère
+              work: Iliade
+              passage: V
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: scholie sur Pindare
+              passage: Pythiques 3.177
       siblings:
         - id: grecque-hestia
           consensus: true
@@ -254,12 +260,6 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.940–942
-        - id: grecque-dione
-          consensus: true
-          sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.176–200
         - id: grecque-mnemosyne
           consensus: true
           sources:
@@ -302,6 +302,18 @@ entities:
             - author: Anonyme
               work: Scholies à Apollonios de Rhodes - Argonautiques
               passage: III.467 (d’après Muséus)
+        - id: grecque-dione
+          consensus: true
+          sources:
+            - author: Homère
+              work: Iliade
+              passage: V
+        - id: grecque-dione
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: scholie sur Pindare
+              passage: Pythiques 3.177
   - name: Léto
     slug: leto
     culture: grecque
@@ -898,6 +910,18 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.129
+        - id: grecque-dione
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2
+        - id: grecque-dione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
       siblings: []
       consorts:
         - id: grecque-ouranos
@@ -923,6 +947,24 @@ entities:
           sources:
             - author: Orphica
               work: fragments tardifs
+              passage: ''
+        - id: grecque-ouranos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2
+        - id: grecque-ouranos
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
+        - id: grecque-ether
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
               passage: ''
   - name: Ouranos
     slug: ouranos
@@ -1045,6 +1087,18 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.132–153
+        - id: grecque-dione
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2
+        - id: grecque-dione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
       siblings: []
       consorts:
         - id: grecque-gaia
@@ -1053,6 +1107,24 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.126–132
+        - id: grecque-gaia
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2
+        - id: grecque-gaia
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
+        - id: grecque-ether
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
   - name: Pontos
     slug: pontos
     culture: grecque
@@ -1500,7 +1572,13 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.124–127
-      children: []
+      children:
+        - id: grecque-dione
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
       siblings:
         - id: grecque-hemera
           consensus: true
@@ -1508,7 +1586,19 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.124–127
-      consorts: []
+      consorts:
+        - id: grecque-ouranos
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
+        - id: grecque-gaia
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
   - name: Héméra
     slug: hemera
     culture: grecque
@@ -2344,6 +2434,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.337–370
+        - id: grecque-dione
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337-370
       siblings:
         - id: grecque-coeos
           consensus: true
@@ -3322,6 +3418,12 @@ entities:
             - author: Hésiode
               work: Théogonie
               passage: v.337–370
+        - id: grecque-dione
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337-370
       siblings:
         - id: grecque-ocean
           consensus: true
@@ -20366,22 +20468,76 @@ entities:
     culture: grecque
     id: grecque-dione
     relations:
-      parents: []
-      children:
-        - id: grecque-aphrodite
+      parents:
+        - id: grecque-tethys
           consensus: true
           sources:
             - author: Hésiode
               work: Théogonie
-              passage: v.176–200
+              passage: v.337-370
+        - id: grecque-ocean
+          consensus: true
+          sources:
+            - author: Hésiode
+              work: Théogonie
+              passage: v.337-370
+        - id: grecque-ouranos
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2
+        - id: grecque-gaia
+          consensus: false
+          sources:
+            - author: Apollodore
+              work: Bibliothèque
+              passage: I.2
+        - id: grecque-ouranos
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
+        - id: grecque-gaia
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
+        - id: grecque-ether
+          consensus: false
+          sources:
+            - author: Hygin
+              work: Préface
+              passage: ''
+      children:
+        - id: grecque-aphrodite
+          consensus: true
+          sources:
+            - author: Homère
+              work: Iliade
+              passage: V
+        - id: grecque-dionysos
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: scholie sur Pindare
+              passage: Pythiques 3.177
       siblings: []
       consorts:
         - id: grecque-zeus
           consensus: true
           sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.176–200
+            - author: Homère
+              work: Iliade
+              passage: V
+        - id: grecque-zeus
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: scholie sur Pindare
+              passage: Pythiques 3.177
   - name: Hermès
     slug: hermes
     culture: grecque
@@ -20511,6 +20667,18 @@ entities:
             - author: Orphica
               work: Hymnes orphiques
               passage: '30'
+        - id: grecque-zeus
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: scholie sur Pindare
+              passage: Pythiques 3.177
+        - id: grecque-dione
+          consensus: false
+          sources:
+            - author: Anonyme
+              work: scholie sur Pindare
+              passage: Pythiques 3.177
       children:
         - id: grecque-nopion
           consensus: false
@@ -20565,15 +20733,15 @@ entities:
         - id: grecque-zeus
           consensus: true
           sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.176–200
+            - author: Homère
+              work: Iliade
+              passage: V
         - id: grecque-dione
           consensus: true
           sources:
-            - author: Hésiode
-              work: Théogonie
-              passage: v.176–200
+            - author: Homère
+              work: Iliade
+              passage: V
       children:
         - id: grecque-phobos
           consensus: true

@@ -11,12 +11,14 @@ Chaque fiche, chaque ressource et chaque représentation cherche à offrir un po
 
 ---
 
-## Un projet personnel
-Mythoskolis est créé et développé par une seule personne, précédemment professeur des écoles, et à l'heure de la rédaction de cette section en reconversion professionnelle. La rédaction, la structure, l’ergonomie, les pages, les animations, le modèle généalogique : tout est conçu à la main, sur temps libre, avec passion.
+## Un projet personnel, culturel ET technique
+Mythoskolis est créé et développé par une seule personne, précédemment professeur des écoles, et à l'heure de la rédaction de cette section en reconversion professionnelle. La rédaction, la structure, l’ergonomie, les pages, les animations, le modèle généalogique : toute l'architecture est originale et conçue sur temps libre, avec passion. Le site est conçu avec l'aide de Codex.
 
 Le site n’a aucun objectif commercial. Il s’agit d’un espace d’étude et de partage, construit avec le plus grand soin possible.
 
-Il a aussi une vocation de vitrine technique. Le projet sert de terrain d’expérimentation pour la structuration de données complexes, la modélisation relationnelle, la visualisation interactive et la conception d’outils narratifs. Le développement progresse de manière itérative, ce qui permet d’améliorer continuellement l’architecture, l’ergonomie et les fonctionnalités du site.
+Il a aussi une vocation de vitrine technique. Le projet sert de terrain d’expérimentation pour la structuration de données complexes, la modélisation relationnelle, la visualisation interactive et la conception d’outils narratifs. Le développement progresse de manière itérative, ce qui permet d’améliorer continuellement l’architecture, l’ergonomie et les fonctionnalités du site. Le site est propulsé par Astro pour la génération du HTML et stylisé via Tailwind, tandis que le HoloGraph repose sur un rendu spécifique en JS/CSS. Les données sont structurées en YAML et gérées via un inspecteur customisé, conçu spécifiquement dans le cadre de ce projet.
+
+Un dépôt GitHub public sera prochainement disponible à destination du public technique et des recruteurs.
 
 ---
 
@@ -51,4 +53,3 @@ La direction éditoriale restera centralisée afin de préserver l’unité visu
 Mythoskolis évoluera progressivement : amélioration de l’ergonomie, ajout de nouvelles entités et de nouveaux récits, extension à d’autres corpus, enrichissement du graphisme et du modèle généalogique.
 
 L’objectif reste le même : proposer un lieu où l’on peut comprendre, apprendre et contempler les traditions anciennes, avec une approche accessible, exigeante et moderne.
-

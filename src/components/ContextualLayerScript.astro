@@ -86,7 +86,7 @@ const {
     const termKeySet = new Set();
     const terms = [];
 
-    function addTerm(term, entry) {
+    function addTerm(term, entry, variantIndex) {
       const cleaned = (term ?? "").toString().trim();
       if (!cleaned) return;
       const key = cleaned.toLocaleLowerCase("fr");
@@ -95,12 +95,16 @@ const {
         terms.push(cleaned);
       }
       if (!mapByKey.has(key)) mapByKey.set(key, []);
-      mapByKey.get(key).push(entry);
+      mapByKey.get(key).push({
+        entry,
+        term: cleaned,
+        variantIndex,
+      });
     }
 
     normalizedEntries.forEach((entry) => {
-      addTerm(entry.name, entry);
-      entry.matchTerms.forEach((term) => addTerm(term, entry));
+      addTerm(entry.name, entry, 0);
+      entry.matchTerms.forEach((term, idx) => addTerm(term, entry, idx + 1));
     });
 
     terms.sort((a, b) => b.length - a.length);
@@ -409,7 +413,8 @@ const {
         const matchedText = match[2] || match[0];
         const key = matchedText.toLocaleLowerCase("fr");
         const candidates = mapByKey.get(key) || [];
-        const glossaryEntry = selectEntryForMatch(matchedText, candidates);
+        const selection = selectEntryForMatch(matchedText, candidates);
+        const glossaryEntry = selection?.entry ?? null;
 
         if (start > lastIndex) {
           frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
@@ -424,7 +429,7 @@ const {
         } else {
           const entryKey = (glossaryEntry?.name ?? matchedText).toLocaleLowerCase("fr");
           const count = occurrenceCount.get(entryKey) || 0;
-          const marker = createMarker(matchedText, glossaryEntry, count === 0);
+          const marker = createMarker(matchedText, glossaryEntry, count === 0, selection?.variantIndex ?? 0);
           occurrenceCount.set(entryKey, count + 1);
           frag.appendChild(marker);
           locals.push(marker);
@@ -447,7 +452,7 @@ const {
       return locals;
     }
 
-    function createMarker(label, entry, isFirst) {
+    function createMarker(label, entry, isFirst, variantIndex) {
       const span = document.createElement("span");
       span.textContent = label;
       span.dataset.contextTerm = label;
@@ -457,6 +462,8 @@ const {
       // attach data for tooltip rendering
       // @ts-ignore - custom property on DOM node
       span.__contextEntry = entry;
+      // @ts-ignore - custom property on DOM node
+      span.__contextVariantIndex = variantIndex;
       span.tabIndex = -1;
       span.setAttribute("role", "button");
       span.setAttribute("aria-label", label + " : définition disponible");
@@ -498,13 +505,79 @@ const {
     function selectEntryForMatch(matchedText, candidates) {
       if (!candidates || candidates.length === 0) return null;
       const exactMatch = candidates.find(
-        (entry) =>
-          entry?.type === "entity" &&
-          Array.isArray(entry?.termsExact) &&
-          entry.termsExact.includes(matchedText),
+        (candidate) =>
+          candidate?.entry?.type === "entity" &&
+          Array.isArray(candidate?.entry?.termsExact) &&
+          candidate.entry.termsExact.includes(matchedText),
       );
       if (exactMatch) return exactMatch;
-      return candidates.find((entry) => entry?.type !== "entity") || null;
+      return candidates.find((candidate) => candidate?.entry?.type !== "entity") || null;
+    }
+
+    function formatDefinition(definition, variantIndex) {
+      const raw = (definition ?? "").toString();
+      const idx = Number.isFinite(variantIndex) ? variantIndex : 0;
+      let out = "";
+      let i = 0;
+
+      while (i < raw.length) {
+        const ch = raw[i];
+        if (ch === "\\") {
+          if (i + 1 < raw.length) {
+            out += raw[i + 1];
+            i += 2;
+          } else {
+            i += 1;
+          }
+          continue;
+        }
+        if (ch !== "[") {
+          out += ch;
+          i += 1;
+          continue;
+        }
+
+        let j = i + 1;
+        let current = "";
+        const parts = [];
+        let closed = false;
+
+        while (j < raw.length) {
+          const inner = raw[j];
+          if (inner === "\\") {
+            if (j + 1 < raw.length) {
+              current += raw[j + 1];
+              j += 2;
+              continue;
+            }
+          }
+          if (inner === "|") {
+            parts.push(current);
+            current = "";
+            j += 1;
+            continue;
+          }
+          if (inner === "]") {
+            parts.push(current);
+            closed = true;
+            j += 1;
+            break;
+          }
+          current += inner;
+          j += 1;
+        }
+
+        if (!closed) {
+          out += raw.slice(i, j);
+          i = j;
+          continue;
+        }
+
+        out += parts[idx] ?? parts[0] ?? "";
+        i = j;
+      }
+
+      return out;
     }
 
     function createTooltip() {
@@ -536,7 +609,7 @@ const {
       });
     }
 
-    function renderTooltip(entry) {
+    function renderTooltip(entry, marker) {
       const type = entry?.type || "glossary";
       if (type === "entity") {
         const title = escapeHtml(entry?.title || entry?.name || "");
@@ -547,7 +620,8 @@ const {
         const roleHtml = role ? `<div class="text-sm text-slate-700 dark:text-slate-200">${role}</div>` : "";
         return `<div class="flex items-start gap-3">${img}<div><div class="font-semibold text-slate-900 dark:text-slate-50">${title}</div>${roleHtml}</div></div>`;
       }
-      const def = escapeHtml(entry?.definition || "");
+      const variantIndex = marker?.__contextVariantIndex ?? 0;
+      const def = escapeHtml(formatDefinition(entry?.definition || "", variantIndex));
       return `<div class="text-sm text-slate-800 dark:text-slate-100">${def}</div>`;
     }
 
@@ -560,7 +634,7 @@ const {
       const entry = marker.__contextEntry || null;
       if (!entry) return;
       currentAnchor = marker;
-      tooltip.innerHTML = renderTooltip(entry);
+      tooltip.innerHTML = renderTooltip(entry, marker);
       tooltip.style.display = "block";
       positionTooltip(marker);
     }
