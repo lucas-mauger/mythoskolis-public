@@ -111,6 +111,7 @@ const {
 
     if (terms.length === 0) return;
 
+    // Longest-first + boundary-aware regex avoids matching inside larger words.
     const escapedTerms = terms.map((term) =>
       term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&"),
     );

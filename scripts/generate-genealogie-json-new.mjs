@@ -45,6 +45,7 @@ function dedupeSources(sources = []) {
 }
 
 function dedupeRelations(relations) {
+  // Merge duplicate edges and compute consensus as tri-state: true, false, or null when mixed.
   const map = new Map();
   for (const r of relations) {
     const key = `${r.type}|${[r.source_id, r.target_id].sort().join("|")}`;

@@ -106,6 +106,7 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
       return undefined;
     }
 
+    // Parent edges are stored as source=parent -> target=child.
     const parents = data.relations
       .filter((relation) => relation.type === "parent" && relation.target_id === central.id)
       .map((relation) => toRelatedNode(relation.source_id, relation))
@@ -116,6 +117,7 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
       .map((relation) => toRelatedNode(relation.target_id, relation))
       .filter(Boolean) as RelatedNode[];
 
+    // Siblings and consorts are stored as undirected edges; pick the "other" node.
     const siblings = data.relations
       .filter(
         (relation) =>
@@ -169,6 +171,7 @@ export function createGenealogieStore(data: GenealogieData): GenealogieStore {
       getEgoGraphBySlug(slug) ?? getEgoGraphFromCentral(entityById.get(slug) ?? entityBySlug.get(slug));
     if (!graph) return undefined;
 
+    // Keep only relations declared by the central entity to avoid duplicates in detailed views.
     const filterByOrigin = (nodes: RelatedNode[]) =>
       nodes.filter((n) => n.relation.origin_id === graph.central.id);
 
