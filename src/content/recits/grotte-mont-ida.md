@@ -1,9 +1,19 @@
 ---
-title: "La grotte du mont Ida, matrice du dieu"
-slug: "grotte-mont-ida"
-id: "grotte-mont-ida"
-type: "recit"
-
+title: 'La grotte du mont Ida, matrice du dieu'
+slug: grotte-mont-ida
+id: grotte-mont-ida
+type: recit
+era: Cycle de l’enfance de Zeus
+importance: mineur
+summary: >
+  Cachée dans les flancs du mont Ida, la grotte où Zeus est élevé devient le
+  véritable berceau de l’ordre olympien. Lieu de dissimulation, de croissance et
+  de gestation symbolique, elle incarne la matrice d’où surgira le roi des
+  dieux.
+tags:
+  - secret-divin
+  - destin
+  - initiation
 main_entities:
   - grecque-zeus
   - grecque-rhea
@@ -14,34 +24,16 @@ places:
   - Crète
   - Mont Ida
 artifacts: []
-
-era: "Cycle de l’enfance de Zeus"
-importance: "mineur"
-summary: >
-  Cachée dans les flancs du mont Ida, la grotte où Zeus est élevé devient le
-  véritable berceau de l’ordre olympien. Lieu de dissimulation, de croissance
-  et de gestation symbolique, elle incarne la matrice d’où surgira le roi des
-  dieux.
-
-tags:
-  - enfance-divine
-  - protection
-  - secret-divin
-  - destin
-  - transmission
-  - lieu-sacré
-
 sources:
   - author: Hésiode
     work: Théogonie
-    note: "Allusions à la naissance cachée de Zeus"
+    note: Allusions à la naissance cachée de Zeus
   - author: Callimaque
     work: Hymne à Zeus
   - author: Diodore de Sicile
     work: Bibliothèque historique
-    note: "V, 70"
+    note: 'V, 70'
 ---
-
 # La grotte du mont Ida, matrice du dieu
 
 ## Un lieu soustrait au regard

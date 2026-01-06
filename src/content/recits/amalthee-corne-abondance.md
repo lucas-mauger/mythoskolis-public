@@ -1,9 +1,18 @@
 ---
-title: "Amalthée et la corne d’abondance"
-slug: "amalthee-corne-abondance"
-id: "amalthee-corne-abondance"
-type: "recit"
-
+title: Amalthée et la corne d’abondance
+slug: amalthee-corne-abondance
+id: amalthee-corne-abondance
+type: recit
+era: Cycle de l’enfance de Zeus
+importance: mineur
+summary: >
+  Amalthée, chèvre nourricière du jeune Zeus, le protège et le nourrit dans la
+  grotte du mont Ida. De sa blessure naît la corne d’abondance, symbole durable
+  de prospérité et de don divin.
+tags:
+  - destin
+  - metamorphose
+  - creation
 main_entities:
   - grecque-amalthee
   - grecque-zeus
@@ -14,34 +23,17 @@ places:
   - Mont Ida
 artifacts:
   - corne-dabondance
-
-era: "Cycle de l’enfance de Zeus"
-importance: "mineur"
-summary: >
-  Amalthée, chèvre nourricière du jeune Zeus, le protège et le nourrit dans la
-  grotte du mont Ida. De sa blessure naît la corne d’abondance, symbole durable
-  de prospérité et de don divin.
-
-tags:
-  - protection
-  - enfance-divine
-  - destin
-  - metamorphose
-  - transmission
-  - abondance
-
 sources:
   - author: Apollodore
     work: Bibliothèque
-    note: "I, 1, 6"
+    note: 'I, 1, 6'
   - author: Diodore de Sicile
     work: Bibliothèque historique
-    note: "V, 70"
+    note: 'V, 70'
   - author: Hygin
     work: Fables
-    note: "Fable 139"
+    note: Fable 139
 ---
-
 # Amalthée et la corne d’abondance
 
 ## Une nourrice hors du monde des dieux

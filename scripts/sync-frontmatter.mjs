@@ -7,7 +7,7 @@ import { load as loadYaml } from "js-yaml";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
-const yamlPath = resolve(root, "data/genealogie.yaml");
+const yamlPath = resolve(root, "data/genealogie_new_structure.yaml");
 const entitiesDir = resolve(root, "src/content/entites");
 
 async function loadYamlEntities() {

@@ -1,11 +1,11 @@
 ---
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import EgoGraphInteractive from '../../components/EgoGraphInteractive.astro';
+import HoloGraphPlaceholder from '../../components/HoloGraphPlaceholder.astro';
 import '../../styles/global.css';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
-import { getEgoGraphById, getEntityById, getEntityBySlug } from '../../lib/genealogie';
+import { getEntityById, getEntityBySlug } from '../../lib/genealogie';
 import MetaTags from '../../components/MetaTags.astro';
 import { isPublishedEntry } from '../../utils/content-filters';
 
@@ -25,11 +25,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props as Props;
 const centralId = (entry.data.id ?? entry.slug).toString();
 const yamlEntity = getEntityById(centralId) ?? getEntityBySlug(centralId) ?? getEntityBySlug(entry.slug);
-const egoGraph = getEgoGraphById(centralId) ?? getEgoGraphById(entry.slug) ?? getEgoGraphById(yamlEntity?.id ?? '');
-const hasData = Boolean(egoGraph);
 const entityName = yamlEntity?.name ?? entry.data.title;
-const allEntries = await getCollection('entites', isPublishedEntry);
-const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 ---
 
 <html lang="fr">
@@ -54,23 +50,10 @@ const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
       </div>
 
       <div>
-        <p class="text-sm uppercase tracking-wide text-gray-500 dark:text-slate-300">HoloGraph — liens familiaux</p>
+        <p class="text-sm uppercase tracking-wide text-gray-500 dark:text-slate-300">HoloGraph — module propriétaire</p>
       </div>
 
-      {hasData ? (
-        <EgoGraphInteractive initialSlug={centralId} pageIds={pageIds} />
-      ) : (
-        <div class="rounded-2xl border border-dashed border-indigo-300 bg-indigo-50/60 p-6 text-indigo-900">
-          <h2 class="text-2xl font-semibold mb-2">Cartographie en cours</h2>
-          <p class="text-sm leading-relaxed">
-            Les données généalogiques de <strong>{entityName}</strong> sont en train d’être consolidées. Cette page sera
-            mise à jour dès que les relations familiales seront vérifiées et sourcées.
-          </p>
-          <p class="text-xs mt-4 text-indigo-700">
-            Tu peux suivre la roadmap dans `docs/genealogie` pour voir quelles branches sont en cours d’ajout.
-          </p>
-        </div>
-      )}
+      <HoloGraphPlaceholder entityName={entityName} />
     </main>
 
     <Footer />

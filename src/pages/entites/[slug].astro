@@ -4,8 +4,8 @@ import Footer from '../../components/Footer.astro';
 import MetaTags from '../../components/MetaTags.astro';
 import '../../styles/global.css';
 import { getCollection, getEntry } from 'astro:content';
-import EgoGraph from '../../components/EgoGraph.astro';
-import { getGraphDisplayData, getEntityById, getEntityBySlug } from '../../lib/genealogie';
+import HoloGraphPlaceholder from '../../components/HoloGraphPlaceholder.astro';
+import { getEntityById, getEntityBySlug } from '../../lib/genealogie';
 import { getRecitsForEntity } from '../../utils/recits';
 import { getGlossaryEntries } from '../../lib/glossaire';
 import ContextualLayerScript from '../../components/ContextualLayerScript.astro';
@@ -37,10 +37,8 @@ const {
 const { Content, headings } = await entry.render();
 const entityId = (frontId ?? entry.data.id ?? entry.slug).toString();
 const allEntries = await getCollection('entites', isPublishedEntry);
-const pageIds = allEntries.map((e) => (e.data.id ?? e.slug).toString());
 const yamlEntity = getEntityById(entityId) ?? getEntityBySlug(entityId) ?? getEntityBySlug(entry.slug);
-const genealogie = getGraphDisplayData(entityId);
-const hasGenealogie = Boolean(genealogie?.central?.id);
+const hasGenealogie = Boolean(yamlEntity?.id);
 const entityCulture = (frontCulture ?? yamlEntity?.culture ?? 'grecque').toString();
 const recitsAssocies = await getRecitsForEntity(entityId);
 const glossaryEntries = getGlossaryEntries();
@@ -286,7 +284,7 @@ function getNatureLabel(
     <div class="flex flex-wrap gap-3 text-sm mb-9">
       <a href="/entites/" class="badge-link badge-link--neutral badge-link--back">Toutes les entités</a>
       {hasGenealogie ? (
-        <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">Voir dans l’HoloGraph</a>
+        <a href={`/genealogie/${entityId}/`} class="badge-link badge-link--primary">HoloGraph (module propriétaire)</a>
       ) : null}
     </div>
 
@@ -536,11 +534,11 @@ function getNatureLabel(
               href={`/genealogie/${entityId}/`}
               class="badge-link badge-link--primary text-sm font-semibold normal-case"
             >
-              Ouvrir l’HoloGraph dédié
+              HoloGraph (module propriétaire)
             </a>
           </div>
         </div>
-        <EgoGraph {...genealogie!} pageIds={pageIds} />
+        <HoloGraphPlaceholder entityName={title} compact={true} showLinks={false} />
       </section>
     ) : null}
 

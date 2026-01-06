@@ -1,0 +1,42 @@
+---
+interface Props {
+  entityName?: string;
+  compact?: boolean;
+  showLinks?: boolean;
+}
+
+const { entityName, compact = false, showLinks = true } = Astro.props as Props;
+const heading = entityName ? `HoloGraph — ${entityName}` : "HoloGraph";
+const padding = compact ? "p-5" : "p-8";
+---
+
+<section
+  class={`rounded-2xl border border-dashed border-amber-300 bg-amber-50/70 text-amber-950 shadow-sm ${padding}`}
+>
+  <p class="text-xs uppercase tracking-[0.2em] font-semibold text-amber-700">Module propriétaire</p>
+  <h2 class="text-2xl font-semibold mt-2">{heading}</h2>
+  <p class="text-sm leading-relaxed mt-3">
+    Le module HoloGraph (généalogie interactive) est un outil propriétaire de Mythoskolis. Le code n’est pas fourni
+    dans ce dépôt public.
+  </p>
+  <p class="text-xs mt-4 text-amber-800">
+    La version en ligne permet de visualiser le HoloGraph, tandis que le dépôt public conserve les données et
+    l’architecture du site.
+  </p>
+  {showLinks ? (
+    <div class="mt-5 flex flex-wrap gap-3">
+      <a
+        href="https://mythoskolis.com/holograph/"
+        class="inline-flex items-center rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-500"
+      >
+        Voir la démo en ligne
+      </a>
+      <a
+        href="/entites/"
+        class="inline-flex items-center rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-800 transition hover:border-amber-300 hover:bg-amber-50"
+      >
+        Explorer les entités
+      </a>
+    </div>
+  ) : null}
+</section>

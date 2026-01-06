@@ -1,9 +1,21 @@
 ---
-title: "Les Corybantes et le silence des armes"
-slug: "corybantes-silence-armes"
-id: "corybantes-silence-armes"
-type: "recit"
-
+title: Les Corybantes et le silence des armes
+slug: corybantes-silence-armes
+id: corybantes-silence-armes
+type: recit
+era: Cycle de l’enfance de Zeus
+importance: mineur
+summary: >
+  Pour dissimuler les pleurs du jeune Zeus et le soustraire à Cronos, les
+  Corybantes exécutent une danse armée autour de la grotte du mont Ida. Le
+  fracas des armes devient un rempart sonore, fondant un rite ancien où le bruit
+  protège le destin.
+tags:
+  - secret-divin
+  - ruse
+  - destin
+  - rites-sacres
+  - initiation
 main_entities:
   - grecque-corybantes
   - grecque-zeus
@@ -16,34 +28,17 @@ places:
 artifacts:
   - boucliers
   - lances
-
-era: "Cycle de l’enfance de Zeus"
-importance: "mineur"
-summary: >
-  Pour dissimuler les pleurs du jeune Zeus et le soustraire à Cronos, les Corybantes
-  exécutent une danse armée autour de la grotte du mont Ida. Le fracas des armes
-  devient un rempart sonore, fondant un rite ancien où le bruit protège le destin.
-
-tags:
-  - protection
-  - secret-divin
-  - ruse
-  - destin
-  - rites-sacres
-  - initiation
-
 sources:
   - author: Strabon
     work: Géographie
-    note: "X, 3, 7"
+    note: 'X, 3, 7'
   - author: Apollodore
     work: Bibliothèque
-    note: "I, 1, 6"
+    note: 'I, 1, 6'
   - author: Euripide
     work: Bacchantes
-    note: "Allusions rituelles"
+    note: Allusions rituelles
 ---
-
 # Les Corybantes et le silence des armes
 
 ## Une menace qui écoute

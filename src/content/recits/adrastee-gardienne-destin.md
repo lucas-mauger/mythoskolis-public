@@ -12,9 +12,6 @@ summary: >
 tags:
   - destin
   - fatalite
-  - protection
-  - enfance-divine
-  - transmission
   - justice-divine
 main_entities:
   - grecque-adrastee
