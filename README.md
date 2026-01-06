@@ -17,8 +17,8 @@ Vous souhaitez comprendre rapidement :
 - en quoi il est pertinent dans un contexte professionnel.
 
 ➡️ **Lectures recommandées :**
-- 📄 `README_TLDR_RECRUTEURS.md` — *vue ultra-rapide (≈30 secondes)*
-- 📄 `README_RECRUTEURS.md` — *présentation structurée orientée recrutement*
+- 📄 [README_TLDR_RECRUTEURS.md](README_TLDR_RECRUTEURS.md) — *vue ultra-rapide (≈30 secondes)*
+- 📄 [README_RECRUTEURS.md](README_RECRUTEURS.md) — *présentation structurée orientée recrutement*
 
 ---
 
@@ -30,7 +30,7 @@ Vous souhaitez :
 - parcourir le projet dans son ensemble.
 
 ➡️ **Lecture recommandée :**
-- 📄 `README_TECH.md` — *README technique complet*
+- 📄 [README_TECH.md](README_TECH.md) — *README technique complet*
 
 ---
 
@@ -42,8 +42,8 @@ Vous vous intéressez principalement :
 - aux choix ETL, de qualité et d’exploitation.
 
 ➡️ **Lectures recommandées :**
-- 📄 `README_DATA.md` — *présentation orientée data*
-- 📄 `README_DATA_SCHEMAS.md` — *version avec schémas et pseudo-structures*
+- 📄 [README_DATA.md](README_DATA.md) — *présentation orientée data*
+- 📄 [README_DATA_SCHEMAS.md](README_DATA_SCHEMAS.md) — *version avec schémas et pseudo-structures*
 
 ---
 
@@ -55,7 +55,7 @@ Vous vous intéressez avant tout :
 - à la manière dont le site permet d’explorer les mythes.
 
 ➡️ **Lecture recommandée :**
-- 📄 `README_CULTUREL.md` — *présentation éditoriale et culturelle*
+- 📄 [README_CULTUREL.md](README_CULTUREL.md) — *présentation éditoriale et culturelle*
 
 ---
 
