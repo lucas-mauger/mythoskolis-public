@@ -2,14 +2,18 @@
 
 Bienvenue sur le dépôt **Mythoskolis**.
 
+---
+
+## Mon profil Linkedin
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-lucas--mauger-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-mauger/)
+
+---
+
 Ce projet peut se lire de plusieurs manières selon votre profil et ce que vous cherchez à comprendre.  
 Plutôt que de proposer un README unique trop long ou trop spécialisé, ce dépôt adopte une approche **multi-entrées**.
 
 👉 Choisissez simplement le parcours qui vous correspond.
-
----
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-lucas--mauger-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-mauger/)
 
 ---
 
