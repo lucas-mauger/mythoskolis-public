@@ -9,7 +9,7 @@ Plutôt que de proposer un README unique trop long ou trop spécialisé, ce dép
 
 ---
 
-[![LinkedIn](https://mythoskolis.com/icons/LinkedIn_logo.png) Mon profil LinkedIn](https://www.linkedin.com/in/lucas-mauger/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-lucas--mauger-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-mauger/)
 
 ---
 
