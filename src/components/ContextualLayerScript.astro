@@ -111,7 +111,7 @@ const {
 
     if (terms.length === 0) return;
 
-    // Longest-first + boundary-aware regex avoids matching inside larger words.
+    // Tri par longueur + regex a bornes pour eviter les matches dans des mots plus longs.
     const escapedTerms = terms.map((term) =>
       term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&"),
     );
@@ -873,57 +873,41 @@ const {
         "hover:-translate-y-[1px]",
         "hover:shadow-sm",
       ];
+      const activeClasses = [
+        "border-amber-400",
+        "bg-amber-50",
+        "text-amber-900",
+        "dark:border-amber-300/70",
+        "dark:bg-amber-900/30",
+        "dark:text-amber-50",
+      ];
+      const inactiveClasses = [
+        "border-slate-200",
+        "bg-white",
+        "text-slate-800",
+        "dark:border-slate-700",
+        "dark:bg-slate-900",
+        "dark:text-slate-100",
+      ];
+      const applyToggleClasses = (el, isActive) => {
+        if (!el) return;
+        el.classList.add(...(isActive ? activeClasses : inactiveClasses));
+        el.classList.remove(...(isActive ? inactiveClasses : activeClasses));
+      };
+
       densityButtons.forEach((btn) => {
         const isActive = btn.dataset.contextDensity === settings.density;
-        btn.classList.toggle("border-amber-400", isActive);
-        btn.classList.toggle("bg-amber-50", isActive);
-        btn.classList.toggle("text-amber-900", isActive);
-        btn.classList.toggle("dark:border-amber-300/70", isActive);
-        btn.classList.toggle("dark:bg-amber-900/30", isActive);
-        btn.classList.toggle("dark:text-amber-50", isActive);
-        btn.classList.toggle("border-slate-200", !isActive);
-        btn.classList.toggle("bg-white", !isActive);
-        btn.classList.toggle("text-slate-800", !isActive);
-        btn.classList.toggle("dark:border-slate-700", !isActive);
-        btn.classList.toggle("dark:bg-slate-900", !isActive);
-        btn.classList.toggle("dark:text-slate-100", !isActive);
+        applyToggleClasses(btn, isActive);
       });
       if (entitiesCheckbox) entitiesCheckbox.checked = settings.showEntities;
       if (glossaryCheckbox) glossaryCheckbox.checked = settings.showGlossary;
       if (floatToggle) {
         const isActive = settings.float;
-        floatToggle.classList.toggle("border-amber-400", isActive);
-        floatToggle.classList.toggle("bg-amber-50", isActive);
-        floatToggle.classList.toggle("text-amber-900", isActive);
-        floatToggle.classList.toggle("dark:border-amber-300/70", isActive);
-        floatToggle.classList.toggle("dark:bg-amber-900/30", isActive);
-        floatToggle.classList.toggle("dark:text-amber-50", isActive);
-        floatToggle.classList.toggle("border-slate-200", !isActive);
-        floatToggle.classList.toggle("bg-white", !isActive);
-        floatToggle.classList.toggle("text-slate-800", !isActive);
-        floatToggle.classList.toggle("dark:border-slate-700", !isActive);
-        floatToggle.classList.toggle("dark:bg-slate-900", !isActive);
-        floatToggle.classList.toggle("dark:text-slate-100", !isActive);
+        applyToggleClasses(floatToggle, isActive);
       }
       positionButtons.forEach((btn) => {
         const btnPos = (btn.dataset.contextPosition || "").toLowerCase();
         const isActive = btnPos === settings.position;
-        const activeClasses = [
-          "border-amber-400",
-          "bg-amber-50",
-          "text-amber-900",
-          "dark:border-amber-300/70",
-          "dark:bg-amber-900/30",
-          "dark:text-amber-50",
-        ];
-        const inactiveClasses = [
-          "border-slate-200",
-          "bg-white",
-          "text-slate-800",
-          "dark:border-slate-700",
-          "dark:bg-slate-900",
-          "dark:text-slate-100",
-        ];
         btn.className = "";
         btn.classList.add(...basePositionBtnClasses, ...(isActive ? activeClasses : inactiveClasses));
         btn.setAttribute("aria-pressed", String(isActive));
