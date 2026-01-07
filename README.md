@@ -9,7 +9,11 @@ Plutôt que de proposer un README unique trop long ou trop spécialisé, ce dép
 
 ---
 
-## 👀 Vous êtes recruteur·se / RH / manager
+[![LinkedIn](https://mythoskolis.com/icons/LinkedIn_logo.png) Mon profil LinkedIn](https://www.linkedin.com/in/lucas-mauger/)
+
+---
+
+## 👀 Vous êtes recruteuse|recruteur / RH / manager
 
 Vous souhaitez comprendre rapidement :
 - ce que démontre ce projet,
@@ -22,7 +26,7 @@ Vous souhaitez comprendre rapidement :
 
 ---
 
-## 🧑‍💻 Vous êtes technicien·ne / développeur·se généraliste
+## 🧑‍💻 Vous êtes technicien|ne / développeuse|développeur généraliste
 
 Vous souhaitez :
 - comprendre l’architecture globale,
@@ -47,7 +51,7 @@ Vous vous intéressez principalement :
 
 ---
 
-## 🏛️ Vous êtes curieux·se, étudiant·e, enseignant·e ou structure culturelle
+## 🏛️ Vous êtes curieux, étudiant|e, enseignant|e ou une structure culturelle
 
 Vous vous intéressez avant tout :
 - à la mythologie grecque,
